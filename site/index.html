@@ -375,11 +375,36 @@
   <section class="home-hero" aria-label="Bienvenue chez Alliance Travel">
     <!-- Photographic backdrop: 5 destination photos as horizontal collage -->
     <div class="home-hero__photos" aria-hidden="true">
-      <img src="assets/images/heroes/hero__cairo-sharm.jpg"       alt="" loading="eager" fetchpriority="high"/>
-      <img src="assets/images/heroes/hero__azerbaidjan.jpg"        alt="" loading="eager"/>
-      <img src="assets/images/heroes/hero__istanbul.jpg"           alt="" loading="eager"/>
-      <img src="assets/images/heroes/hero__kuala-lumpur.jpg"       alt="" loading="eager"/>
-      <img src="assets/images/heroes/hero__sharm-constantine.jpg" alt="" loading="eager"/>
+      <picture>
+        <source media="(max-width: 768px)" type="image/webp" srcset="assets/images/heroes/hero__cairo-sharm--mobile.webp"/>
+        <source media="(max-width: 768px)" type="image/jpeg" srcset="assets/images/heroes/hero__cairo-sharm--mobile.jpg"/>
+        <source type="image/webp" srcset="assets/images/heroes/hero__cairo-sharm.webp"/>
+        <img src="assets/images/heroes/hero__cairo-sharm.jpg" alt="" loading="eager" fetchpriority="high" decoding="async"/>
+      </picture>
+      <picture>
+        <source media="(max-width: 768px)" type="image/webp" srcset="assets/images/heroes/hero__azerbaidjan--mobile.webp"/>
+        <source media="(max-width: 768px)" type="image/jpeg" srcset="assets/images/heroes/hero__azerbaidjan--mobile.jpg"/>
+        <source type="image/webp" srcset="assets/images/heroes/hero__azerbaidjan.webp"/>
+        <img src="assets/images/heroes/hero__azerbaidjan.jpg" alt="" loading="eager" decoding="async"/>
+      </picture>
+      <picture>
+        <source media="(max-width: 768px)" type="image/webp" srcset="assets/images/heroes/hero__istanbul--mobile.webp"/>
+        <source media="(max-width: 768px)" type="image/jpeg" srcset="assets/images/heroes/hero__istanbul--mobile.jpg"/>
+        <source type="image/webp" srcset="assets/images/heroes/hero__istanbul.webp"/>
+        <img src="assets/images/heroes/hero__istanbul.jpg" alt="" loading="eager" decoding="async"/>
+      </picture>
+      <picture>
+        <source media="(max-width: 768px)" type="image/webp" srcset="assets/images/heroes/hero__kuala-lumpur--mobile.webp"/>
+        <source media="(max-width: 768px)" type="image/jpeg" srcset="assets/images/heroes/hero__kuala-lumpur--mobile.jpg"/>
+        <source type="image/webp" srcset="assets/images/heroes/hero__kuala-lumpur.webp"/>
+        <img src="assets/images/heroes/hero__kuala-lumpur.jpg" alt="" loading="lazy" decoding="async"/>
+      </picture>
+      <picture>
+        <source media="(max-width: 768px)" type="image/webp" srcset="assets/images/heroes/hero__sharm-constantine--mobile.webp"/>
+        <source media="(max-width: 768px)" type="image/jpeg" srcset="assets/images/heroes/hero__sharm-constantine--mobile.jpg"/>
+        <source type="image/webp" srcset="assets/images/heroes/hero__sharm-constantine.webp"/>
+        <img src="assets/images/heroes/hero__sharm-constantine.jpg" alt="" loading="lazy" decoding="async"/>
+      </picture>
     </div>
     <div class="home-hero__bg"></div>
     <div class="home-hero__noise" aria-hidden="true"></div>

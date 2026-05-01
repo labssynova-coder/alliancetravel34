@@ -167,7 +167,8 @@ async function init() {
       theta: 0.18,
       dark: 1,
       diffuse: 1.4,
-      mapSamples: 16000,
+      // Mobile gets fewer samples — saves ~150ms WebGL setup on low-end Android
+      mapSamples: window.matchMedia('(max-width: 768px)').matches ? 8000 : 16000,
       mapBrightness: 4,
       baseColor,
       markerColor,

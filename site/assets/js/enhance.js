@@ -342,3 +342,16 @@ function initThemeSwitcher() {
 }
 
 document.addEventListener('DOMContentLoaded', initThemeSwitcher);
+
+/* ─── Service worker registration ───────────────────────────────
+   Stale-while-revalidate cache for fonts/images/CSS so repeat
+   visits load near-instantly and the site is browsable offline.
+   Skipped on http://localhost (avoids cache surprises in dev) AND
+   when the page is served from file:// (no SW context). */
+if ('serviceWorker' in navigator
+    && location.protocol === 'https:'
+    && location.hostname !== 'localhost') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {/* fail silent */});
+  });
+}

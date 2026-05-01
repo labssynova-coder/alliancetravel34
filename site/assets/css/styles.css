@@ -5709,12 +5709,17 @@ img.lb-target:hover {
   .trips-grid:hover .trip-card:not(:hover) { opacity: 1; filter: none; }
 }
 
-/* When sticky bar visible, push the floating site-nav slightly so they don't overlap */
-.trip-sticky-bar.is-visible ~ .site-nav,
-body:has(.trip-sticky-bar.is-visible) .site-nav {
+/* When sticky bar visible, push the floating site-nav slightly so they don't overlap.
+   Use a body-class toggle (set by JS) instead of :has() so we work in
+   Firefox <121 and older Safari. */
+body.has-sticky-bar .site-nav {
   transform: translateY(48px);
   transition: transform 360ms var(--ease-spring, cubic-bezier(.22, 1, .36, 1));
 }
+
+/* Class-based scroll lock used by the lightbox — non-destructive,
+   doesn't clobber any overflow style set by an outer app/component */
+:root[data-scroll-lock] body { overflow: hidden; }
 
 /* ══════════════════════════════════════════════════════════
    v8 — 3D globe (homepage hero) — cobe-powered

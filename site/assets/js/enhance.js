@@ -296,13 +296,23 @@ document.addEventListener('DOMContentLoaded', () => {
 window.AT_showToast = showToast;
 
 
+/* ─── Safe localStorage wrapper ──────────────────────────────────
+   Safari private mode and some embedded webviews throw on setItem.
+   This wrapper makes every call a no-op on failure so the UI keeps
+   working even if persistence isn't available. */
+const safeStorage = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } },
+  remove(k) { try { localStorage.removeItem(k); return true; } catch (e) { return false; } }
+};
+
 /* ─── Theme switcher (added in migration v2) ────────────────── */
 function initThemeSwitcher() {
   const root = document.documentElement;
   const KEY = 'at-theme';
 
   // Initial: stored preference > system preference > dark
-  const stored = localStorage.getItem(KEY);
+  const stored = safeStorage.get(KEY);
   const sysLight = window.matchMedia?.('(prefers-color-scheme: light)').matches;
   const initial = stored || (sysLight ? 'light' : 'dark');
   if (initial === 'light') root.setAttribute('data-theme', 'light');
@@ -313,10 +323,10 @@ function initThemeSwitcher() {
       const isLight = root.getAttribute('data-theme') === 'light';
       if (isLight) {
         root.removeAttribute('data-theme');
-        localStorage.setItem(KEY, 'dark');
+        safeStorage.set(KEY, 'dark');
       } else {
         root.setAttribute('data-theme', 'light');
-        localStorage.setItem(KEY, 'light');
+        safeStorage.set(KEY, 'light');
       }
     });
   });
@@ -324,7 +334,7 @@ function initThemeSwitcher() {
   // React to system preference changes if user hasn't explicitly chosen
   if (!stored) {
     window.matchMedia?.('(prefers-color-scheme: light)')?.addEventListener?.('change', e => {
-      if (localStorage.getItem(KEY)) return;
+      if (safeStorage.get(KEY)) return;
       if (e.matches) root.setAttribute('data-theme', 'light');
       else root.removeAttribute('data-theme');
     });

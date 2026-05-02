@@ -18,6 +18,8 @@ npx serve site -p 5501 --no-clipboard
 
 Open <http://localhost:5500/>.
 
+> **Full launch + deploy guide:** [docs/LAUNCH-AND-DEPLOY.md](docs/LAUNCH-AND-DEPLOY.md) — covers preview, smoke-test checklist, deployment to Netlify / Vercel / Cloudflare Pages / GitHub Pages / self-host, custom domain, and post-launch verification.
+
 ---
 
 ## Project layout

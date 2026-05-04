@@ -5947,12 +5947,14 @@ body.has-sticky-bar .site-nav {
    Replaces the v4 hand-drawn SVG outline.
    ══════════════════════════════════════════════════════════ */
 
-/* The map container — sized to fit the existing .algeria-map-wrap */
+/* The map container — explicit responsive height so MapLibre can measure
+   it correctly during init. (aspect-ratio alone collapses to the
+   intrinsic content height of the fallback div before MapLibre takes
+   over the canvas sizing.) */
 #algeria-map {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
-  max-height: 520px;
+  height: clamp(420px, 52vw, 560px);
   border-radius: var(--r3, 24px);
   overflow: hidden;
   background: var(--bg-2, #0f1218);
@@ -5973,9 +5975,9 @@ body.has-sticky-bar .site-nav {
   z-index: 5;
 }
 
-/* Mobile: shorter aspect for one-hand reach */
+/* Mobile: taller portrait orientation for one-hand reach */
 @media (max-width: 720px) {
-  #algeria-map { aspect-ratio: 4 / 5; max-height: 560px; }
+  #algeria-map { height: clamp(440px, 100vw, 560px); }
 }
 
 /* MapLibre's own canvas picks up our border-radius via overflow: hidden */
@@ -6196,18 +6198,29 @@ body.has-sticky-bar .site-nav {
 :root[data-theme="light"] .amap-popup__addr { color: var(--txt-2, #4a5b6f); }
 :root[data-theme="light"] .amap-popup__phone { color: var(--mint, #237a4a) !important; }
 
-/* ─── Fallback when MapLibre CDN is unreachable ─────────────── */
-.algeria-map--fallback,
-#algeria-map.algeria-map--fallback {
+/* ─── Fallback / loading overlay ────────────────────────────────
+   Absolute-positioned so it doesn't push the container's height
+   (which would defeat the explicit clamp() height above and let the
+   canvas collapse to ~40px). Sits centred over the (still-blank)
+   container until MapLibre paints; auto-hidden once .algeria-map--ready
+   adds. Stays visible if .algeria-map--fallback signals CDN failure. */
+.amap-fallback {
+  position: absolute;
+  inset: 0;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, var(--bg-2, #0f1218), var(--bg, #0a0c12));
-}
-.amap-fallback {
   text-align: center;
   padding: var(--s7, 32px);
-  max-width: 480px;
+  background: linear-gradient(135deg, var(--bg-2, #0f1218), var(--bg, #0a0c12));
+  z-index: 1;
+  transition: opacity 280ms ease;
 }
+.amap-fallback > * { max-width: 480px; }
+
+/* Once the map is ready, hide the loading message */
+.algeria-map--ready .amap-fallback { opacity: 0; pointer-events: none; }
+/* If the CDN failed, keep the fallback fully opaque */
+.algeria-map--fallback .amap-fallback { opacity: 1 !important; pointer-events: auto !important; }
 .amap-fallback__title {
   font-size: 1.125rem;
   font-weight: 700;

@@ -316,6 +316,83 @@
     </div>
   </div>
 </section>
+
+<!-- ── ITINERARY MAP ───────────────────────────────────────────── -->
+<section class="trip-map-section section" id="trip-map-section" aria-label="Carte de l'itinéraire">
+  <div class="container">
+    <div class="section-head" style="text-align:center;max-width:680px;margin-inline:auto">
+      <p class="section-head__eyebrow">Votre voyage en un coup d'œil</p>
+      <h2 class="section-head__title">L'itinéraire <em>sur la carte</em></h2>
+      <p class="section-head__sub">Tous les hôtels, sites et excursions de votre programme de 9 jours, géolocalisés.</p>
+    </div>
+    <div id="trip-map" role="img" aria-label="Carte de l'itinéraire Le Caire & Sharm El Sheikh">
+      <div class="tmap-fallback">
+        <p class="tmap-fallback__title">Chargement de la carte…</p>
+        <p class="tmap-fallback__sub">Sharm El Sheikh · Le Caire · Pyramides de Guizeh · Croisière sur le Nil</p>
+      </div>
+    </div>
+    <div class="trip-map-legend" role="list" aria-label="Légende de la carte">
+      <span class="trip-map-legend__item" role="listitem">
+        <span class="trip-map-legend__chip trip-map-legend__chip--hotel" aria-hidden="true"></span>
+        Hôtels au choix
+      </span>
+      <span class="trip-map-legend__item" role="listitem">
+        <span class="trip-map-legend__chip trip-map-legend__chip--site" aria-hidden="true"></span>
+        Sites visités
+      </span>
+      <span class="trip-map-legend__item" role="listitem">
+        <span class="trip-map-legend__chip trip-map-legend__chip--tour" aria-hidden="true"></span>
+        Excursions guidées
+      </span>
+    </div>
+  </div>
+</section>
+<script>
+  /* Trip-map data — read by assets/js/trip-map.js below.
+     Coordinates are [longitude, latitude] (note: opposite of Google Maps convention).
+     All locations are real-world points; hotel positions are approximate to the
+     resort's bay/area cluster (most Sharm hotels are in Nabq Bay or Sharks Bay). */
+  window.TRIP_MAP_DATA = {
+    name: 'Le Caire & Sharm El Sheikh',
+    hotels: [
+      { id: 'tivoli',       name: 'Tivoli Aqua Park',          loc: [34.428, 27.972], stars: 4, area: 'Nabq Bay, Sharm El Sheikh' },
+      { id: 'verginia',     name: 'Verginia Aqua Park',        loc: [34.422, 27.952], stars: 4, area: 'Nabq Bay, Sharm El Sheikh' },
+      { id: 'rehana4',      name: 'Rehana Aqua Park',          loc: [34.430, 27.958], stars: 4, area: 'Nabq Bay, Sharm El Sheikh' },
+      { id: 'rehana5',      name: 'Rehana Royal Beach',        loc: [34.436, 27.957], stars: 5, area: 'Nabq Bay, Sharm El Sheikh' },
+      { id: 'charmillion',  name: 'Charmillion Club Aquapark', loc: [34.430, 27.952], stars: 5, area: 'Nabq Bay, Sharm El Sheikh' },
+      { id: 'cleopatra',    name: 'Cleopatra Luxury Resort',   loc: [34.378, 27.932], stars: 5, area: 'Sharks Bay, Sharm El Sheikh' },
+      { id: 'pickalbatros', name: 'Pickalbatros',              loc: [34.422, 27.948], stars: 5, area: 'Nabq Bay, Sharm El Sheikh' },
+      { id: 'marwa',        name: 'Marwa Palace',              loc: [31.250, 30.064], stars: 4, area: 'Heliopolis, Le Caire' }
+    ],
+    sites: [
+      // Sharm El Sheikh — visited days 2-5
+      { name: 'Naama Bay',          loc: [34.330, 27.910], day: '2-5' },
+      { name: 'Old Market',         loc: [34.297, 27.864], day: '2-5' },
+      { name: 'Sahaba Mosque',      loc: [34.299, 27.863], day: '2-5' },
+      { name: 'Soho Square',        loc: [34.380, 27.945], day: '2-5' },
+      // Cairo — day 7 (featured = pulsing halo)
+      { name: 'Pyramides de Guizeh', loc: [31.134, 29.978], day: 7, featured: true },
+      { name: 'Sphinx',              loc: [31.137, 29.975], day: 7, featured: true },
+      { name: "Mosquée Al-Azhar",    loc: [31.262, 30.046], day: 7 },
+      { name: 'Mosquée Hussein',     loc: [31.263, 30.048], day: 7 },
+      { name: 'Khan El-Khalili',     loc: [31.262, 30.048], day: 7 }
+    ],
+    tours: [
+      // Cairo — day 8: guided dinner cruise on the Nile
+      { name: 'Croisière sur le Nil', loc: [31.225, 30.045], day: 8, note: 'Dîner et spectacle au coucher du soleil' }
+    ],
+    hubs: [
+      { name: 'Sharm El Sheikh', loc: [34.330, 27.970], days: 'J1–J6' },
+      { name: 'Le Caire',        loc: [31.235, 30.044], days: 'J6–J9' }
+    ],
+    routes: [
+      // Day 6 transfer: Sharm Airport → Cairo Airport
+      { from: [34.395, 27.977], to: [31.405, 30.121], label: 'Vol SSH → CAI', type: 'flight' }
+    ]
+  };
+</script>
+<script src="../assets/js/trip-map.js" defer></script>
+
 <section class="trust-bg section" id="confiance" aria-label="Témoignages et confiance">
   <div class="container">
     <div class="section-head">

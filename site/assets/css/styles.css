@@ -2329,20 +2329,6 @@ select {
   }
 }
 
-@keyframes shimmer-strip {
-
-  0%,
-  100% {
-    opacity: .6;
-    transform: scaleX(1);
-  }
-
-  50% {
-    opacity: 1;
-    transform: scaleX(1.04);
-  }
-}
-
 /* Twinkling stars: targets all small white circles in hero SVG art */
 .hero__visual-art circle[fill="white"],
 .trip-card__art circle[fill="white"] {
@@ -3755,116 +3741,6 @@ body, .hero, .hero__bg, .site-nav, section, .breakdown,
   gap: var(--s7);
 }
 
-.algeria-map-svg {
-  width: 100%;
-  height: auto;
-  max-height: 560px;
-  color: var(--txt-1);
-  display: block;
-  filter: drop-shadow(0 24px 48px rgba(0,44,81,.25));
-}
-
-/* Background dotted grid */
-.algeria-map-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(currentColor 1px, transparent 1px),
-    linear-gradient(90deg, currentColor 1px, transparent 1px);
-  background-size: 56px 56px;
-  color: var(--mint);
-  opacity: .04;
-  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
-  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
-  pointer-events: none;
-}
-
-/* Compass */
-.algeria-compass {
-  position: absolute;
-  top: var(--s5);
-  right: var(--s5);
-  color: var(--mint);
-  opacity: .85;
-  z-index: 2;
-}
-.algeria-compass .compass-needle {
-  transform-origin: 40px 40px;
-  animation: compass-wobble 8s ease-in-out infinite;
-}
-@keyframes compass-wobble {
-  0%, 100% { transform: rotate(-4deg); }
-  50%      { transform: rotate(4deg); }
-}
-
-/* Algeria outline draw-in */
-.algeria-outline {
-  stroke-dasharray: 3000;
-  stroke-dashoffset: 3000;
-  animation: outline-draw 2.4s ease-out 0.2s both;
-}
-@keyframes outline-draw {
-  to { stroke-dashoffset: 0; }
-}
-
-/* Routes draw from HQ */
-.routes .route {
-  stroke-dasharray: 4 5, 600;
-  stroke-dashoffset: 600;
-  animation: route-draw 1.4s ease-out both;
-}
-.routes .route:nth-child(1) { animation-delay: 1.6s; }
-.routes .route:nth-child(2) { animation-delay: 1.85s; }
-.routes .route:nth-child(3) { animation-delay: 2.1s; }
-.routes .route:nth-child(4) { animation-delay: 2.35s; }
-.routes .route:nth-child(5) { animation-delay: 2.6s; }
-@keyframes route-draw {
-  to { stroke-dashoffset: 0; }
-}
-
-/* Pin drop + halo pulse */
-.city-pins .pin {
-  opacity: 0;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: pin-drop 0.7s cubic-bezier(0.5, 1.7, 0.4, 1) both;
-}
-.city-pins .pin--hq { animation-delay: 0.6s; }
-.city-pins .pin:nth-child(2) { animation-delay: 1.2s; }
-.city-pins .pin:nth-child(3) { animation-delay: 1.4s; }
-.city-pins .pin:nth-child(4) { animation-delay: 1.6s; }
-.city-pins .pin:nth-child(5) { animation-delay: 1.8s; }
-.city-pins .pin:nth-child(6) { animation-delay: 2.0s; }
-.city-pins .pin:nth-child(7) { animation-delay: 2.2s; }
-@keyframes pin-drop {
-  0%   { opacity: 0; transform: translateY(-40px) scale(0.4); }
-  60%  { opacity: 1; transform: translateY(2px) scale(1.15); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.pin__halo {
-  transform-origin: center;
-  animation: halo-pulse 2.6s ease-in-out infinite;
-}
-.pin__halo--2 { animation-delay: 0.6s; }
-@keyframes halo-pulse {
-  0%, 100% { transform: scale(0.8); opacity: 0.7; }
-  50%      { transform: scale(1.5); opacity: 0; }
-}
-
-.pin--hq .pin__halo { animation-duration: 2s; }
-
-.pin { cursor: pointer; transition: transform 0.3s ease; }
-.pin:hover circle:not(.pin__halo) { filter: drop-shadow(0 0 12px var(--mint)); }
-.pin text {
-  paint-order: stroke;
-  stroke: var(--bg);
-  stroke-width: 4px;
-  stroke-linejoin: round;
-  pointer-events: none;
-  font-family: 'DM Sans', system-ui, sans-serif;
-}
-
 /* Branch cards grid */
 .branch-list {
   display: grid;
@@ -4006,32 +3882,21 @@ body, .hero, .hero__bg, .site-nav, section, .breakdown,
 
 /* Responsive */
 @media (max-width: 768px) {
-  .algeria-compass { display: none; }
-  .algeria-map-svg { max-height: 360px; }
-  .pin text { font-size: 12px; }
   .branch-list { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .algeria-outline,
-  .routes .route,
-  .city-pins .pin,
-  .pin__halo,
-  .compass-needle,
   .hero__plane,
   .branch-card--hq::before,
   .related-card:hover .related-card__art > *,
   .hl-card:hover .hl-card__icon {
     animation: none !important;
     opacity: 1 !important;
-    stroke-dashoffset: 0 !important;
     transform: none !important;
   }
 }
 
-/* Light mode for map */
-:root[data-theme="light"] .algeria-map-svg { color: var(--navy); }
-:root[data-theme="light"] .algeria-outline { stroke: var(--navy); }
+/* Light mode for branch cards */
 :root[data-theme="light"] .branch-card { background: #ffffff; }
 :root[data-theme="light"] .branch-card--hq {
   background: linear-gradient(180deg, var(--mint-dim), #ffffff);

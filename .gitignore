@@ -29,7 +29,6 @@ venv/
 # Build artifacts
 *.tmp
 *.log
-.DS_Store
 
 # Local-only
 .claude/launch.json

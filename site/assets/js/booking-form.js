@@ -51,20 +51,27 @@ const FORM_HTML = `
         </h3>
         <div class="bform-row-2">
           <div class="bform-field">
-            <label for="bf-name">Nom &amp; Prénom <span class="req">*</span></label>
+            <label for="bf-name">Nom &amp; Prénom <span class="req" aria-hidden="true">*</span></label>
             <input type="text" id="bf-name" placeholder="Ahmed Benkhalifa"
-              autocomplete="name" inputmode="text"/>
+              autocomplete="name" inputmode="text" required minlength="2"
+              aria-required="true" aria-describedby="bf-name-err"/>
+            <p class="bf-field-err" id="bf-name-err" hidden>Veuillez indiquer votre nom complet.</p>
           </div>
           <div class="bform-field">
-            <label for="bf-phone">Téléphone WhatsApp <span class="req">*</span></label>
+            <label for="bf-phone">Téléphone WhatsApp <span class="req" aria-hidden="true">*</span></label>
             <input type="tel" id="bf-phone" placeholder="0561 616 266"
-              autocomplete="tel" inputmode="tel"/>
+              autocomplete="tel" inputmode="tel" required
+              pattern="^(\\+213|0)[5-7][0-9 ]{8,}$"
+              aria-required="true" aria-describedby="bf-phone-err"/>
+            <p class="bf-field-err" id="bf-phone-err" hidden>Numéro algérien attendu : 05/06/07 suivi de 8 chiffres.</p>
           </div>
         </div>
         <div class="bform-field">
-          <label for="bf-city">Wilaya / Ville <span class="req">*</span></label>
+          <label for="bf-city">Wilaya / Ville <span class="req" aria-hidden="true">*</span></label>
           <input type="text" id="bf-city" placeholder="Bordj Bou Arreridj"
-            autocomplete="address-level2"/>
+            autocomplete="address-level2" required minlength="2"
+            aria-required="true" aria-describedby="bf-city-err"/>
+          <p class="bf-field-err" id="bf-city-err" hidden>Indiquez votre wilaya ou ville.</p>
         </div>
       </div>
 
@@ -130,7 +137,10 @@ const FORM_HTML = `
           Aperçu du message WhatsApp
         </div>
         <div class="bform-preview__content">
-          <div id="bf-msg-preview">
+          <div class="bf-validation-banner" id="bf-validation-banner" role="alert" hidden>
+            ${icon('info')} Veuillez compléter les champs marqués en rouge avant d'envoyer.
+          </div>
+          <div id="bf-msg-preview" aria-live="polite" aria-atomic="false">
             <p class="bform-preview__empty">Remplissez le formulaire pour voir l'aperçu de votre message…</p>
           </div>
         </div>
@@ -181,33 +191,42 @@ function icon(name) {
 
 /* ─── Passport entry renderer ─────────────────────────────────── */
 function renderPassportEntry(idx, data = {}) {
+  // Use HTML id="pp-name-N" etc so labels can <label for="..."> properly.
+  // Type=date for DOB and expiry brings up the OS date picker on mobile and
+  // gives format-validated values (YYYY-MM-DD on submit). Visible label
+  // explains the convention.
   return `
   <div class="bf-passport-entry" data-idx="${idx}">
     <div class="bf-passport-entry__header">
       <span class="bf-passport-entry__label">Voyageur ${idx + 1}</span>
-      ${idx > 0 ? `<button class="bf-passport-entry__remove" data-remove="${idx}" type="button" title="Supprimer">${icon('x')}</button>` : ''}
+      ${idx > 0 ? `<button class="bf-passport-entry__remove" data-remove="${idx}" type="button" aria-label="Supprimer voyageur ${idx + 1}">${icon('x')}</button>` : ''}
     </div>
     <div class="bf-passport-grid">
       <div class="bform-field">
-        <label>Nom &amp; Prénom</label>
-        <input type="text" class="pp-name" data-idx="${idx}"
+        <label for="pp-name-${idx}">Nom &amp; Prénom</label>
+        <input type="text" id="pp-name-${idx}" class="pp-name" data-idx="${idx}"
           placeholder="Ahmed Benkhalifa" value="${data.name || ''}"
           autocomplete="off"/>
       </div>
       <div class="bform-field">
-        <label>N° de passeport</label>
-        <input type="text" class="pp-num" data-idx="${idx}"
-          placeholder="AB 123456" value="${data.number || ''}"/>
+        <label for="pp-num-${idx}">N° de passeport</label>
+        <input type="text" id="pp-num-${idx}" class="pp-num" data-idx="${idx}"
+          placeholder="AB 123456" value="${data.number || ''}"
+          inputmode="text" pattern="[A-Z0-9 ]{4,12}"
+          aria-describedby="pp-num-${idx}-hint"/>
+        <p class="bf-field-hint" id="pp-num-${idx}-hint">8 caractères alphanumériques.</p>
       </div>
       <div class="bform-field">
-        <label>Date d'expiration</label>
-        <input type="text" class="pp-expiry" data-idx="${idx}"
-          placeholder="12/2028" value="${data.expiry || ''}"/>
+        <label for="pp-expiry-${idx}">Date d'expiration</label>
+        <input type="date" id="pp-expiry-${idx}" class="pp-expiry" data-idx="${idx}"
+          value="${data.expiry || ''}"
+          aria-describedby="pp-expiry-${idx}-hint"/>
+        <p class="bf-field-hint" id="pp-expiry-${idx}-hint">Doit être valide ≥ 6 mois après le retour.</p>
       </div>
       <div class="bform-field">
-        <label>Date de naissance</label>
-        <input type="text" class="pp-dob" data-idx="${idx}"
-          placeholder="15/06/1990" value="${data.dob || ''}"/>
+        <label for="pp-dob-${idx}">Date de naissance</label>
+        <input type="date" id="pp-dob-${idx}" class="pp-dob" data-idx="${idx}"
+          value="${data.dob || ''}"/>
       </div>
     </div>
   </div>`;
@@ -308,16 +327,69 @@ class BookingForm {
   }
 
   /* ── File upload ─────────────────────────────────────────── */
+  /** Per-file and total upload limits — kept generous for passport scans
+   *  but hard enough to prevent a 50MB drag-drop from blocking the UI. */
+  static MAX_FILE_BYTES = 8 * 1024 * 1024;   // 8 MB
+  static MAX_TOTAL_BYTES = 40 * 1024 * 1024; // 40 MB
+  static MAX_FILE_COUNT = 12;
+  static ALLOWED_TYPES = /^(image\/(jpeg|jpg|png|webp|heic|heif)|application\/pdf)$/i;
+
   _handleFiles(files) {
+    const errors = [];
+    const accepted = [];
+    let totalAfter = this.uploads.reduce((sum, f) => sum + (f.size || 0), 0);
+
     [...files].forEach(file => {
+      // 1. Type check (browser already filters via accept= but double-check)
+      if (!BookingForm.ALLOWED_TYPES.test(file.type)) {
+        errors.push(`${file.name} — type non supporté (JPG, PNG, WebP, HEIC ou PDF uniquement)`);
+        return;
+      }
+      // 2. Per-file size check
+      if (file.size > BookingForm.MAX_FILE_BYTES) {
+        const mb = (file.size / 1024 / 1024).toFixed(1);
+        errors.push(`${file.name} — fichier trop lourd (${mb} MB, max 8 MB)`);
+        return;
+      }
+      // 3. Total count check
+      if (this.uploads.length + accepted.length >= BookingForm.MAX_FILE_COUNT) {
+        errors.push(`Limite atteinte (${BookingForm.MAX_FILE_COUNT} fichiers maximum)`);
+        return;
+      }
+      // 4. Total size check
+      if (totalAfter + file.size > BookingForm.MAX_TOTAL_BYTES) {
+        errors.push(`${file.name} — taille totale dépassée (max 40 MB)`);
+        return;
+      }
+      totalAfter += file.size;
+      accepted.push(file);
+    });
+
+    // Surface errors via toast (one per error, queued)
+    errors.forEach(msg => window.AT_showToast?.(msg, 'error'));
+
+    // Read the accepted files
+    accepted.forEach(file => {
       const reader = new FileReader();
       reader.onload = (e) => {
-        this.uploads.push({ name: file.name, url: e.target.result, type: file.type });
+        this.uploads.push({
+          name: file.name,
+          url: e.target.result,
+          type: file.type,
+          size: file.size,
+        });
         this._renderPreviews();
         this._liveUpdate();
       };
+      reader.onerror = () => {
+        window.AT_showToast?.(`Impossible de lire ${file.name}`, 'error');
+      };
       reader.readAsDataURL(file);
     });
+
+    if (accepted.length && !errors.length) {
+      window.AT_showToast?.(`${accepted.length} fichier(s) ajouté(s)`);
+    }
   }
 
   _renderPreviews() {
@@ -397,6 +469,46 @@ class BookingForm {
     return lines.filter(l => l !== null).join('\n');
   }
 
+  /* ── Validation gate ─────────────────────────────────────────
+     Returns { ok, fields: { id: errorMessage|null } }. Renders inline
+     error UI (.is-invalid + .bf-field-err visibility) as a side effect
+     and toggles the WhatsApp/email send buttons accordingly. */
+  _validate({ silent = false } = {}) {
+    const fields = ['bf-name', 'bf-phone', 'bf-city'];
+    const errors = {};
+    let ok = true;
+
+    fields.forEach(id => {
+      const inp = this.mount.querySelector('#' + id);
+      if (!inp) return;
+      const v = (inp.value || '').trim();
+      let err = null;
+
+      // Required + minlength
+      if (inp.hasAttribute('required') && !v) {
+        err = inp.dataset.errEmpty || 'Champ requis.';
+      } else if (inp.minLength > 0 && v.length < inp.minLength) {
+        err = `Minimum ${inp.minLength} caractères.`;
+      } else if (inp.pattern && v && !new RegExp(`^(?:${inp.pattern})$`).test(v)) {
+        err = inp.getAttribute('aria-describedby')
+          ? this.mount.querySelector('#' + inp.getAttribute('aria-describedby'))?.textContent || 'Format invalide.'
+          : 'Format invalide.';
+      }
+
+      errors[id] = err;
+      if (err) ok = false;
+
+      if (!silent) {
+        inp.classList.toggle('is-invalid', !!err);
+        inp.setAttribute('aria-invalid', err ? 'true' : 'false');
+        const errEl = this.mount.querySelector('#' + id + '-err');
+        if (errEl) errEl.hidden = !err;
+      }
+    });
+
+    return { ok, errors };
+  }
+
   /* ── Live preview update ─────────────────────────────────── */
   _liveUpdate() {
     const msg = this._buildMessage();
@@ -410,19 +522,34 @@ class BookingForm {
 
     preview.innerHTML = `<pre>${escaped}</pre>`;
 
-    // Enable send buttons (WhatsApp primary + email secondary)
+    // Validate silently for the gate (don't show errors until user tries to send
+    // or has touched the field). _validate() with silent:true skips the UI render.
+    const { ok } = this._validate({ silent: true });
+
+    // Toggle send buttons. Disable visually + via inert pointer-events when invalid.
     const btn = this.el.sendBtn;
     if (btn) {
       btn.href = `https://wa.me/${this.WA_NUMBER}?text=${encodeURIComponent(msg)}`;
-      btn.style.pointerEvents = '';
-      btn.style.opacity = '';
+      btn.classList.toggle('is-disabled', !ok);
+      btn.style.pointerEvents = ok ? '' : 'none';
+      btn.style.opacity = ok ? '' : '.45';
+      btn.setAttribute('aria-disabled', ok ? 'false' : 'true');
     }
     const ebtn = this.el.emailBtn;
     if (ebtn) {
       const subject = `Demande de devis — ${this._tripName()}`;
       ebtn.href = `mailto:${this.EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(msg)}`;
-      ebtn.style.pointerEvents = '';
-      ebtn.style.opacity = '';
+      ebtn.classList.toggle('is-disabled', !ok);
+      ebtn.style.pointerEvents = ok ? '' : 'none';
+      ebtn.style.opacity = ok ? '' : '.45';
+      ebtn.setAttribute('aria-disabled', ok ? 'false' : 'true');
+    }
+
+    // Hint banner above preview when invalid (but only after user has interacted)
+    const banner = this.mount.querySelector('#bf-validation-banner');
+    if (banner) {
+      const touched = this.mount.querySelector('.is-invalid, [aria-invalid="true"]');
+      banner.hidden = ok || !touched;
     }
   }
 
@@ -468,7 +595,33 @@ class BookingForm {
     ['bf-name','bf-phone','bf-city','bf-notes'].forEach(id => {
       const el = this.mount.querySelector(`#${id}`);
       el?.addEventListener('input', () => this._scheduleUpdate());
+      // On blur, run full validation (with UI) for that field only — but only
+      // if the user actually typed something. This avoids screaming at an
+      // empty form on first focus.
+      el?.addEventListener('blur', () => {
+        if (id === 'bf-notes') return; // optional field
+        if (!el.value.trim() && !el.classList.contains('is-invalid')) return;
+        this._validate(); // full UI render
+        this._liveUpdate();
+      });
     });
+
+    // Click gate on send buttons: if invalid, run validation with UI and stop
+    // the navigation so the user sees what's missing. Once they fix it the
+    // button re-enables on the next _liveUpdate().
+    const sendGate = (e) => {
+      const { ok } = this._validate();
+      if (!ok) {
+        e.preventDefault();
+        // Focus first invalid field for keyboard / SR users
+        const firstBad = this.mount.querySelector('.is-invalid');
+        firstBad?.focus();
+        firstBad?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        window.AT_showToast?.('Veuillez compléter les champs marqués', 'error');
+      }
+    };
+    this.el.sendBtn?.addEventListener('click', sendGate);
+    this.el.emailBtn?.addEventListener('click', sendGate);
 
     // Add passport row
     this.el.addPassport?.addEventListener('click', () => {

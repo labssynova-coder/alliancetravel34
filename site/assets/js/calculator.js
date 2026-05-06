@@ -249,6 +249,11 @@ class TripCalculator {
       this.el.whyDetails.textContent = hotel.why ?? `Prix par personne en chambre ${this.roomLabel(this.state.room)}, vol inclus, transferts inclus, selon la grille tarifaire de ${hotel.name}.`;
     }
 
+    // Surface child/baby prices next to each kid stepper. Reads the selected
+    // hotel's tariffs and writes them into the .stepper-item__info <p>. Keeps
+    // pricing transparent without the user having to increment a counter first.
+    this._updateKidPriceLabels(hotel);
+
     // Expose state globally for the booking form
     window.__calcState = {
       tripName: this.trip.name,
@@ -267,6 +272,31 @@ class TripCalculator {
 
   roomLabel(r) {
     return { double: 'Double', triple: 'Triple', single: 'Individuelle' }[r] ?? r;
+  }
+
+  /**
+   * Inject the actual child / baby price for the currently selected hotel
+   * into each kid stepper's info paragraph. The base markup uses generic
+   * copy ("tarif réduit") which doesn't tell the user what to expect; this
+   * method replaces the <p> text with the real number per hotel.
+   */
+  _updateKidPriceLabels(hotel) {
+    const map = {
+      child_b: { age: '2–11.99 ans', priceKey: 'child1' },
+      child_a: { age: '2–11.99 ans', priceKey: 'child2' },
+      baby:    { age: '0–2 ans',     priceKey: 'baby'   },
+    };
+    document.querySelectorAll('.stepper-item').forEach(item => {
+      const kidStepper = item.querySelector('.kid-stepper');
+      if (!kidStepper) return;
+      const type = kidStepper.dataset.kidType;
+      const cfg = map[type];
+      if (!cfg) return;
+      const price = hotel.prices[cfg.priceKey];
+      if (price == null) return;
+      const p = item.querySelector('.stepper-item__info p');
+      if (p) p.textContent = `${cfg.age} · ${fmt(price)}`;
+    });
   }
 
   openWhatsApp() {

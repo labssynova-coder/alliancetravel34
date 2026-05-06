@@ -59,6 +59,56 @@
   }
 }
 </script>
+<!-- AT:faqpage-jsonld START -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Est-ce que le visa est inclus ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Alliance Travel fournit une lettre de garantie pour le visa . Le paiement de la taxe de visa ( 30 USD ) se fait directement à l'arrivée au Caire par le client. Cette démarche est 100% encadrée et expliquée par notre accompagnateur."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment payer ? Le CCP est-il accepté ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui. Paiement par virement CCP, espèces à l'agence (Bordj Bou Arreridj), ou par versement bancaire. Inscription par téléphone / WhatsApp possible. Un acompte suffit pour bloquer votre place."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "À quelle heure est le check-in à l'hôtel ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Le check-in est toujours à 14h00 , quelle que soit l'heure d'arrivée. Si vous arrivez plus tôt, vos bagages sont gardés et vous pouvez profiter des espaces communs de l'hôtel dès l'arrivée."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Combien coûte la place pour un bébé ou un enfant ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Bébé (0–2 ans) : 25.000 DA · sans lit. 1ᵉʳ enfant (2–12 ans) : 115.000 DA . 2ᵉ enfant : selon l'hôtel, entre 151.000 et 207.000 DA. Les prix varient par hôtel — utilisez le calculateur pour obtenir le total exact."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Que comprend exactement le \"All Inclusive Soft\" ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "La formule All Inclusive Soft couvre tous les repas (petit-déjeuner, déjeuner, dîner) et la plupart des boissons. Les boissons alcoolisées et certaines activités payantes (plongée, excursions optionnelles) sont à la charge du client."
+      }
+    }
+  ]
+}
+</script>
+<!-- AT:faqpage-jsonld END -->
 <!-- /enrich:meta -->
   <!-- AT:favicons-og START -->
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicon/favicon-32x32.png"/>
@@ -112,9 +162,10 @@
     <div class="hero__price">
       <strong>190.000 DA</strong><span>par personne · chambre double</span>
     </div>
+    <p class="hero-fineprint">Sur la base d'une chambre double, sous réserve de disponibilité — taux DZD/USD à la réservation.</p>
     <div class="hero__ctas">
-      <a href="#calculator" class="btn btn--primary">Calculer mon prix</a>
-      <a href="https://wa.me/213561616266" class="btn btn--ghost" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="#calculator" class="btn btn--primary" data-track-event="hero_cta_calculate">Calculer mon prix</a>
+      <a href="https://wa.me/213561616266" class="btn btn--ghost" data-track-event="hero_cta_whatsapp" target="_blank" rel="noopener">WhatsApp</a>
     </div>
   </div>
 </section>
@@ -152,11 +203,11 @@
         <span>par personne · chambre double</span>
       </div>
       <div class="hero__ctas fade-up fade-up--d3">
-        <a href="#calculator" class="btn btn--primary">
+        <a href="#calculator" class="btn btn--primary" data-track-event="hero_cta_calculate">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
           Calculer mon prix
         </a>
-        <a href="https://wa.me/213561616266" class="btn btn--ghost" target="_blank" rel="noopener">
+        <a href="https://wa.me/213561616266" class="btn btn--ghost" data-track-event="hero_cta_whatsapp" target="_blank" rel="noopener">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           Réserver via WhatsApp
         </a>
@@ -611,11 +662,11 @@
     </div>
 
     <div class="tier-tabs" role="tablist" aria-label="Filtrer par catégorie">
-      <button class="tier-tab" role="tab" aria-pressed="true" data-tier="all">Tous</button>
-      <button class="tier-tab" role="tab" aria-pressed="false" data-tier="economique">Économique</button>
-      <button class="tier-tab" role="tab" aria-pressed="false" data-tier="medium">Médium</button>
-      <button class="tier-tab" role="tab" aria-pressed="false" data-tier="premium">Premium</button>
-      <button class="tier-tab" role="tab" aria-pressed="false" data-tier="luxe">Luxe</button>
+      <button class="tier-tab" role="tab" aria-pressed="true" data-tier="all" data-track-event="tier_filter" data-track-label="all">Tous</button>
+      <button class="tier-tab" role="tab" aria-pressed="false" data-tier="economique" data-track-event="tier_filter" data-track-label="economique">Économique</button>
+      <button class="tier-tab" role="tab" aria-pressed="false" data-tier="medium" data-track-event="tier_filter" data-track-label="medium">Médium</button>
+      <button class="tier-tab" role="tab" aria-pressed="false" data-tier="premium" data-track-event="tier_filter" data-track-label="premium">Premium</button>
+      <button class="tier-tab" role="tab" aria-pressed="false" data-tier="luxe" data-track-event="tier_filter" data-track-label="luxe">Luxe</button>
     </div>
 
     <div class="hotel-grid" role="list">
@@ -643,7 +694,7 @@
             <strong>192.000 DA</strong>
             <span class="hotel-card__price-meta">par pers. en double</span>
           </div>
-          <button class="hotel-card__cta">Sélectionner</button>
+          <button class="hotel-card__cta" data-track-event="hotel_select">Sélectionner</button>
         </div>
       </article>
 
@@ -670,7 +721,7 @@
             <strong>193.000 DA</strong>
             <span class="hotel-card__price-meta">par pers. en double</span>
           </div>
-          <button class="hotel-card__cta">Sélectionner</button>
+          <button class="hotel-card__cta" data-track-event="hotel_select">Sélectionner</button>
         </div>
       </article>
 
@@ -697,7 +748,7 @@
             <strong>205.000 DA</strong>
             <span class="hotel-card__price-meta">par pers. en double</span>
           </div>
-          <button class="hotel-card__cta">Sélectionner</button>
+          <button class="hotel-card__cta" data-track-event="hotel_select">Sélectionner</button>
         </div>
       </article>
 
@@ -725,7 +776,7 @@
             <strong>230.000 DA</strong>
             <span class="hotel-card__price-meta">par pers. en double</span>
           </div>
-          <button class="hotel-card__cta">Sélectionner</button>
+          <button class="hotel-card__cta" data-track-event="hotel_select">Sélectionner</button>
         </div>
       </article>
 
@@ -754,7 +805,7 @@
             <strong>268.000 DA</strong>
             <span class="hotel-card__price-meta">par pers. en double</span>
           </div>
-          <button class="hotel-card__cta">Sélectionner</button>
+          <button class="hotel-card__cta" data-track-event="hotel_select">Sélectionner</button>
         </div>
       </article>
 
@@ -782,7 +833,7 @@
             <strong>270.000 DA</strong>
             <span class="hotel-card__price-meta">par pers. en double</span>
           </div>
-          <button class="hotel-card__cta">Sélectionner</button>
+          <button class="hotel-card__cta" data-track-event="hotel_select">Sélectionner</button>
         </div>
       </article>
 
@@ -810,7 +861,7 @@
             <strong>306.000 DA</strong>
             <span class="hotel-card__price-meta">par pers. en double</span>
           </div>
-          <button class="hotel-card__cta">Sélectionner</button>
+          <button class="hotel-card__cta" data-track-event="hotel_select">Sélectionner</button>
         </div>
       </article>
 
@@ -832,9 +883,9 @@
         <div class="calc-form-group">
           <label class="calc-form-label">Date de départ</label>
           <div class="date-chips" role="group" aria-label="Dates disponibles">
-            <button class="date-chip active" data-date="12 Juin 2026">12 Juin 2026</button>
-            <button class="date-chip" data-date="19 Juin 2026">19 Juin 2026</button>
-            <button class="date-chip" data-date="26 Juin 2026">26 Juin 2026</button>
+            <button class="date-chip active" type="button" role="radio" tabindex="0" aria-checked="true" data-date="12 Juin 2026">12 Juin 2026</button>
+            <button class="date-chip" type="button" role="radio" tabindex="-1" aria-checked="false" data-date="19 Juin 2026">19 Juin 2026</button>
+            <button class="date-chip" type="button" role="radio" tabindex="-1" aria-checked="false" data-date="26 Juin 2026">26 Juin 2026</button>
           </div>
         </div>
 
@@ -918,13 +969,13 @@
       <div>
         <div class="breakdown" id="breakdown" aria-label="Récapitulatif du prix">
           <div class="breakdown__header">Récapitulatif</div>
-          <div class="breakdown__lines" id="breakdown-lines">
+          <div class="breakdown__lines" id="breakdown-lines" aria-live="polite">
             <p class="breakdown__empty">Sélectionnez un hôtel ci-dessus pour voir le détail.</p>
           </div>
           <div style="height:1px;background:var(--border)"></div>
           <div class="breakdown__total">
             <span class="breakdown__total-label">Total estimé</span>
-            <span class="breakdown__total-amount" id="breakdown-total">—</span>
+            <span class="breakdown__total-amount" id="breakdown-total" aria-live="polite" aria-atomic="true">—</span>
           </div>
           <div class="breakdown__usd" id="breakdown-usd" style="display:none"></div>
           <div class="breakdown__why" id="breakdown-why">
@@ -939,7 +990,7 @@
             </details>
           </div>
           <div class="breakdown__ctas">
-            <a href="#booking" class="btn btn--primary btn--full">
+            <a href="#booking" class="btn btn--primary btn--full" data-track-event="calc_continue_to_booking">
               Continuer vers la réservation
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
             </a>
@@ -950,7 +1001,112 @@
     </div>
   </div>
 </section>
-<section class="booking-section section" id="booking" aria-label="Formulaire de réservation"></section>
+<section class="booking-section section" id="booking" aria-label="Formulaire de réservation">
+ en ligne</h3><p style="margin:0 0 16px;color:#c9cdd4;line-height:1.6">Le formulaire de réservation interactif requiert JavaScript. En attendant, vous pouvez nous contacter directement&nbsp;:</p><p style="margin:0;font-size:1.0625rem"><a href="https://wa.me/213561616266" style="color:#9ce8b2;font-weight:600;text-decoration:none">WhatsApp&nbsp;: 0561 616 266</a><br><br><a href="tel:+213561616266" style="color:#9ce8b2;text-decoration:none">Téléphone&nbsp;: 0561 616 266</a></p></div></noscript>
+
+</section>
+<noscript><div style="max-width:680px;margin:48px auto;padding:24px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;text-align:center;color:#fbf8f1"><h3 style="margin:0 0 12px;font-size:1.25rem">Activez JavaScript pour réserver en ligne</h3><p style="margin:0 0 16px;color:#c9cdd4;line-height:1.6">Le formulaire de réservation interactif requiert JavaScript. En attendant, vous pouvez nous contacter directement&nbsp;:</p><p style="margin:0;font-size:1.0625rem"><a href="https://wa.me/213561616266" style="color:#9ce8b2;font-weight:600;text-decoration:none">WhatsApp&nbsp;: 0561 616 266</a><br><br><a href="tel:+213561616266" style="color:#9ce8b2;text-decoration:none">Téléphone&nbsp;: 0561 616 266</a></p></div></noscript>
+
+<section class="info-block-section section" id="conditions" aria-label="Informations pratiques pour votre réservation">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-head__eyebrow">Avant de partir</p>
+      <h2 class="section-head__title">Tout ce qu'il <em>faut savoir</em></h2>
+      <p class="section-head__sub">Paiement, annulation, formalités visa, assurance — la transparence en quatre blocs.</p>
+    </div>
+    <div class="info-block-grid">
+
+        <details class="info-card" open>
+          <summary class="info-card__head">
+            <span class="info-card__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            </span>
+            <span class="info-card__title">Conditions de paiement</span>
+            <svg class="info-card__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="info-card__body">
+            <ul class="info-list">
+              <li><strong>Acompte de réservation</strong> · 30 % du montant total au moment de la confirmation, à régler dans les 48 h après accord par WhatsApp.</li>
+              <li><strong>Solde</strong> · 70 % restants au plus tard <strong>21 jours avant le départ</strong>.</li>
+              <li><strong>Modes acceptés</strong> · Virement bancaire (BNA, BEA, CPA), versement en agence, espèces. Pas de carte bancaire en ligne pour le moment.</li>
+              <li><strong>Reçu</strong> · Reçu officiel Alliance Travel remis à chaque versement.</li>
+              <li><strong>Devis valable</strong> 7 jours · Les prix peuvent évoluer selon la disponibilité aérienne et le taux de change.</li>
+            </ul>
+          </div>
+        </details>
+
+
+        <details class="info-card">
+          <summary class="info-card__head">
+            <span class="info-card__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            </span>
+            <span class="info-card__title">Conditions d'annulation</span>
+            <svg class="info-card__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="info-card__body">
+            <p class="info-card__lede">Annulation par le client (selon le délai avant départ) :</p>
+            <ul class="info-list info-list--tiered">
+              <li><strong>≥ 60 jours avant départ</strong> · Remboursement intégral moins frais de dossier (5 000 DA).</li>
+              <li><strong>30 à 59 jours</strong> · Retenue de 30 % du montant total.</li>
+              <li><strong>14 à 29 jours</strong> · Retenue de 60 % du montant total.</li>
+              <li><strong>7 à 13 jours</strong> · Retenue de 80 %.</li>
+              <li><strong>&lt; 7 jours</strong> · Pas de remboursement (frais aériens et hôteliers définitifs).</li>
+            </ul>
+            <p class="info-card__note">
+              <strong>Annulation par la compagnie aérienne ou l'hôtel</strong> · Remboursement intégral ou re-routing sans frais supplémentaires de notre part.
+              <br>
+              <strong>Modification de date</strong> possible jusqu'à 30 jours avant départ, sous réserve de disponibilité et du différentiel tarifaire.
+            </p>
+          </div>
+        </details>
+
+
+        <details class="info-card">
+          <summary class="info-card__head">
+            <span class="info-card__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M7 21v-1a5 5 0 0 1 10 0v1"/></svg>
+            </span>
+            <span class="info-card__title">Formalités &amp; visa</span>
+            <svg class="info-card__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="info-card__body">
+            <p class="info-card__lede"><strong>Visa égyptien à l'arrivée</strong></p>
+            <ul class="info-list">
+              <li><strong>Visa</strong> · <strong>Visa on Arrival</strong> (VOA) délivré au comptoir à l'arrivée. Aucune démarche préalable.</li>
+              <li><strong>Coût</strong> · <strong>25 USD en espèces</strong> par personne, à régler en arrivant à l'aéroport (Le Caire ou Sharm). Prévoir le montant exact en USD.</li>
+              <li><strong>Passeport</strong> · Validité minimum <strong>6 mois après la date de retour</strong>, 2 pages vierges minimum.</li>
+              <li><strong>Documents</strong> · Passeport + billet retour. Photo d'identité non requise. Le formulaire d'immigration est rempli dans l'avion ou à l'arrivée.</li>
+              <li><strong>Bébés / enfants</strong> · Mêmes conditions. Les enfants doivent figurer sur leur propre passeport.</li>
+            </ul>
+          </div>
+        </details>
+
+
+        <details class="info-card">
+          <summary class="info-card__head">
+            <span class="info-card__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </span>
+            <span class="info-card__title">Assurance voyage</span>
+            <svg class="info-card__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </summary>
+          <div class="info-card__body">
+            <p class="info-card__lede">
+              L'assurance voyage <strong>n'est pas incluse</strong> dans le forfait mais elle est <strong>fortement recommandée</strong> — surtout pour les voyages long-courrier.
+            </p>
+            <ul class="info-list">
+              <li><strong>Couverture conseillée</strong> · Frais médicaux d'urgence (≥ 100 000 €), rapatriement sanitaire, perte/vol de bagages, annulation voyage.</li>
+              <li><strong>Coût indicatif</strong> · 1 500 à 4 000 DA par personne selon la durée et la destination.</li>
+              <li><strong>Où souscrire</strong> · Assureurs algériens (CAAR, SAA, CAAT) ou compagnies internationales (Mondial Assistance, Europ Assistance).</li>
+              <li><strong>Sur demande</strong>, Alliance Travel peut vous orienter vers un partenaire assureur qui propose des formules voyage.</li>
+            </ul>
+          </div>
+        </details>
+
+    </div>
+  </div>
+</section>
 <section class="related-section section" aria-label="Vous aimerez aussi">
   <div class="container">
     <div class="section-head">
@@ -1015,11 +1171,11 @@
     <h2 class="final-cta__title">Prêt à voir les<br><em>Pyramides</em> ?</h2>
     <p class="final-cta__sub">Bloquez votre place en moins de 5 minutes. Notre équipe vous confirme la disponibilité immédiatement via WhatsApp.</p>
     <div class="final-cta__actions">
-      <a href="https://wa.me/213561616266?text=Bonjour%20Alliance%20Travel%2C%20je%20veux%20réserver%20le%20voyage%20Caire%20%26%20Sharm%20Juin%202026." class="btn btn--wa" target="_blank" rel="noopener">
+      <a href="https://wa.me/213561616266?text=Bonjour%20Alliance%20Travel%2C%20je%20veux%20réserver%20le%20voyage%20Caire%20%26%20Sharm%20Juin%202026." class="btn btn--wa" data-track-event="final_cta_whatsapp" target="_blank" rel="noopener">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         Réserver via WhatsApp
       </a>
-      <a href="tel:+213561616266" class="btn btn--ghost">0561 616 266</a>
+      <a href="tel:+213561616266" class="btn btn--ghost" data-track-event="final_cta_phone">0561 616 266</a>
       <a href="tel:+213561616268" class="btn btn--ghost">0561 616 268</a>
     </div>
     <div class="contact-row">
@@ -1085,7 +1241,7 @@
     <p class="sticky-total__label">Total estimé</p>
     <p class="sticky-total__amount" id="sticky-total-amount">—</p>
   </div>
-  <button class="btn btn--primary btn--sm" id="sticky-cta-btn">Réserver</button>
+  <button class="btn btn--primary btn--sm" id="sticky-cta-btn" data-track-event="sticky_cta_book">Réserver</button>
 </div>
 
 <!-- ── TRIP DATA ─────────────────────────────────────────────────── -->
@@ -1094,13 +1250,13 @@ window.TRIP_DATA = {
   name: 'Le Caire & Sharm El Sheikh · Juin 2026',
   dates: ['12 Juin 2026', '19 Juin 2026', '26 Juin 2026'],
   hotels: [
-    { id: 'tivoli',       name: 'Tivoli Aqua Park 4★',         prices: { double: 192000, triple: 190000, single: 215000, child1: 115000, child2: 151000, baby: 25000 } },
-    { id: 'verginia',     name: 'Verginia Aqua Park 4★',        prices: { double: 193000, triple: 191000, single: 220000, child1: 115000, child2: 153000, baby: 25000 } },
-    { id: 'rehana4',      name: 'Rehana Aqua Park 4★',          prices: { double: 205000, triple: 202000, single: 245000, child1: 115000, child2: 155000, baby: 25000 } },
-    { id: 'rehana5',      name: 'Rehana Royal Beach 5★',        prices: { double: 230000, triple: 227000, single: 267000, child1: 115000, child2: 162000, baby: 25000 } },
-    { id: 'charmillion',  name: 'Charmillion Club AquaPark 5★', prices: { double: 268000, triple: 263000, single: 350000, child1: 115000, child2: 187000, baby: 25000 } },
-    { id: 'cleopatra',    name: 'Cleopatra Luxury Resort 5★',   prices: { double: 270000, triple: 265000, single: 355000, child1: 115000, child2: 190000, baby: 25000 } },
-    { id: 'pickalbatros', name: 'Pickalbatros 5★',              prices: { double: 306000, triple: 303000, single: 460000, child1: 115000, child2: 207000, baby: 25000 } },
+    { id: 'tivoli',       name: 'Tivoli Aqua Park 4★',         prices: { double: 192000, triple: 190000, single: 215000, child1: 115000, child2: 151000, baby: 25000 }, why: 'Prix par personne en chambre double, vol EgyptAir Alger–Le Caire–Sharm aller-retour, 2N Le Caire + 5N Sharm All Inclusive Soft chez Tivoli, transferts inclus.' },
+    { id: 'verginia',     name: 'Verginia Aqua Park 4★',        prices: { double: 193000, triple: 191000, single: 220000, child1: 115000, child2: 153000, baby: 25000 }, why: 'Vol EgyptAir aller-retour, 2N Le Caire + 5N Sharm chez Verginia Aqua Park 4★, All Inclusive Soft + transferts. Hôtel central Hadaba.' },
+    { id: 'rehana4',      name: 'Rehana Aqua Park 4★',          prices: { double: 205000, triple: 202000, single: 245000, child1: 115000, child2: 155000, baby: 25000 }, why: 'Vol EgyptAir aller-retour, 2N Le Caire + 5N Sharm chez Rehana 4★ avec Aqua Park, All Inclusive Soft + transferts. Hôtel familial Nabq Bay.' },
+    { id: 'rehana5',      name: 'Rehana Royal Beach 5★',        prices: { double: 230000, triple: 227000, single: 267000, child1: 115000, child2: 162000, baby: 25000 }, why: 'Vol EgyptAir aller-retour, 2N Le Caire + 5N Sharm chez Rehana Royal Beach 5★ avec Aqua Park et plage privée, All Inclusive Soft + transferts.' },
+    { id: 'charmillion',  name: 'Charmillion Club AquaPark 5★', prices: { double: 268000, triple: 263000, single: 350000, child1: 115000, child2: 187000, baby: 25000 }, why: 'Vol EgyptAir aller-retour, 2N Le Caire + 5N Sharm chez Charmillion Club 5★ avec grand Aqua Park, All Inclusive Soft + transferts. Resort animation premium.' },
+    { id: 'cleopatra',    name: 'Cleopatra Luxury Resort 5★',   prices: { double: 270000, triple: 265000, single: 355000, child1: 115000, child2: 190000, baby: 25000 }, why: 'Vol EgyptAir aller-retour, 2N Le Caire + 5N Sharm chez Cleopatra Luxury Resort 5★ thème pharaonique, All Inclusive Soft + plage privée + transferts.' },
+    { id: 'pickalbatros', name: 'Pickalbatros 5★',              prices: { double: 306000, triple: 303000, single: 460000, child1: 115000, child2: 207000, baby: 25000 }, why: 'Vol EgyptAir aller-retour, 2N Le Caire + 5N Sharm chez Pickalbatros 5★ luxe, All Inclusive Soft, plage privée, club enfants, transferts. Le haut de gamme du programme.' },
   ],
   extras: [
     { label: 'Nouveau Musée Égyptien (optionnel)', amount: 0, currency: 'DA' },

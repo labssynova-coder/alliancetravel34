@@ -38,6 +38,86 @@ Plus a parallel cleanup branch:
 
 ---
 
+## Phase 1.9 · Booking + calculator hardening (v15) — ✅ COMPLETE
+
+Date: 2026-05-06. Triggered by an external UX audit that claimed the calculator + booking form were broken. **~70% of the audit was factually wrong** — the system was already dynamic, wired up, and functional. See [`docs/SURVEY-BOOKING-CALCULATOR.md`](SURVEY-BOOKING-CALCULATOR.md) for the verdict matrix on all 35 specific claims.
+
+The remaining ~30% identified genuine gaps. v15 closes them. Detailed in 3 batches:
+
+### Batch A — validation + a11y foundation
+
+- HTML5 `required` + `pattern` + `minlength` + `aria-required` + `aria-describedby` on `bf-name`, `bf-phone`, `bf-city` (booking-form.js FORM_HTML)
+- Inline error `<p class="bf-field-err">` per field, hidden by default, shown when invalid
+- **`_validate()` method** on `BookingForm` — runs on blur (UI render) and on every `_liveUpdate` (silent gate). Toggles `is-invalid` class, `aria-invalid` attribute, error visibility
+- **Click-gate on send buttons** — if invalid, prevents WhatsApp/email open, focuses first invalid field, shows toast
+- **Validation banner** above WhatsApp preview when invalid
+- Passport DOB and expiry: `type="date"` (was `type="text"`)
+- Passport `<label for="...">` properly associated to inputs (htmlFor / id pairing across all 4 fields)
+- `aria-live="polite"` on `#breakdown-lines` and `#breakdown-total` (price changes announced to SR)
+- `aria-label` on all stepper buttons: "Diminuer/Augmenter le nombre d'adultes / 1ᵉʳ enfant / 2ᵉ enfant / bébé"
+- Date chips: `role="radio"` inside `role="radiogroup"`, `aria-checked`, `tabindex="0"` on active and `tabindex="-1"` on inactive (roving tabindex pattern)
+- `_v15_validation.css` — `.is-invalid` red border + shadow, `.bf-field-err` styled error text, `.bf-validation-banner` red banner
+
+### Batch B — pricing transparency + file safety
+
+- **File size validation** in `_handleFiles`: 8 MB max per file, 40 MB total, 12 files max, type whitelist (JPG/PNG/WebP/HEIC/PDF). Errors surface as toasts.
+- **Children prices surfaced** next to each kid stepper. Calculator now reads the selected hotel's `child1`, `child2`, `baby` and writes "2–11.99 ans · 200 000 DA" into the stepper-item `<p>`. Updates dynamically when hotel changes.
+- **Tax disclaimer** "Prix hors taxe touristique de 20 USD/personne à régler à l'hôtel" injected near the WhatsApp CTA on KL (only page with USD extras line in TRIP_DATA)
+- **Hero fineprint** "Sur la base d'une chambre double, sous réserve de disponibilité — taux DZD/USD à la réservation" on all 5 trip pages, in the `.scroll-hero__continuation`
+- **Hotel select hidden** on KL via `[data-single-hotel="true"]` attribute (only one hotel option, was confusing)
+- **Per-hotel `why` strings** added to all hotels in `cairo-sharm` (7 hotels) and `sharm-constantine` (3 hotels). Was already present on Istanbul and Azerbaidjan. KL had 1 hotel with `why` set.
+
+### Batch C — content sections + analytics + SEO
+
+- **New `<section class="info-block-section" id="conditions">`** on each trip page, with 4 `<details>`/`<summary>` cards:
+  - **Conditions de paiement** — acompte 30%, solde 70% à 21j, modes (BNA/BEA/CPA/espèces), reçu, devis valable 7j
+  - **Conditions d'annulation** — 5-tier refund schedule (≥60d / 30-59d / 14-29d / 7-13d / <7d) + airline cancellation policy + modification clause
+  - **Formalités & visa** — per-trip:
+    - cairo-sharm / sharm-constantine: Egypt VOA, 25 USD cash, 6 months passport
+    - azerbaidjan: e-Visa ASAN included, 3-5 day delay, agency-handled
+    - istanbul: Turkey e-Visa (50 USD, 1-3 days), agency assists
+    - kuala-lumpur: Malaysia eVISA mandatory (40 USD, 2-5 days, agency assists)
+  - **Assurance voyage** — recommended coverage (medical >100k€, repatriation, baggage, cancellation), indicative cost (1500-4000 DA), where to buy (CAAR/SAA/CAAT/Mondial Assistance)
+- **Analytics-ready `data-track-event` attributes** on key CTAs:
+  - `hero_cta_calculate`, `hero_cta_whatsapp`, `hotel_select`, `tier_filter` (with `data-track-label="economique|medium|premium|all"`), `calc_continue_to_booking`, `final_cta_whatsapp`, `final_cta_phone`, `sticky_cta_book`
+  - 6-20 attributes per page (varies by hotel count). No analytics library wired — markup is ready for plausible/GA/Matomo/etc.
+- **FAQPage JSON-LD** auto-generated from each page's `.faq-item` content. Boosts SERP rich results (Google rich-snippet eligibility).
+- **`<noscript>` fallback** outside `<section id="booking">` (booking-form.js overwrites the section's innerHTML, so noscript inside would get clobbered). Shows phone numbers + "Activez JavaScript pour réserver en ligne" message.
+
+### Files added / changed
+
+**New files:**
+- `docs/SURVEY-BOOKING-CALCULATOR.md` (387 lines) — comprehensive audit reconciliation
+- `_v15_a11y_migrate.py` — patches aria-live, aria-label, role/tabindex on calc markup
+- `_v15_info_blocks.py` — inserts `info-block-section` on each trip page
+- `_v15_tracking_seo.py` — adds data-track-event, FAQPage JSON-LD, noscript fallback
+- `_v15_dedup_noscript.py` — one-shot cleanup for accidental duplicates during dev
+- `_v15_validation.css` — red invalid borders, error text, validation banner
+- `_v15_info_blocks.css` — `.info-card` accordion component
+
+**Modified:**
+- `site/assets/js/booking-form.js` — validation, file size limits, type=date passports, label associations
+- `site/assets/js/calculator.js` — `_updateKidPriceLabels()` method + render hook
+- `site/assets/css/styles.css` — appended v15 validation CSS + v15 info-block CSS (7,725 → 8,039 lines)
+- All 5 trip pages — info-block-section, FAQPage JSON-LD, noscript, data-track-event, aria-live, aria-label, type=date, role=radio, hero fineprint, KL tax disclaimer, KL hotel select hidden, why strings (cairo-sharm + sharm-constantine)
+
+### Verification
+
+Live in browser on `kuala-lumpur` (the page the audit referenced):
+- ✅ All 16 a11y/validation attributes set correctly
+- ✅ Phone "123" → red border + "Numéro algérien attendu" inline error
+- ✅ Empty name + city → red borders + inline errors
+- ✅ Send button disabled (`is-disabled` class + opacity .5 + pointer-events: none) when invalid
+- ✅ Tax disclaimer visible above WhatsApp button on KL
+- ✅ Hero fineprint visible in continuation card
+- ✅ Info-block section renders with 4 cards (Paiement open, others closed)
+- ✅ Children prices show "2–11.99 ans · 200 000 DA" dynamically based on hotel selection
+- ✅ FAQPage JSON-LD valid (parses correctly)
+- ✅ Noscript outside booking section, single instance
+- ✅ 6 data-track-event attributes on KL (more on other pages with multiple hotels)
+
+---
+
 ## Phase 1.8 · Scroll-expand hero — sticky-scrub rewrite (v14) — ✅ COMPLETE
 
 Date: 2026-05-06. Replaced v13's wheel-hijack model with a **scroll-driven sticky-scrub** architecture.

@@ -96,8 +96,30 @@
 </nav>
 
 <main id="main">
-<!-- ── HERO ─────────────────────────────────────────────────────── -->
-<section class="hero" aria-label="En-tête du voyage">
+<!-- ── HERO (v13 scroll-expand) ─────────────────────────────────────────────────────── -->
+<section class="scroll-hero" data-region="egypt"
+         data-bg="../assets/images/heroes-v2/hero__cairo-sharm--bg.jpg"
+         data-fg="../assets/images/heroes-v2/hero__cairo-sharm--fg.jpg"
+         data-title-pre="Le Caire"
+         data-title-post="& Sharm El Sheikh"
+         data-eyebrow="Voyage guidé · Départ Alger · Juin 2026"
+         data-date="7 nuits · 5 Sharm + 2 Le Caire · Vol EgyptAir"
+         data-prompt="Faites défiler pour découvrir"
+         data-skip="Passer">
+  <div class="scroll-hero__continuation">
+    <h1>Le Caire <em>& Sharm El Sheikh</em></h1>
+    <p>2 expériences en 1 seul voyage. Les pyramides de Guizeh le matin, la Mer Rouge au coucher du soleil. 7 nuits tout confort, vol EgyptAir, transferts &amp; excursions guidées.</p>
+    <div class="hero__price">
+      <strong>190.000 DA</strong><span>par personne · chambre double</span>
+    </div>
+    <div class="hero__ctas">
+      <a href="#calculator" class="btn btn--primary">Calculer mon prix</a>
+      <a href="https://wa.me/213561616266" class="btn btn--ghost" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+  </div>
+</section>
+<!-- ── /HERO ─── (legacy hero markup follows but is unused; preserved here for reference and deleted in cleanup) ── -->
+<section class="hero" hidden aria-hidden="true" style="display:none">
   <div class="hero__bg"></div>
   <!-- Travel atmosphere: paper plane drifting across the hero -->
   <div class="hero__plane" aria-hidden="true">
@@ -1085,6 +1107,7 @@ window.TRIP_DATA = {
   ],
 };
 </script>
+<script src="../assets/js/scroll-hero.js" defer></script>
 <script src="../assets/js/calculator.js"></script>
 
 <!-- Itinerary split responsive fix -->

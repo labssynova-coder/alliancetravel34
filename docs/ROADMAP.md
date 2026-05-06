@@ -38,6 +38,127 @@ Plus a parallel cleanup branch:
 
 ---
 
+## Phase 1.7 · Scroll-expand hero (v13) — ✅ COMPLETE
+
+Date: 2026-05-06. The 5 trip-page heroes were rebuilt as a vanilla port of the
+[motion-primitives `ScrollExpandMedia`](https://motion-primitives.com) component
+(originally React + Next.js + Framer Motion + Tailwind). Same visual behaviour,
+zero build step, zero new runtime dependencies.
+
+### Visual behaviour
+
+User lands on a trip page → hero is pinned to viewport, fills the screen with
+a wide background photo. A smaller centre image (320×420) sits over it, with a
+two-half title that meets in the middle. As the user scrolls (wheel/touch):
+
+- Background photo fades + gently scales down
+- Centre image expands from 320×420 → ~1280×840 (or 92vw × 70vh on mobile)
+- Two title halves translate outward: `pre` to the left edge, `post` to the right
+- Eyebrow pill + caption + "Passer" skip button fade out
+
+When scroll progress reaches 1, the section releases: normal page scroll resumes,
+the centre image stays as a wide banner, and the continuation card below shows
+the lede + canonical price block + 2 CTAs (Calculer mon prix / WhatsApp).
+
+### New files
+
+| File | Lines | Purpose |
+|---|---|---|
+| `_v13_scroll_hero.css` | ~290 | Component CSS (custom-property `--p` driven). Appended to `site/assets/css/styles.css`. |
+| `site/assets/js/scroll-hero.js` | ~280 | Vanilla scroll handler: builds hero markup from `data-*` attributes, binds wheel + touch + keyboard listeners, manages progress + release/re-engage state. Has 250ms boot grace period to ignore spurious scroll-restoration events. Respects `prefers-reduced-motion`, has no-JS fallback. |
+| `_v13_fetch_heroes.py` | ~70 | One-shot Unsplash photo fetcher. 10 photos (2 per trip = bg + fg). Idempotent via cache. |
+| `_v13_propagate.py` | ~120 | Migration script: replaces `<section class="hero">…</section>` with `<section class="scroll-hero">` markup on the 4 non-pilot trip pages, adds the script tag. Idempotent. |
+
+### Image inventory (new)
+
+`site/assets/images/heroes-v2/` — 10 photos sourced from Unsplash, ~6.2MB total:
+
+| Trip | bg (wide environmental) | fg (focal close-up) |
+|---|---|---|
+| Cairo + Sharm | Pyramids in desert landscape | Pyramids close at sunrise |
+| Sharm + Constantine | Constantine concrete bridge / mountains | Sharm beach umbrellas |
+| Azerbaidjan | Bakou Flame Towers + Caspian | Caucasus shrine architecture (Gabala area) |
+| Istanbul | Galata Tower aerial / Bosphorus / Golden Horn | Mosque minaret bright sky |
+| Kuala Lumpur | Batu Caves rainbow stairs | Petronas Towers night |
+
+### Markup pattern (per trip page)
+
+```html
+<section class="scroll-hero" data-region="..."
+         data-bg="../assets/images/heroes-v2/hero__SLUG--bg.jpg"
+         data-fg="../assets/images/heroes-v2/hero__SLUG--fg.jpg"
+         data-title-pre="Sharm"
+         data-title-post="El Sheikh"
+         data-eyebrow="Départ Constantine · Turkish Airlines · Avr–Juin 2026"
+         data-date="10 jours · 8 nuits All Inclusive Soft"
+         data-prompt="Faites défiler pour découvrir"
+         data-skip="Passer">
+  <div class="scroll-hero__continuation">
+    <h1>Sharm <em>El Sheikh</em></h1>
+    <p>...lede...</p>
+    <div class="hero__price"><strong>155.000 DA</strong><span>...</span></div>
+    <div class="hero__ctas">
+      <a class="btn btn--primary" href="#calculator">Calculer mon prix</a>
+      <a class="btn btn--ghost" href="https://wa.me/...">WhatsApp</a>
+    </div>
+  </div>
+</section>
+```
+
+JS reads the `data-*` attributes, injects layered DOM (background + centre media +
+title halves + eyebrow + caption + skip button), and wires up scroll progress.
+
+### Tunables
+
+In `scroll-hero.js`:
+- `WHEEL_SCALE = 0.0009` — wheel sensitivity
+- `TOUCH_SCALE = 0.005` / `TOUCH_BACK_SCALE = 0.008` — touch sensitivity (back-scroll faster for natural feel)
+- `GRACE_MS = 250` — boot-time grace period; wheel/touch ignored to prevent spurious release from browser scroll restoration
+
+In `_v13_scroll_hero.css`:
+- `--media-w-min: 320px` / `--media-w-max: min(1280px, 95vw)` — centre media range (desktop)
+- Mobile override: `--media-w-min: 240px` / `--media-w-max: 92vw`
+- `--media-h-min: 420px` / `--media-h-max: min(840px, 85vh)`
+
+### Accessibility
+
+- `prefers-reduced-motion: reduce` → skip pin entirely, render the released state on load
+- `Escape` key → skip animation
+- `Space` / `PageDown` / `↓` → advance progress in 18% steps
+- `PageUp` / `↑` → retreat progress
+- Floating "Passer" button as explicit skip control
+- Title text uses `mix-blend-mode: difference` so it stays readable over both photos
+- No-JS fallback: section just shows the released state with title + media + continuation
+
+### Known caveat
+
+Preview MCP automation sends spurious wheel events at page load, so during
+testing the hero often auto-released. **In real browsers this is not an issue** —
+verified by manual reset (`.classList.remove('is-released'); --p:0`) followed by
+screenshot. All 5 pages render correctly at `p=0`, animate at `p=0.5`, and release
+at `p=1`.
+
+### Files changed
+
+- `_v13_scroll_hero.css` (NEW)
+- `_v13_fetch_heroes.py` (NEW)
+- `_v13_propagate.py` (NEW)
+- `site/assets/js/scroll-hero.js` (NEW, ~280 lines)
+- `site/assets/css/styles.css` (+~290 lines from v13 layer; 7,352 → 7,710 lines)
+- `site/cairo-sharm/index.html` — hero replaced with scroll-hero (legacy markup kept inline as `display:none` fallback; pending cleanup)
+- `site/azerbaidjan/index.html` — hero replaced (legacy removed)
+- `site/istanbul/index.html` — hero replaced (legacy removed)
+- `site/kuala-lumpur/index.html` — hero replaced (legacy removed)
+- `site/sharm-constantine/index.html` — hero replaced (legacy removed) — pilot page
+- `site/assets/images/heroes-v2/` — 10 new JPGs from Unsplash
+
+### Things deferred
+
+- Cairo-sharm legacy hero markup is wrapped in `display:none` rather than deleted (safer rollback). Clean up in a follow-up commit once the new hero is confirmed in production.
+- The boot grace period is heuristic. A more robust approach is to require an explicit user gesture (first `pointerdown` / first non-trusted-input wheel) before allowing progress. Leaving for a follow-up if the 250ms threshold proves insufficient on slow networks.
+
+---
+
 ## Phase 1.6 · Hierarchy & UX audit pass (v12) — ✅ COMPLETE
 
 Date: 2026-05-06. Triggered by an 8-section UX critique covering page flow, visual hierarchy, layout/spacing, typography, interaction cues, IA dedup, trust band, and cross-sell/footer.

@@ -38,6 +38,73 @@ Plus a parallel cleanup branch:
 
 ---
 
+## Phase 1.12 · Neo-brutalist hotel cards + WhatsApp cleanup (v18) — ✅ COMPLETE
+
+Date: 2026-05-07. Triggered by user request: "I want hotel cards in this style adapted to the website's design system, and find unnecessary WhatsApp buttons left over from previous edits and remove them."
+
+Reference: a Uiverse-style neo-brutalist creative-studio card (bold borders, hard offset shadows, tilted ribbon, cut corner with star, dashed price divider with scissors, hard-shadow CTA). Adapted to Alliance Travel's existing palette — mint #9ce8b2, navy #002c51, cream #fbf8f1 — instead of the source's orange/blue.
+
+### Hotel card redesign
+
+`_v18_brutalist_cards.css` (~280 lines, appended to styles.css). Same markup, different visual language. Highlights:
+
+- **3px solid mint border** (navy in light mode) replacing the previous 1px subtle border
+- **8px hard offset shadow** (no blur) — extends to 12px on hover. The brutalist signature.
+- **Cut-corner triangle** in top-right (mint in dark, navy in light) with a ★ inside
+- **Tilted ribbon** (rotated -3°) with its own 3px hard shadow that tilts the other way (+2°) on hover
+- **Diagonal stripe overlay** at the bottom of each photo (45° black stripes via `repeating-linear-gradient`)
+- **Subtle 8×8 grid pattern** appears on `:hover` over the body (CSS-only, GPU-cheap)
+- **Dashed price divider** with a `✂` scissors marker — the "tear here" feel from the reference card
+- **Mint highlight underline** behind the price number (fake-marker effect)
+- **Solid mint CTA** with hard 4px shadow + sliding shimmer + `→` arrow that translates 4px on hover, swaps to `✓` when `.selected`
+- **Selected state** flips card border to accent + inverts CTA (mint background → dark with mint text + `✓`)
+- **Light-mode variant** swaps `--hc-shadow` from black → navy, accent from #9ce8b2 → #237a4a (matches existing v12 light-mode darkening for AA contrast)
+- **Mobile tuning** drops shadow from 8px → 6px and CTA padding 12 → 11
+- **`prefers-reduced-motion`** disables all transitions and the hover transform
+
+The existing markup (`.hotel-card > .hotel-card__img > img + ribbon → .hotel-card__body > stars + name + amenities + price + cta`) is unchanged — only CSS swaps.
+
+### WhatsApp button cleanup
+
+Audited every `wa.me` and `WhatsApp` reference across the 6 pages. Two genuine leftovers found and removed:
+
+**1. KL `wa-book-btn` legacy (replaced).** Kuala Lumpur was the only trip page that had a `<button id="wa-book-btn">Réserver via WhatsApp</button>` inside the calculator's `.breakdown__ctas` panel. The other 4 trip pages used the v12-standard `<a href="#booking">Continuer vers la réservation</a>` linking to the Phase 4 booking form. KL was missed in the funnel migration. The button short-circuited straight to a basic WhatsApp send, breaking the 4-phase flow (Discover → Compare → Calculate → **Reserve via booking form**). Replaced with the standard funnel link + `data-track-event="calc_continue_to_booking"`.
+
+**2. Cairo-sharm legacy hidden hero block (deleted).** When v13/v14 rebuilt the hero as the sticky-scrub component, the OLD legacy `<section class="hero">` block on cairo-sharm was wrapped in `<section ... hidden style="display:none">` rather than deleted. ~98 lines of dead markup containing duplicate hero CTAs (including a "Réserver via WhatsApp" ghost button), a duplicate departure-card with all dates, a duplicate hero-strip with 5 trust pills. All invisible to users but still parsed + held in the DOM tree. Removed entirely via a Python slice script with line-bounds validation.
+
+### Final WhatsApp footprint per page (post-cleanup)
+
+Each trip page has exactly **3 visible WhatsApp CTAs**, each serving a distinct role:
+
+| Position | Purpose |
+|---|---|
+| Nav CTA "Réserver" | Persistent always-visible escape hatch |
+| Hero ghost "WhatsApp" | Skip-calculator path for impatient users |
+| Final-CTA "Réserver via WhatsApp" | Closing pitch after they've read everything |
+
+Plus the booking-form has its own "Ouvrir WhatsApp & Envoyer" button (full-dossier flow with passport copies). All purposeful. No duplicates remain.
+
+### Files changed
+
+**New:**
+- `_v18_brutalist_cards.css` (~280 lines, scratch source)
+
+**Modified:**
+- `site/assets/css/styles.css` — appended v18 layer (8,356 → 8,786 lines)
+- `site/assets/js/calculator.js` — removed the SVG-injection in `initHotelPicker()`'s selected-state branch (CSS now handles the visual swap via `.selected` class + `::after { content: "✓" }`)
+- `site/cairo-sharm/index.html` — deleted ~98 lines of legacy hidden hero block
+- `site/kuala-lumpur/index.html` — replaced `<button id="wa-book-btn">Réserver via WhatsApp</button>` with `<a href="#booking">Continuer vers la réservation</a>` + removed redundant ✓ from selected hotel card markup
+
+### Verified
+
+- ✅ 7 cairo-sharm hotel cards render with bold mint borders, 8px hard shadows, cut-corner stars, tilted ribbons, diagonal-stripe photos, dashed scissors dividers, mint price underlines, hard-shadow CTAs
+- ✅ KL Grand Mercure card (selected state) shows clean "SÉLECTIONNÉ ✓" (single checkmark, no double)
+- ✅ KL `.breakdown__ctas` now contains the v12-standard "Continuer vers la réservation" link
+- ✅ Cairo-sharm DOM tree no longer contains the legacy hero — line count dropped 1,290 → 1,192
+- ✅ Each trip page has 1 hero ghost CTA + 1 nav CTA + 1 final-CTA = 3 visible WhatsApp CTAs (audited via grep)
+
+---
+
 ## Phase 1.11 · Performance optimization (v17) — ✅ COMPLETE
 
 Date: 2026-05-06. User reported the site as "very slow" — measurement-driven optimization pass.

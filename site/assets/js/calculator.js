@@ -359,11 +359,10 @@ function initHotelPicker() {
         if (btn) btn.textContent = 'Sélectionner';
       });
       card.classList.add('selected');
+      // Just swap the label — the v18 CSS handles the visual swap
+      // (background flip + ::after content "→" → "✓") via .selected.
       const btn = card.querySelector('.hotel-card__cta');
-      if (btn) btn.innerHTML = `<span style="display:flex;align-items:center;gap:6px">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        Sélectionné
-      </span>`;
+      if (btn) btn.textContent = 'Sélectionné';
       document.dispatchEvent(new CustomEvent('hotelSelected', { detail: { id: hotelId } }));
     });
 

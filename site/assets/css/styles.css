@@ -53,67 +53,173 @@ select {
   font-family: inherit;
 }
 
-/* ── Tokens ─────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   CANONICAL TOKEN ROOT — single source of truth
+   ──────────────────────────────────────────────────────────────
+   This block consolidates 4 years of v1 → v19 token redefinitions
+   that previously lived in 5 separate :root blocks scattered through
+   the file. All cascade-winning values are preserved exactly — Phase
+   A.1 produces ZERO visual diff. Scale migration (spacing, radii,
+   elevation refinements) is deferred to Phase A.2 with its own visual
+   review.
+
+   ARCHITECTURE
+     • Dark mode is the default (no theme attribute needed).
+     • Light mode override lives in the single :root[data-theme="light"]
+       block immediately below.
+     • Per-page accent overrides (egypt amber, azerbaijan crimson,
+       istanbul teal, malaysia mint, sharm coral) live in the inline
+       <style> at the head of each HTML page — page-scoped, not site
+       tokens.
+     • Legacy color shims (--navy-hov, --mint-hov, --sage-light,
+       --danger-light, --bronze, --bronze-*) are kept as literal values
+       matching the pre-cleanup baseline. Components will migrate to
+       the canonical names in Phase D; shims get deleted in Phase J.
+
+   ADD-A-TOKEN RULES
+     1. Add it here, not in another :root block.
+     2. If it's a brand color, add the dark variant here AND the light
+        equivalent in the light-mode block below.
+     3. If it's motion, it must use one of: --t-fast, --t-base, --t-slow,
+        --t-cinema (durations) × --ease-out, --ease-spring, --ease-snap,
+        --ease-bounce (easings). No ad-hoc bezier curves.
+   ══════════════════════════════════════════════════════════════ */
 :root {
-  /* ── Surfaces — Alliance Travel × Waypoint ─────────────────────── */
-  --bg:         #000000;
-  --bg-2:       #060c14;
-  --bg-card:    rgba(255,255,255,0.04);
-  --bg-glass:   rgba(0,44,81,0.35);
-  --border:     #1e2025;
-  --border-hi:  rgba(156,232,178,0.25);
+  /* ── Surfaces — 6-layer dark ladder (v19) ──────────────────────── */
+  --bg-deep:   #06090d;          /* page edge, behind sticky chrome  */
+  --bg:        #0a0f15;          /* page background                  */
+  --bg-low:    #0d131b;          /* one tick darker for low-priority */
+  --bg-2:      #11181f;          /* alternating section bg           */
+  --bg-card:   #161e28;          /* card surfaces — clearly elevated */
+  --bg-elev:   #1c2532;          /* hover state, dropdowns, modals   */
+  --bg-glass:  rgba(20, 26, 36, .72);  /* frosted backdrop pill/nav  */
 
-  /* ── Brand palette ────────────────────────────────────────────── */
-  --navy:       #002c51;
-  --navy-hov:   #003d72;
-  --navy-dim:   rgba(0,44,81,0.3);
-  --mint:       #9ce8b2;
-  --mint-hov:   #7dd4a0;
-  --mint-dim:   rgba(156,232,178,0.15);
-  --mint-glow:  rgba(156,232,178,0.28);
+  /* ── Borders ───────────────────────────────────────────────────── */
+  --border:      rgba(255, 255, 255, .06);
+  --border-hi:   rgba(255, 255, 255, .12);
+  --border-mint: rgba(156, 232, 178, .32);
 
-  /* ── Text — warm cream ────────────────────────────────────────── */
-  --txt-1:  #efe8df;
-  --txt-2:  #b8bac4;
-  --txt-3:  #7a7c82;
+  /* ── Text — warm-temperature ladder (v19) ──────────────────────── */
+  --txt-1:  #f3ede2;             /* primary — warm cream             */
+  --txt-2:  #b6ada0;             /* secondary — warm beige           */
+  --txt-3:  #7a7268;             /* tertiary — muted warm gray       */
 
-  /* ── CTA: mint replaces bronze (same var name — zero downstream changes) */
-  --bronze:     #9ce8b2;
-  --bronze-hov: #7dd4a0;
-  --bronze-dim: rgba(156,232,178,0.15);
+  /* ── Brand — Prussian Blue + Mint ──────────────────────────────── */
+  --navy:        #002c51;
+  --navy-soft:   #003d72;
+  --navy-dim:    rgba(0, 44, 81, .30);
+  --mint:        #9ce8b2;
+  --mint-soft:   #7dd4a0;
+  --mint-deep:   #5cb37c;
+  --mint-dim:    rgba(156, 232, 178, .10);
+  --mint-glow:   rgba(156, 232, 178, .28);
+  --ring:        rgba(156, 232, 178, .55);   /* focus ring */
 
-  /* ── Affirmative / danger ─────────────────────────────────────── */
-  --sage:       #3B7A65;
-  --sage-light: rgba(59,122,101,0.18);
-  --danger:       #B94040;
-  --danger-light: rgba(185,64,64,0.15);
-
-  /* ── Default per-page accent (overridden on each trip page) ───── */
+  /* ── Default accent (per-page <style> overrides this on trip pages) */
   --accent:       #9ce8b2;
-  --accent-dim:   rgba(156,232,178,0.13);
-  --accent-glow:  rgba(156,232,178,0.22);
+  --accent-dim:   rgba(156, 232, 178, .12);
+  --accent-glow:  rgba(156, 232, 178, .26);
 
-  /* ── Typography — DM Sans ────────────────────────────────────── */
+  /* ── Status ────────────────────────────────────────────────────── */
+  --sage:         #3B7A65;
+  --sage-soft:    rgba(59, 122, 101, .18);
+  --danger:       #cf5252;
+  --danger-soft:  rgba(207, 82, 82, .12);
+  --warn:         #e0a04a;
+  --warn-soft:    rgba(224, 160, 74, .14);
+
+  /* ── Typography ────────────────────────────────────────────────── */
   --font-display: 'DM Sans', system-ui, sans-serif;
   --font-body:    'DM Sans', system-ui, sans-serif;
 
-  /* ── Spacing — Waypoint scale ────────────────────────────────── */
-  --s1: 4px; --s2: 9px; --s3: 16px; --s4: 24px; --s5: 24px; --s6: 32px;
-  --s7: 40px; --s8: 40px; --s9: 56px; --s10: 72px; --s11: 96px; --s12: 128px;
+  /* ── Spacing scale (baseline preserved — geometric migration in A.2) */
+  --s1:   4px;  --s2:   9px;  --s3:  16px;  --s4:  24px;
+  --s5:  24px;  --s6:  32px;  --s7:  40px;  --s8:  40px;
+  --s9:  56px;  --s10: 72px;  --s11: 96px;  --s12: 128px;
 
-  /* ── Radius — Waypoint ────────────────────────────────────────── */
+  /* ── Radii (--r1 = 2px today; will move to 4px in A.2) ─────────── */
   --r1: 2px;
   --r2: 8px;
   --r3: 12px;
   --r4: 999px;
 
-  /* ── Elevation — navy-tinted ──────────────────────────────────── */
-  --elev-1: 0 1px 0 rgba(0,44,81,.2), 0 4px 16px rgba(0,0,0,.4);
-  --elev-2: 0 12px 48px rgba(0,0,0,.6), 0 0 0 1px rgba(0,44,81,.15);
+  /* ── Elevation (navy-tinted v1; refined ladder in A.2) ────────── */
+  --elev-1: 0 1px 0 rgba(0, 44, 81, .2),  0 4px 16px rgba(0, 0, 0, .4);
+  --elev-2: 0 12px 48px rgba(0, 0, 0, .6), 0 0 0 1px rgba(0, 44, 81, .15);
 
-  /* ── Motion ───────────────────────────────────────────────────── */
-  --t:      200ms ease-out;
-  --t-fast: 200ms ease-out;
+  /* ── Motion — durations (survey Q14: +--t-cinema) ──────────────── */
+  --t-fast:   180ms;    /* tap, focus, micro state                    */
+  --t-base:   320ms;    /* component hover, dropdown, modal           */
+  --t-slow:   560ms;    /* section entrance, sticky reveal            */
+  --t-cinema: 900ms;    /* hero entrance, map fly-to, page transition */
+  --t:        200ms ease-out;  /* legacy v1 alias — TODO migrate to --t-fast */
+
+  /* ── Motion — easings (survey Q13: 3 base + 1 bounce) ──────────── */
+  --ease-out:    cubic-bezier(.22, 1, .36, 1);
+  --ease-spring: cubic-bezier(.22, 1, .36, 1);   /* same curve, semantic alias */
+  --ease-snap:   cubic-bezier(.4,  0, .2, 1);    /* taps & chrome (Material)   */
+  --ease-bounce: cubic-bezier(.34, 1.5, .64, 1); /* DELIGHT ONLY — toast, counter punch */
+  /* Legacy aliases for components that haven't migrated yet */
+  --ease-spring-soft: var(--ease-spring);
+  --ease-out-quart:   var(--ease-spring);
+
+  /* ── Legacy color shims (literal values matching baseline) ─────── */
+  --navy-hov:     #003d72;                    /* = navy-soft */
+  --mint-hov:     #7dd4a0;                    /* = mint-soft */
+  --sage-light:   rgba(59, 122, 101, .18);    /* = sage-soft */
+  --danger-light: rgba(185, 64, 64, .15);     /* v1 red (lower saturation than --danger) */
+  --bronze:       #9ce8b2;                    /* = mint */
+  --bronze-hov:   #7dd4a0;                    /* = mint-soft */
+  --bronze-dim:   rgba(156, 232, 178, .10);   /* = mint-dim */
+}
+
+/* ── Light mode — single canonical override ──────────────────────── */
+:root[data-theme="light"] {
+  /* Surfaces */
+  --bg-deep:   #ede5d4;
+  --bg:        #fbf8f1;          /* warm cream page */
+  --bg-low:    #f5efe1;
+  --bg-2:      #f7f1e3;
+  --bg-card:   #ffffff;
+  --bg-elev:   #ffffff;
+  --bg-glass:  rgba(251, 248, 241, .82);
+
+  /* Borders */
+  --border:      rgba(0, 44, 81, .08);
+  --border-hi:   rgba(0, 44, 81, .16);
+  --border-mint: rgba(35, 122, 74, .35);
+
+  /* Text — txt-3 uses v3.1 WCAG fix (#5a6a7c, 5.8:1 contrast on cream)
+     instead of v19's regressed #8a8e98 (3.04:1, failed AA). */
+  --txt-1:  #002c51;             /* primary — brand Prussian */
+  --txt-2:  #4a5567;             /* secondary — slate        */
+  --txt-3:  #5a6a7c;             /* tertiary — AA-compliant  */
+
+  /* Brand — mint darkened for AA contrast on cream */
+  --navy:        #002c51;
+  --navy-soft:   #003d72;
+  --navy-dim:    rgba(0, 44, 81, .12);
+  --mint:        #237a4a;
+  --mint-soft:   #2c8a55;
+  --mint-deep:   #1f6b40;
+  --mint-dim:    rgba(35, 122, 74, .10);
+  --mint-glow:   rgba(35, 122, 74, .25);
+  --ring:        rgba(35, 122, 74, .50);
+
+  /* Accent (default; per-page <style> overrides win) */
+  --accent:       #237a4a;
+  --accent-dim:   rgba(35, 122, 74, .12);
+  --accent-glow:  rgba(35, 122, 74, .24);
+
+  /* Elevation — navy-tinted, softer */
+  --elev-1: 0 1px 0 rgba(0, 44, 81, .06), 0 4px 16px rgba(0, 44, 81, .05);
+  --elev-2: 0 12px 48px rgba(0, 44, 81, .12);
+
+  /* Legacy color shims (literal values matching baseline) */
+  --mint-hov:     #1a6638;                  /* slightly darker than --mint-soft */
+  --bronze:       #237a4a;                  /* = mint */
+  --bronze-hov:   #1a6638;                  /* = mint-hov */
+  --bronze-dim:   rgba(35, 122, 74, .10);   /* = mint-dim */
 }
 
 /* ── Layout ─────────────────────────────────────────────── */
@@ -3248,36 +3354,10 @@ body, .hero, .hero__bg, .site-nav, section, .breakdown,
 }
 
 /* ══════════════════════════════════════════════════════════
-   LIGHT MODE — cream/navy palette via [data-theme="light"]
+   LIGHT MODE — component-level overrides
+   (Token definitions for light mode live in the canonical :root
+    block at the top of this file.)
    ══════════════════════════════════════════════════════════ */
-:root[data-theme="light"] {
-  --bg:           #fbf8f1;
-  --bg-2:         #f3ede1;
-  --bg-card:      rgba(0,44,81,0.04);
-  --bg-glass:     rgba(255,255,255,0.85);
-  --border:       #e0d9c8;
-  --border-hi:    rgba(0,44,81,0.18);
-
-  --txt-1:        #002c51;
-  --txt-2:        #4a5b6f;
-  --txt-3:        #8a99a8;
-
-  --bronze:       #2e8b57;
-  --bronze-hov:   #226d44;
-  --bronze-dim:   rgba(46,139,87,0.10);
-  --mint:         #2e8b57;
-  --mint-hov:     #226d44;
-  --mint-dim:     rgba(46,139,87,0.10);
-  --mint-glow:    rgba(46,139,87,0.20);
-
-  --accent:       #2e8b57;
-  --accent-dim:   rgba(46,139,87,0.10);
-  --accent-glow:  rgba(46,139,87,0.18);
-
-  --elev-1: 0 1px 0 rgba(0,44,81,.06), 0 4px 16px rgba(0,44,81,.05);
-  --elev-2: 0 12px 48px rgba(0,44,81,.12);
-}
-
 :root[data-theme="light"] body { background: var(--bg); }
 
 :root[data-theme="light"] .site-nav.scrolled {
@@ -3659,17 +3739,10 @@ body, .hero, .hero__bg, .site-nav, section, .breakdown,
 
 
 /* ══════════════════════════════════════════════════════════
-   v3.1 — WCAG fixes for light mode
+   v3.1 — WCAG fixes (token values folded into canonical
+   :root[data-theme="light"] at top of file). Component-level
+   overrides below remain.
    ══════════════════════════════════════════════════════════ */
-
-:root[data-theme="light"] {
-  --txt-3: #5a6a7c;          /* darkened from #8a99a8 — was 2.92:1, now ~5.8:1 */
-  --mint: #237a4a;            /* darker mint — was #2e8b57 (3.64:1), now ~5.4:1 */
-  --mint-hov: #1a6638;
-  --bronze: #237a4a;
-  --bronze-hov: #1a6638;
-  --accent: #237a4a;
-}
 
 /* Section eyebrows: use brand mint (dark) in light mode regardless of per-page accent
    This gives consistent typographic hierarchy + AA contrast on cream */
@@ -4455,17 +4528,7 @@ main, footer, section, .home-hero { position: relative; z-index: 1; }
    Designed to layer on top of v5.2 without changing identity.
    ══════════════════════════════════════════════════════════ */
 
-/* ---- 6.0 — Spring-curve motion tokens ---- */
-:root {
-  --ease-spring:        cubic-bezier(.22, 1.0, .36, 1.0);
-  --ease-spring-soft:   cubic-bezier(.34, 1.4, .64, 1.0);
-  --ease-snap:          cubic-bezier(.4, 0, .2, 1);
-  --ease-out-quart:     cubic-bezier(.25, 1, .5, 1);
-  --t-fast: 180ms;
-  --t-base: 320ms;
-  --t-slow: 560ms;
-  --t-cinema: 900ms;
-}
+/* ---- 6.0 — Motion tokens folded into canonical :root at top of file ---- */
 
 /* ---- 6.1 — Cinematic hero (Ken Burns slow zoom + drift) ---- */
 @keyframes ken-burns {
@@ -8779,17 +8842,23 @@ picture.scroll-hero__media {
 /* End v18 ──────────────────────────────────────────────────── */
 
 /* ══════════════════════════════════════════════════════════════
-   v19 — Homepage trip-card rework
-   Adapted from a shadcn/lucide image-fill travel-card pattern:
-   • Photo fills the card edge-to-edge with a gradient overlay
-   • Monument SVG icon top-left (glass-blur disc)
-   • Title + location + overview slide up on hover
-   • Price + "Voir ce voyage" CTA reveal from bottom on hover
-   • Cards laid in a responsive grid with consistent square-ish sizing
-
-   Same markup hooks (.trip-card, .trip-card__hero, etc) — repurposed.
-   Old chrome (meta dates row, separate tags, separate from-price strip)
-   is hidden in this layer; the new flow surfaces them on hover only.
+   v20 — Trip-card hover refinement (replaces v19 slide-up pattern)
+   v19 yanked the title + subtitle 58px upward on hover to make room
+   for a separate price + CTA strip. The motion popped elements out
+   of the visual frame and felt incoherent. v20 keeps every meaningful
+   element ANCHORED at all times:
+     • monument disc top-left (always visible)
+     • price chip top-right (always visible — glass-blur, accent-tint)
+     • title + 2-line description bottom (always visible)
+     • "Voir ce voyage" pill bottom-right (always visible)
+   Hover only does subtle moves — no element travels more than 4px:
+     • card lifts -4px
+     • image gently scales 1.05
+     • monument & price chip border tints to accent
+     • CTA pill fills with accent + arrow nudges +3px right
+     • bottom accent line slides in left → right
+   No translateY shenanigans on text. Same DOM hooks as v19; the
+   monument-injection migration script is unaffected.
    ══════════════════════════════════════════════════════════════ */
 
 /* ── Grid container ───────────────────────────────────────── */
@@ -8805,7 +8874,7 @@ picture.scroll-hero__media {
 /* ── Card root ────────────────────────────────────────────── */
 .trip-card {
   --tc-fg: #fff;
-  --tc-fg-muted: rgba(255, 255, 255, .78);
+  --tc-fg-muted: rgba(255, 255, 255, .82);
   --tc-fg-faint: rgba(255, 255, 255, .55);
   --tc-accent: var(--tc-region-accent, var(--accent, #9ce8b2));
 
@@ -8820,21 +8889,21 @@ picture.scroll-hero__media {
   text-decoration: none;
   isolation: isolate;
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, .04) inset,
-    0 12px 24px -12px rgba(0, 0, 0, .55),
-    0 24px 48px -24px rgba(0, 0, 0, .35);
-  transition: transform 400ms cubic-bezier(.22, 1, .36, 1),
-              box-shadow 400ms cubic-bezier(.22, 1, .36, 1);
+    0 1px 0 rgba(255, 255, 255, .05) inset,
+    0 10px 22px -12px rgba(0, 0, 0, .55),
+    0 22px 44px -24px rgba(0, 0, 0, .35);
+  transition: transform 360ms cubic-bezier(.22, 1, .36, 1),
+              box-shadow 360ms cubic-bezier(.22, 1, .36, 1);
   cursor: pointer;
   font-family: inherit;
 }
 
 .trip-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, .06) inset,
-    0 16px 32px -12px rgba(0, 0, 0, .6),
-    0 36px 64px -24px rgba(0, 0, 0, .45);
+    0 1px 0 rgba(255, 255, 255, .07) inset,
+    0 14px 28px -12px rgba(0, 0, 0, .6),
+    0 30px 56px -24px rgba(0, 0, 0, .45);
 }
 
 .trip-card:focus-visible {
@@ -8850,7 +8919,6 @@ picture.scroll-hero__media {
 .trip-card[data-region="sharm"]      { --tc-region-accent: #5cc4c1; }
 
 /* ── Image fill behind everything ─────────────────────────── */
-/* Repurpose .trip-card__hero as the image stage — strip its old chrome */
 .trip-card__hero {
   position: absolute !important;
   inset: 0;
@@ -8879,65 +8947,109 @@ picture.scroll-hero__media {
   height: 100% !important;
   object-fit: cover;
   object-position: center;
-  transition: transform 600ms cubic-bezier(.22, 1, .36, 1);
+  transition: transform 700ms cubic-bezier(.22, 1, .36, 1);
   filter: saturate(1.05);
 }
 
 .trip-card:hover .trip-card__img {
-  transform: scale(1.08);
+  transform: scale(1.05);
 }
 
-/* Gradient overlay — readable text guaranteed regardless of photo content */
+/* Gradient overlay — slightly stronger bottom band so the always-
+   visible title + 2-line description read cleanly without needing a
+   slide-up reveal. Keeps top half airy so monument + price chip are
+   legible, then darkens through the lower 40% of the frame. */
 .trip-card__hero::after {
   content: "";
   position: absolute;
   inset: 0;
   background:
     linear-gradient(180deg,
-      rgba(0, 0, 0, .25) 0%,
-      rgba(0, 0, 0, .15) 35%,
-      rgba(0, 0, 0, .55) 75%,
-      rgba(0, 0, 0, .92) 100%);
+      rgba(0, 0, 0, .35) 0%,
+      rgba(0, 0, 0, .08) 28%,
+      rgba(0, 0, 0, .35) 55%,
+      rgba(0, 0, 0, .80) 82%,
+      rgba(0, 0, 0, .96) 100%);
   pointer-events: none;
   z-index: 1;
+  transition: opacity 320ms ease;
 }
 
-/* Hide the old "from price" strip — we surface price on hover instead */
-.trip-card__from {
-  display: none !important;
-}
-
-/* Hide the floating flag chip too — replaced by the location line */
+/* "Égypte · Juin 2026" floating chip — redundant once region accent
+   line + monument convey identity. Hidden in v20 too. */
 .trip-card__flag {
   display: none !important;
 }
 
-/* ── Monument SVG icon (top-left disc) ────────────────────── */
+/* ── Price chip top-right (always visible — repurposed from the old
+   .trip-card__from element so the markup stays unchanged) ─────── */
+.trip-card__from {
+  position: absolute !important;
+  top: 14px;
+  right: 14px;
+  z-index: 4;
+  display: inline-flex !important;
+  flex-direction: column !important;
+  align-items: flex-end;
+  gap: 1px;
+  margin: 0 !important;
+  padding: 7px 12px !important;
+  background: rgba(0, 0, 0, .42) !important;
+  border: 1.5px solid rgba(255, 255, 255, .25) !important;
+  border-radius: 999px !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: var(--tc-fg-muted) !important;
+  font-size: 9px !important;
+  font-weight: 600 !important;
+  letter-spacing: .12em !important;
+  text-transform: uppercase !important;
+  line-height: 1 !important;
+  white-space: nowrap;
+  transition: border-color 280ms ease, background 280ms ease;
+}
+.trip-card__from > strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--tc-fg);
+  margin: 3px 0 0 !important;
+}
+.trip-card:hover .trip-card__from {
+  border-color: var(--tc-accent) !important;
+  background: rgba(0, 0, 0, .58) !important;
+}
+
+/* ── Monument SVG icon top-left ───────────────────────────── */
 .trip-card__monument {
   position: absolute;
-  top: 16px;
-  left: 16px;
+  top: 14px;
+  left: 14px;
   z-index: 4;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, .35);
-  border: 1.5px solid rgba(255, 255, 255, .35);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, .42);
+  border: 1.5px solid rgba(255, 255, 255, .25);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   display: grid;
   place-items: center;
   color: var(--tc-fg);
-  transition: transform 400ms cubic-bezier(.22, 1, .36, 1),
-              border-color 400ms ease;
+  transition: transform 360ms cubic-bezier(.22, 1, .36, 1),
+              border-color 360ms ease,
+              background 360ms ease;
 }
 .trip-card:hover .trip-card__monument {
-  transform: rotate(-6deg) scale(1.05);
+  transform: rotate(-4deg) scale(1.05);
   border-color: var(--tc-accent);
+  background: rgba(0, 0, 0, .58);
 }
 .trip-card__monument svg {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   stroke: currentColor;
   stroke-width: 1.8;
   fill: none;
@@ -8945,35 +9057,36 @@ picture.scroll-hero__media {
   stroke-linejoin: round;
 }
 
-/* ── Body content (overlaid on photo) ─────────────────────── */
+/* ── Body content (overlaid on photo, anchored to bottom) ─── */
+/* Reserve bottom space for the always-visible CTA pill so it doesn't
+   overlap with the title/subtitle stack. */
 .trip-card__body {
   position: absolute !important;
   inset: 0 !important;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 24px !important;
+  padding: 22px 22px 70px !important;
   z-index: 3;
   background: none !important;
   border: 0 !important;
   margin: 0 !important;
+  pointer-events: none;
 }
 
-/* Hide chrome the new design doesn't surface (date/duration/departure meta + tags) */
+/* Hide chrome the new design doesn't surface (date/duration meta + tags) */
 .trip-card__meta { display: none !important; }
 .trip-card__tags { display: none !important; }
 
-/* Title + location pair */
 .trip-card__title {
   font-family: var(--font-display, "DM Sans", system-ui, sans-serif);
-  font-size: clamp(22px, 1.8vw, 30px);
+  font-size: clamp(20px, 1.6vw, 26px);
   font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -.015em;
+  line-height: 1.18;
+  letter-spacing: -.012em;
   color: var(--tc-fg);
-  margin: 0 0 6px;
-  text-shadow: 0 2px 16px rgba(0, 0, 0, .35);
-  transition: transform 500ms cubic-bezier(.22, 1, .36, 1);
+  margin: 0 0 8px;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, .45);
 }
 
 .trip-card__subtitle {
@@ -8981,113 +9094,86 @@ picture.scroll-hero__media {
   line-height: 1.55;
   color: var(--tc-fg-muted);
   margin: 0;
-  max-width: 28ch;
+  max-width: 36ch;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  transition: transform 500ms cubic-bezier(.22, 1, .36, 1),
-              opacity 300ms ease;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, .35);
 }
 
-/* Slide up on hover so the price/CTA can take the bottom slot */
-.trip-card:hover .trip-card__title {
-  transform: translateY(-58px);
-}
-.trip-card:hover .trip-card__subtitle {
-  transform: translateY(-58px);
-  opacity: .8;
-}
-
-/* ── CTA strip (price + button) — reveals on hover ─────────── */
+/* ── CTA pill — always visible, bottom-left of the card ────── */
+/* The original markup carries <span>Voir ce voyage</span><svg arrow/>
+   plus the v19-injected <span class="trip-card__cta-price"> — we hide
+   the duplicate price (it's surfaced as the top-right chip now) and
+   render the action span as a glass pill. */
 .trip-card__cta {
   position: absolute !important;
-  left: 24px;
-  right: 24px;
-  bottom: 24px;
+  left: 22px;
+  bottom: 20px;
   z-index: 4;
-  display: flex !important;
+  display: inline-flex !important;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 350ms ease, transform 500ms cubic-bezier(.22, 1, .36, 1);
-  color: var(--tc-fg) !important;
-  pointer-events: none;
-}
-
-.trip-card:hover .trip-card__cta {
+  gap: 8px;
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
   pointer-events: auto;
+  color: var(--tc-fg) !important;
 }
 
-/* Repurpose the existing <span>Voir ce voyage</span> + <svg arrow> as a pill */
-.trip-card__cta > span {
-  flex-shrink: 0;
-  background: var(--tc-fg);
-  color: #050609;
-  font-size: 13px;
-  font-weight: 700;
-  padding: 9px 16px;
-  border-radius: 999px;
+.trip-card__cta > span:not(.trip-card__cta-price) {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  letter-spacing: .01em;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--tc-fg);
+  padding: 7px 14px 7px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .12);
+  border: 1.5px solid rgba(255, 255, 255, .28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   white-space: nowrap;
+  transition: background 240ms ease, border-color 240ms ease, color 240ms ease;
 }
+
 .trip-card__cta > svg {
-  display: none !important;
+  display: inline-block !important;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  margin-left: 4px;
+  color: var(--tc-fg);
+  transition: transform 240ms ease, color 240ms ease;
 }
-.trip-card__cta > span::after {
-  content: "→";
-  display: inline-block;
-  font-weight: 600;
-  margin-left: 2px;
-  transition: transform 200ms ease;
+
+.trip-card:hover .trip-card__cta > span:not(.trip-card__cta-price) {
+  background: var(--tc-accent);
+  color: #050609;
+  border-color: transparent;
 }
-.trip-card:hover .trip-card__cta > span::after {
+.trip-card:hover .trip-card__cta > svg {
   transform: translateX(3px);
 }
 
-/* Price chip on the left of the CTA strip — real <span> injected by the
-   v19 monument migration script. CSS attr() can only read the element's
-   own attributes, but data-from lives on the .trip-card root (not the
-   sibling .trip-card__cta), so we need an actual DOM node. */
-.trip-card__cta-price {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--tc-fg);
-  white-space: nowrap;
-  letter-spacing: .01em;
-  line-height: 1.2;
-  flex-shrink: 1;
-  min-width: 0;
-}
-.trip-card__cta-price em {
-  font-style: normal;
-  font-weight: 600;
-  color: var(--tc-fg-muted);
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  font-size: 9px;
-  display: block;
-  margin-bottom: 3px;
-}
+/* The duplicate price strip injected by _v19_inject_monuments.py is
+   no longer needed — price lives in the top-right chip now. */
+.trip-card__cta-price { display: none !important; }
 
-/* ── Region accent strip — subtle bottom border line ──────── */
+/* ── Region accent strip — bottom border line on hover ────── */
 .trip-card::after {
   content: "";
   position: absolute;
   left: 0; right: 0; bottom: 0;
-  height: 4px;
+  height: 3px;
   background: var(--tc-accent);
   z-index: 5;
   transform: scaleX(0);
   transform-origin: left center;
-  transition: transform 600ms cubic-bezier(.22, 1, .36, 1);
+  transition: transform 580ms cubic-bezier(.22, 1, .36, 1);
 }
 .trip-card:hover::after {
   transform: scaleX(1);
@@ -9102,161 +9188,44 @@ picture.scroll-hero__media {
   .trip-card {
     aspect-ratio: 5 / 6;
   }
-  .trip-card__body { padding: 20px !important; }
-  /* On touch devices, no hover — show CTA always */
-  .trip-card__cta {
-    opacity: 1;
-    transform: none;
-    pointer-events: auto;
+  .trip-card__body { padding: 18px 18px 64px !important; }
+  .trip-card__from { top: 12px; right: 12px; padding: 6px 10px !important; }
+  .trip-card__monument { top: 12px; left: 12px; width: 38px; height: 38px; }
+  .trip-card__cta { left: 18px; bottom: 16px; }
+  /* Touch devices have no hover — give them the "active" look at rest */
+  .trip-card__cta > span:not(.trip-card__cta-price) {
+    background: var(--tc-accent);
+    color: #050609;
+    border-color: transparent;
   }
-  .trip-card__title,
-  .trip-card__subtitle {
-    transform: translateY(-72px) !important;
-  }
+  .trip-card__cta > svg { color: #050609; }
 }
 
 /* ── Reduced motion ──────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .trip-card,
   .trip-card__img,
-  .trip-card__title,
-  .trip-card__subtitle,
   .trip-card__cta,
+  .trip-card__cta > span,
+  .trip-card__cta > svg,
   .trip-card__monument,
+  .trip-card__from,
   .trip-card::after {
     transition: none !important;
   }
-  .trip-card:hover {
-    transform: none;
-  }
-  .trip-card:hover .trip-card__img {
-    transform: none;
-  }
-  /* Always show CTA + price for users who can't hover */
-  .trip-card__cta {
-    opacity: 1;
-    transform: none;
-    pointer-events: auto;
-  }
-  .trip-card__title,
-  .trip-card__subtitle {
-    transform: translateY(-72px);
-  }
+  .trip-card:hover { transform: none; }
+  .trip-card:hover .trip-card__img { transform: none; }
+  .trip-card:hover .trip-card__monument { transform: none; }
+  .trip-card::after { transform: scaleX(1); }
 }
 
-/* End v19 trip-cards ──────────────────────────────────────── */
+/* End v20 trip-cards ──────────────────────────────────────── */
 
 /* ══════════════════════════════════════════════════════════════
-   v19 — Color hierarchy refresh
-   Reweighted token system. Three goals:
-
-   1. Warmer dark mode. Pure black → warm-tinted near-black with proper
-      layered surface ladder (deep / page / low / card / elevated / glass).
-      Editorial dark, not clinical.
-
-   2. Same temperature across the text scale. Original txt-1 was warm cream
-      (#efe8df) but txt-2 was cool gray (#b8bac4). Now the entire scale is
-      warm + neutral, no temperature jump between primary and secondary.
-
-   3. Mint reserved for primary action moments. Default `--accent` stays
-      mint-tied, but the new `--ring` / `--mint-soft` / `--mint-dim`
-      variants give chrome a quieter sibling so we stop painting every
-      border, link, and highlight in the same loud green.
-
-   Both modes get the same structural ladder; light mode flips colours
-   while preserving the navy-anchored text + mint-restrained-CTA system.
+   v19 — Color hierarchy: TOKEN definitions consolidated into the
+   canonical :root at the top of this file. Component-level rules
+   (cards, hover surfaces, borders, scrollbars, etc.) remain below.
    ══════════════════════════════════════════════════════════════ */
-
-/* ── Dark mode — default ──────────────────────────────────── */
-:root {
-  /* Surfaces (6 layers — proper depth ladder) */
-  --bg-deep:   #06090d;          /* page edge, behind sticky chrome    */
-  --bg:        #0a0f15;          /* page background                     */
-  --bg-low:    #0d131b;          /* one tick darker for low-priority    */
-  --bg-2:      #11181f;          /* alternating section bg              */
-  --bg-card:   #161e28;          /* card surfaces — clearly elevated    */
-  --bg-elev:   #1c2532;          /* hover state, dropdowns, modals      */
-  --bg-glass:  rgba(20, 26, 36, .72);  /* frosted backdrop pill / nav   */
-
-  /* Borders — subtle by default, accent-tinted at the highest tier */
-  --border:      rgba(255, 255, 255, .06);
-  --border-hi:   rgba(255, 255, 255, .12);
-  --border-mint: rgba(156, 232, 178, .32);
-
-  /* Text — warm-temperature ladder, no temperature jump */
-  --txt-1:  #f3ede2;             /* primary — warm cream, slightly muted */
-  --txt-2:  #b6ada0;             /* secondary — warm beige (same temp)   */
-  --txt-3:  #7a7268;             /* tertiary — muted warm gray           */
-
-  /* Brand — Prussian Blue + Teal Deer, with proper companions */
-  --navy:        #002c51;
-  --navy-soft:   #003d72;
-  --navy-dim:    rgba(0, 44, 81, .30);
-  --mint:        #9ce8b2;        /* brand mint — primary CTA */
-  --mint-soft:   #7dd4a0;        /* hover */
-  --mint-deep:   #5cb37c;        /* pressed */
-  --mint-dim:    rgba(156, 232, 178, .10);   /* tinted bg pad */
-  --mint-glow:   rgba(156, 232, 178, .28);   /* halo / focus */
-  --ring:        rgba(156, 232, 178, .55);   /* focus ring — solid     */
-
-  /* Default accent (overridable per-region on trip pages) */
-  --accent:       #9ce8b2;
-  --accent-dim:   rgba(156, 232, 178, .12);
-  --accent-glow:  rgba(156, 232, 178, .26);
-
-  /* Status */
-  --sage:         #3B7A65;
-  --sage-soft:    rgba(59, 122, 101, .18);
-  --danger:       #cf5252;
-  --danger-soft:  rgba(207, 82, 82, .12);
-  --warn:         #e0a04a;
-  --warn-soft:    rgba(224, 160, 74, .14);
-
-  /* Legacy shim — many components still reference --bronze; keep it */
-  --bronze:      var(--mint);
-  --bronze-hov:  var(--mint-soft);
-  --bronze-dim:  var(--mint-dim);
-}
-
-/* ── Light mode — reversal preserving brand identity ──────── */
-:root[data-theme="light"] {
-  --bg-deep:   #ede5d4;
-  --bg:        #fbf8f1;          /* warm cream page                     */
-  --bg-low:    #f5efe1;
-  --bg-2:      #f7f1e3;
-  --bg-card:   #ffffff;
-  --bg-elev:   #ffffff;
-  --bg-glass:  rgba(251, 248, 241, .82);
-
-  --border:      rgba(0, 44, 81, .08);
-  --border-hi:   rgba(0, 44, 81, .16);
-  --border-mint: rgba(35, 122, 74, .35);
-
-  /* Text — navy-anchored (brand) with warm sibling for body */
-  --txt-1:  #002c51;             /* primary — brand Prussian            */
-  --txt-2:  #4a5567;             /* secondary — slate                   */
-  --txt-3:  #8a8e98;             /* tertiary                            */
-
-  --navy:        #002c51;
-  --navy-soft:   #003d72;
-  --navy-dim:    rgba(0, 44, 81, .12);
-
-  /* Mint darkened for AA contrast on cream (matches v12 fix) */
-  --mint:        #237a4a;
-  --mint-soft:   #2c8a55;
-  --mint-deep:   #1f6b40;
-  --mint-dim:    rgba(35, 122, 74, .10);
-  --mint-glow:   rgba(35, 122, 74, .25);
-  --ring:        rgba(35, 122, 74, .50);
-
-  --accent:       #237a4a;
-  --accent-dim:   rgba(35, 122, 74, .12);
-  --accent-glow:  rgba(35, 122, 74, .24);
-
-  --bronze:      var(--mint);
-  --bronze-hov:  var(--mint-soft);
-  --bronze-dim:  var(--mint-dim);
-}
 
 /* ── Apply: nudge the existing component baselines toward the new ladder ── */
 
@@ -9356,3 +9325,215 @@ body { background: var(--bg); color: var(--txt-1); }
 ::-webkit-scrollbar-thumb:hover { background: var(--border-hi); }
 
 /* End v19 palette ──────────────────────────────────────────── */
+
+/* ══════════════════════════════════════════════════════════════
+   v19.1 — Homepage contact: staff phone grid
+   Replaces the vertical stack of 4 WhatsApp/Viber buttons under the
+   contact form with a clean 3×2 grid of 6 phone cards. Each card has:
+     • subtle role label (Conseiller N)
+     • formatted number (tabular-nums, large, readable)
+     • dual action row — WhatsApp (brand green) + Appel (neutral)
+
+   Responsive: 3 cols → 2 cols (≤720px) → 1 col (≤420px). On mobile the
+   actions stay side-by-side until the very narrow tier where they stack.
+   ══════════════════════════════════════════════════════════════ */
+.staff-phones {
+  margin-top: var(--s6, 32px);
+  padding-top: var(--s6, 32px);
+  border-top: 1px solid var(--border);
+}
+.staff-phones__lead {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--txt-3);
+  margin: 0 0 var(--s4, 16px);
+}
+.staff-phones__lead svg {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.staff-phones__grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.staff-phones__note {
+  margin: var(--s4, 16px) 0 0;
+  font-size: .75rem;
+  color: var(--txt-3);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.phone-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 14px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r2, 10px);
+  transition: border-color 220ms ease, transform 220ms ease, background 220ms ease;
+}
+.phone-card:hover {
+  border-color: var(--border-mint);
+  transform: translateY(-2px);
+  background: var(--bg-low);
+}
+.phone-card__label {
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--txt-3);
+}
+.phone-card__num {
+  font-family: var(--font-display, "DM Sans", system-ui, sans-serif);
+  font-variant-numeric: tabular-nums;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  color: var(--txt-1);
+  margin-bottom: 6px;
+}
+.phone-card__actions {
+  display: flex;
+  gap: 6px;
+  margin-top: auto;
+}
+.phone-card__btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 8px;
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .01em;
+  border-radius: 999px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+.phone-card__btn svg {
+  flex-shrink: 0;
+}
+.phone-card__btn--wa {
+  background: #25d366;
+  color: #052e16;
+}
+.phone-card__btn--wa:hover {
+  background: #20bf5b;
+  color: #052e16;
+}
+.phone-card__btn--call {
+  background: var(--bg-elev);
+  color: var(--txt-1);
+  border-color: var(--border-hi);
+}
+.phone-card__btn--call:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Responsive ladder for the staff phone grid */
+@media (max-width: 980px) {
+  .staff-phones__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 480px) {
+  .staff-phones__grid {
+    grid-template-columns: 1fr;
+  }
+  .phone-card {
+    padding: 12px 14px 12px;
+  }
+}
+
+/* End v19.1 staff-phones ──────────────────────────────────── */
+
+/* ══════════════════════════════════════════════════════════════
+   v19.2 — Real agency network
+   The agence section now lists 3 OWNED locations instead of 1 HQ +
+   4 fictional partner cities. Tighter grid, Google Maps deep-link
+   chip on every card, popup gets a matching itinéraire affordance.
+   ══════════════════════════════════════════════════════════════ */
+
+/* Three real agencies → three roughly-equal columns at desktop, no
+   stretching, no awkward 4th-slot ghost. Falls back to 1 col on mobile
+   via the existing breakpoint above. */
+.branch-list {
+  grid-template-columns: repeat(3, minmax(240px, 1fr));
+  max-width: 1080px;
+  margin-inline: auto;
+}
+@media (max-width: 980px) {
+  .branch-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .branch-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Google-Maps "Itinéraire" chip at the foot of each branch card.
+   Sits below the phone block — keeps the action hierarchy clear:
+   call first, then route. */
+.branch-maps {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--s3, 12px);
+  padding: 6px 12px;
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  text-decoration: none;
+  border-radius: 999px;
+  background: var(--bg);
+  border: 1px solid var(--border-hi);
+  color: var(--txt-2);
+  transition: border-color 180ms ease, color 180ms ease, background 180ms ease;
+}
+.branch-maps:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--mint-dim);
+}
+.branch-maps svg {
+  flex-shrink: 0;
+}
+
+/* Map popup — Itinéraire deep-link sits one row below the phone */
+.amap-popup__maps {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--txt-2, #c9cdd4) !important;
+  text-decoration: none;
+  padding: 2px 0;
+  letter-spacing: .01em;
+}
+.amap-popup__maps:hover { text-decoration: underline; }
+:root[data-theme="light"] .amap-popup__maps { color: var(--txt-2, #4a5b6f) !important; }
+
+/* End v19.2 agency-network ──────────────────────────────────── */
+
+

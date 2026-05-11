@@ -19,23 +19,36 @@
   const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
   /* ─── 1. Data ──────────────────────────────────────────────── */
+  /* Real Alliance Travel network — 3 owned agencies.
+     Coordinates are approximate (pin centred on the addressed street);
+     fine-tune if a precise Google Maps shortlink is shared. */
   const HQ = {
-    id: 'bba',
-    name: 'Bordj Bou Arreridj',
+    id: 'bba-graf',
+    name: 'BBA · La Graf',
     role: 'SIÈGE SOCIAL',
-    loc: [4.7610, 36.0731],   // [longitude, latitude]
-    addr: "Boulevard de l'ALN",
-    phone: '0561 616 266'
+    loc: [4.7642, 36.0710],
+    addr: 'Boulevard Houari Boumediene · La Graf',
+    phone: '0561 616 266',
+    mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Alliance+Travel+Boulevard+Houari+Boumediene+La+Graf+Bordj+Bou+Arreridj'
   };
 
   const BRANCHES = [
-    { id: 'alger',       name: 'Alger',       loc: [3.0588, 36.7538], addr: 'Centre Hydra',         phone: '0561 616 269' },
-    { id: 'setif',       name: 'Sétif',       loc: [5.4133, 36.1897], addr: 'Avenue 8 Mai 1945',     phone: '0561 616 268' },
-    { id: 'constantine', name: 'Constantine', loc: [6.6147, 36.3650], addr: 'Cité Daksi',            phone: '0560 869 905' },
-    { id: 'oran',        name: 'Oran',        loc: [-0.6402, 35.6976], addr: 'Front de Mer',          phone: '0560 860 617' },
-    // Future-network markers: shown as smaller dots, no popup contact
-    { id: 'annaba',      name: 'Annaba',      loc: [7.7667, 36.9000], future: true },
-    { id: 'ouargla',     name: 'Ouargla',     loc: [5.3239, 31.9531], future: true }
+    {
+      id: 'bba-zehour',
+      name: 'BBA · Cité Zehour',
+      loc: [4.7549, 36.0788],
+      addr: 'Cité Zehour · Route de Medjana',
+      phone: '0561 616 268',
+      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Alliance+Travel+Cit%C3%A9+Zehour+Route+de+Medjana+Bordj+Bou+Arreridj'
+    },
+    {
+      id: 'msila',
+      name: "M'Sila",
+      loc: [4.5418, 35.7044],
+      addr: 'Centre-ville',
+      phone: '0560 869 905',
+      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Alliance+Travel+M%27Sila"
+    }
   ];
 
   /* ─── 2. Style URLs (CARTO basemaps — free, no API key) ────── */
@@ -103,15 +116,15 @@
     const map = new maplibregl.Map({
       container: 'algeria-map',
       style: isLightTheme() ? STYLE_LIGHT : STYLE_DARK,
-      center: [3.5, 33.0],         // roughly centred on Algeria
-      zoom: 4.4,
-      minZoom: 3.5,
-      maxZoom: 9,
+      center: [4.65, 35.89],        // mid-point between BBA & M'Sila
+      zoom: 7.2,
+      minZoom: 5.5,
+      maxZoom: 14,
       pitch: 0,
       bearing: 0,
       attributionControl: { compact: true },
       cooperativeGestures: true,    // require Ctrl+scroll — the map sits in a long page
-      maxBounds: [[-9, 18], [14, 39]]   // soft corral around Algeria + neighbours
+      maxBounds: [[2.2, 34.4], [7.3, 37.2]]   // tight corral around BBA + M'Sila + breathing room
     });
 
     map.addControl(new maplibregl.NavigationControl({
@@ -138,6 +151,7 @@
           <a class="amap-popup__phone" href="tel:+213${HQ.phone.replace(/\D/g, '')}">
             ${HQ.phone}
           </a>
+          ${HQ.mapsUrl ? `<a class="amap-popup__maps" href="${HQ.mapsUrl}" target="_blank" rel="noopener">Itinéraire ↗</a>` : ''}
         </div>
       `))
       .addTo(map);
@@ -158,6 +172,7 @@
             <h3 class="amap-popup__name">${b.name}</h3>
             <p class="amap-popup__addr">${b.addr || ''}</p>
             ${b.phone ? `<a class="amap-popup__phone" href="tel:+213${b.phone.replace(/\D/g, '')}">${b.phone}</a>` : ''}
+            ${b.mapsUrl ? `<a class="amap-popup__maps" href="${b.mapsUrl}" target="_blank" rel="noopener">Itinéraire ↗</a>` : ''}
           </div>
         `));
       }
@@ -168,14 +183,21 @@
     const addRouteLayers = () => {
       if (map.getSource('amap-routes')) return;
 
-      const features = BRANCHES.map(b => ({
-        type: 'Feature',
-        properties: { id: b.id, future: !!b.future },
-        geometry: {
-          type: 'LineString',
-          coordinates: arcCoords(HQ.loc, b.loc, 64, b.future ? 0.10 : 0.18)
-        }
-      }));
+      const features = BRANCHES.map(b => {
+        // Tighten the curve for very short pairings (intra-BBA) so the arc
+        // doesn't balloon ridiculously over the city. M'Sila gets the
+        // standard lift since the distance is comfortable.
+        const dist = Math.hypot(HQ.loc[0] - b.loc[0], HQ.loc[1] - b.loc[1]);
+        const lift = dist < 0.1 ? 0.35 : 0.18;
+        return {
+          type: 'Feature',
+          properties: { id: b.id, future: !!b.future },
+          geometry: {
+            type: 'LineString',
+            coordinates: arcCoords(HQ.loc, b.loc, 64, lift)
+          }
+        };
+      });
 
       map.addSource('amap-routes', {
         type: 'geojson',
@@ -247,18 +269,18 @@
       }
     }, 200);
 
-    /* Zoom-aware label visibility — overview stays clean (only HQ
-       label permanent), zoom past 6 reveals every branch label. */
+    /* Zoom-aware label visibility — at the new tighter default zoom
+       every label fits, so reveal them straight away. */
     function syncZoomClass() {
-      container.classList.toggle('is-zoomed-in', map.getZoom() >= 6);
+      container.classList.toggle('is-zoomed-in', map.getZoom() >= 6.8);
     }
     map.on('zoomend', syncZoomClass);
     map.on('moveend', syncZoomClass);
     syncZoomClass();
 
-    /* Recenter button — re-fits to the original Algeria view if the
+    /* Recenter button — re-fits to the original 3-agency view if the
        user has panned/zoomed away. */
-    const INITIAL = { center: [3.5, 33.0], zoom: 4.4 };
+    const INITIAL = { center: [4.65, 35.89], zoom: 7.2 };
     const recenterBtn = document.createElement('button');
     recenterBtn.type = 'button';
     recenterBtn.className = 'amap-recenter';
@@ -313,13 +335,18 @@
         if (rect.width === 0) return;
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;
+        // HQ added unconditionally — but it CAN now absorb other pins
+        // sitting at the same screen position (intra-BBA case).
         if (p.kind === 'hq') {
           p.x = cx; p.y = cy;
           visiblePins.push(p);
           return;
         }
+        // Try to find any visible pin (HQ or branch) within 30px to
+        // merge into. HQ takes priority because of its higher prio so
+        // it sits earlier in the visiblePins array.
         const absorber = visiblePins.find(v =>
-          v.kind !== 'hq' && Math.hypot(v.x - cx, v.y - cy) < 30
+          Math.hypot(v.x - cx, v.y - cy) < 30
         );
         if (absorber) {
           p.el.classList.add('amap-collide-hidden');
@@ -444,7 +471,7 @@
     container.innerHTML = `
       <div class="amap-fallback">
         <p class="amap-fallback__title">Carte indisponible hors-ligne</p>
-        <p class="amap-fallback__sub">Notre siège est à <strong>Bordj Bou Arreridj</strong> · Sétif · Alger · Constantine · Oran</p>
+        <p class="amap-fallback__sub">3 agences Alliance Travel · <strong>Bordj Bou Arreridj</strong> (La Graf &amp; Cité Zehour) · <strong>M'Sila</strong></p>
       </div>
     `;
   }

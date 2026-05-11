@@ -810,6 +810,20 @@ src/scripts/main.js  ← imports + boots in order
 
 ---
 
+## Phase v21 · Layout, Motion & Visual Architecture Cleanup — 🟡 IN PROGRESS
+
+Branch: `feat/v12-hierarchy-pass`. Driven by `docs/MOTION-CLEANUP-MASTER.md` (the contract) and `docs/CLEANUP-SURVEY.md` (the locked design decisions). Survey filled 2026-05-07; north star is *"a professional site with clean readable code, consistent naming, clear architecture, modern SEO end-to-end, and a sitemap that doesn't bother the user."*
+
+Phase order: A → B → C → D → E (Hero) → F (JS) → G (Section) → H (V-block sweep) → I (SEO) → J (Code hygiene).
+
+| Commit | Phase | Purpose |
+|---|---|---|
+| *pending* | **A.1 Token consolidation** | 4 `:root` blocks (lines 56, 3253, 3661, 4458, 9183) merged into 1 canonical dark + 1 canonical light at top of `styles.css`. Cascade-winning values preserved exactly — zero behavioral diff in dark mode. Light mode: 2 intentional WCAG improvements (`--txt-3 #8a8e98 → #5a6a7c` reinstates the v3.1 fix that v19 regressed; `--bronze-hov` aligned with `--mint-hov`). New tokens added: `--ease-out`, `--ease-bounce` (delight-reserved). `styles.css`: 9582 → 9539 lines. |
+
+Phase A.2 (spacing/radii/elevation geometric migration) and Phases B–J still pending.
+
+---
+
 ## How to continue
 
 All audit + maps + cleanup branches are merged into `main` (15+ commits ahead of the original `main` snapshot at `50f7497`). The local feature branches have been deleted; commits remain reachable from `main`.

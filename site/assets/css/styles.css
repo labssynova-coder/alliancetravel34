@@ -542,8 +542,8 @@ select {
 }
 
 .hl-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  /* bg + border-color from canonical v21-D.2 surface block */
+  border: 1px solid;
   border-radius: var(--r3);
   padding: var(--s6);
   display: flex;
@@ -1393,8 +1393,8 @@ select {
 }
 
 .pkg-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  /* bg + border-color from canonical v21-D.2 surface block */
+  border: 1px solid;
   border-radius: var(--r3);
   padding: var(--s7);
   display: flex;
@@ -3827,8 +3827,8 @@ body, .hero, .hero__bg, .site-nav, section, .breakdown,
   margin-top: var(--s7);
 }
 .branch-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  /* bg + border-color from canonical v21-D.2 surface block */
+  border: 1px solid;
   border-radius: var(--r3);
   padding: var(--s5);
   transition: transform var(--t-fast) ease, border-color var(--t-fast) ease, box-shadow var(--t-fast) ease;
@@ -9203,7 +9203,10 @@ picture.scroll-hero__media {
 /* Body itself sits on --bg (not --bg-2) so the depth ladder reads correctly */
 body { background: var(--bg); color: var(--txt-1); }
 
-/* Cards everywhere get the new elevated card surface */
+/* v21 phase D.2: canonical content-card surface baseline.
+   All cards listed here share bg-card + border-color. Each card's
+   individual block keeps its own padding, gap, radius (some use r1
+   instead of r3), and transition — those vary by component shape. */
 .dest-card,
 .testi-card,
 .stat-card,
@@ -9212,7 +9215,10 @@ body { background: var(--bg); color: var(--txt-1); }
 .contact-form,
 .bform-block,
 .breakdown,
-.upload-zone {
+.upload-zone,
+.branch-card,
+.hl-card,
+.pkg-card {
   background: var(--bg-card);
   border-color: var(--border);
 }

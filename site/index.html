@@ -70,28 +70,10 @@
         linear-gradient(145deg, #0a0805 0%, #0c0e12 60%, #080a10 100%);
     }
 
-    .home-hero__noise {
-      position: absolute;
-      inset: 0;
-      opacity: .03;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    }
-
-    .home-hero__faded {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-display);
-      font-size: clamp(80px, 18vw, 280px);
-      font-weight: 300;
-      letter-spacing: -.04em;
-      color: var(--txt-1);
-      opacity: .025;
-      pointer-events: none;
-      user-select: none;
-    }
+    /* v21 phase E.1: .home-hero__noise (SVG fractal grain overlay) +
+       .home-hero__faded ("TRAVEL" giant watermark) removed. The photo
+       collage + gradient overlay carry plenty of atmosphere; these
+       extra layers were noise the headline had to fight through. */
 
     .home-hero__inner {
       position: relative;
@@ -266,8 +248,10 @@
       </picture>
     </div>
     <div class="home-hero__bg"></div>
-    <div class="home-hero__noise" aria-hidden="true"></div>
-    <div class="home-hero__faded" aria-hidden="true">TRAVEL</div>
+    <!-- v21 phase E.1: .home-hero__noise + .home-hero__faded "TRAVEL"
+         watermark removed. The photo collage + gradient overlay carry
+         enough atmosphere on their own; the noise + watermark were
+         decoration layers competing with the headline for attention. -->
 
     <div class="home-hero__inner">
       <div class="home-hero__content">

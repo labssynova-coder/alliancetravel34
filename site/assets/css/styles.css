@@ -3438,10 +3438,7 @@ body, .hero, .hero__bg, .site-nav, section, .breakdown,
   background: radial-gradient(ellipse 90% 60% at 60% 40%, rgba(46,139,87,.12) 0%, transparent 70%),
               linear-gradient(145deg, #fbf8f1 0%, #f3ede1 60%, #ebd9c2 100%);
 }
-:root[data-theme="light"] .home-hero__faded {
-  color: #002c51;
-  opacity: 0.03;
-}
+/* v21 phase E.1: .home-hero__faded watermark removed */
 
 :root[data-theme="light"] .site-footer { background: var(--bg-2); }
 :root[data-theme="light"] .toast {

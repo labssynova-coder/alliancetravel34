@@ -818,9 +818,10 @@ Phase order: A → B → C → D → E (Hero) → F (JS) → G (Section) → H (
 
 | Commit | Phase | Purpose |
 |---|---|---|
-| *pending* | **A.1 Token consolidation** | 4 `:root` blocks (lines 56, 3253, 3661, 4458, 9183) merged into 1 canonical dark + 1 canonical light at top of `styles.css`. Cascade-winning values preserved exactly — zero behavioral diff in dark mode. Light mode: 2 intentional WCAG improvements (`--txt-3 #8a8e98 → #5a6a7c` reinstates the v3.1 fix that v19 regressed; `--bronze-hov` aligned with `--mint-hov`). New tokens added: `--ease-out`, `--ease-bounce` (delight-reserved). `styles.css`: 9582 → 9539 lines. |
+| `c3b186a` | **A.1 Token consolidation** | 4 `:root` blocks merged into 1 canonical dark + 1 canonical light at top of `styles.css`. Cascade-winning values preserved exactly — zero behavioral diff in dark mode. Light mode: 2 intentional WCAG improvements (`--txt-3 #8a8e98 → #5a6a7c` reinstates the v3.1 fix that v19 regressed; `--bronze-hov` aligned with `--mint-hov`). New tokens added: `--ease-out`, `--ease-bounce` (delight-reserved). `styles.css`: 9582 → 9539 lines. |
+| *pending* | **B.1 Motion library — curves + exact-match durations** | 10 unique cubic-beziers → 4 canonical (all inside `:root` block as definitions only — **zero raw bezier usages remain**). Curves migrated: overshoot springs `.34/1.4`, `.34/1.6`, `.5/1.5`, `.22/.68`, `.23/1` → `var(--ease-spring)`; `.4/0/.2/1` → `var(--ease-snap)`; map `tmap-stack-pop` `.34/1.6` → `var(--ease-bounce)` (delight moment). Duration literals normalized: `180ms`, `320ms`, `560ms`, `900ms`, `200ms ease` → `var(--t-fast)` / `var(--t-base)` / `var(--t-slow)` / `var(--t-cinema)` / `var(--t-fast)` respectively. Behavioral diff: `200ms → var(--t-fast) = 180ms` (10% snappier on ~16 transition declarations, imperceptible per spec). Close-match durations (220/240/280/360/380/600/700/800ms) deferred to Phase B.2. |
 
-Phase A.2 (spacing/radii/elevation geometric migration) and Phases B–J still pending.
+Phase A.2 (spacing/radii/elevation geometric migration), Phase B.2 (close-match durations), and Phases C–J still pending.
 
 ---
 

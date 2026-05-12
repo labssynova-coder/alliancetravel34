@@ -3876,54 +3876,11 @@ body[data-region]::before {
   opacity: var(--region-pattern-opacity-light, 0.08);
 }
 
-/* Hero decorative foreground (silhouettes at bottom of hero) */
-.hero__deco {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2;
-  overflow: hidden;
-}
-.hero__deco svg {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: auto;
-  opacity: 0.85;
-}
-
-/* Floating ambient particles (per-region accent dots) */
-.hero__particles {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  overflow: hidden;
-}
-.hero__particles span {
-  position: absolute;
-  display: block;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--accent);
-  opacity: 0;
-  animation: drift-up 18s linear infinite;
-  filter: blur(0.5px);
-}
-.hero__particles span:nth-child(1)  { left: 8%;  animation-delay: 0s;    animation-duration: 22s; }
-.hero__particles span:nth-child(2)  { left: 22%; animation-delay: -3s;   width: 2px; height: 2px; }
-.hero__particles span:nth-child(3)  { left: 38%; animation-delay: -7s;   animation-duration: 26s; }
-.hero__particles span:nth-child(4)  { left: 51%; animation-delay: -11s;  width: 3px; height: 3px; }
-.hero__particles span:nth-child(5)  { left: 68%; animation-delay: -5s;   animation-duration: 19s; }
-.hero__particles span:nth-child(6)  { left: 84%; animation-delay: -14s;  width: 2px; height: 2px; }
-.hero__particles span:nth-child(7)  { left: 95%; animation-delay: -9s;   animation-duration: 24s; }
-@keyframes drift-up {
-  0%   { bottom: -10px; opacity: 0; }
-  10%  { opacity: 0.7; }
-  90%  { opacity: 0.7; }
-  100% { bottom: 110%; opacity: 0; transform: translateX(-30px); }
-}
+/* v21 phase J.2.3: .hero__deco + .hero__particles family deleted (~52 lines).
+   v13 hero decorative orphans — silhouettes at hero foot + floating
+   particle dots that drift up. Both had zero HTML hosts in the current
+   v14 scroll-pinned hero markup. @keyframes drift-up deleted too — it
+   was only consumed by .hero__particles span. */
 
 /* ══════════════════════════════════════════════════════════
    EGYPT — sand-gold hieroglyph chevrons
@@ -5124,89 +5081,10 @@ img.lb-target:hover {
   [data-accordion] .acc-day-num { width: 30px; height: 30px; font-size: 0.75rem; }
 }
 
-/* ---- 7.5 — Soft-urgency badges (honest social proof) ---- */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  border-radius: 999px;
-  line-height: 1.2;
-}
-.badge--available {
-  background: rgba(46, 139, 87, 0.16);
-  color: #4caf82;
-  border: 1px solid rgba(46, 139, 87, 0.3);
-}
-.badge--limited {
-  background: rgba(232, 168, 56, 0.18);
-  color: #e8a838;
-  border: 1px solid rgba(232, 168, 56, 0.32);
-  animation: badge-pulse 2.4s ease-in-out infinite;
-}
-.badge--full {
-  background: rgba(120, 120, 120, 0.14);
-  color: #9aa0a6;
-  border: 1px solid rgba(120, 120, 120, 0.22);
-}
-.badge::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-  flex-shrink: 0;
-}
-@keyframes badge-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 168, 56, 0.4); }
-  50%      { box-shadow: 0 0 0 6px rgba(232, 168, 56, 0); }
-}
-
-/* Departures availability table */
-.departures-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  overflow: hidden;
-  font-size: 0.9375rem;
-}
-.departures-table th,
-.departures-table td {
-  padding: 14px 18px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-}
-.departures-table thead th {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--txt-3);
-  font-weight: 600;
-  background: rgba(255, 255, 255, 0.02);
-}
-.departures-table tr:last-child td { border-bottom: none; }
-.departures-table tbody tr {
-  transition: background var(--t-fast) ease;
-}
-.departures-table tbody tr:hover {
-  background: rgba(156, 232, 178, 0.04);
-}
-.departures-table .dep-price {
-  font-weight: 700;
-  color: var(--mint);
-  font-variant-numeric: tabular-nums;
-}
-@media (max-width: 640px) {
-  .departures-table th:nth-child(2),
-  .departures-table td:nth-child(2) { display: none; }
-}
+/* v21 phase J.2.2: .badge* family + .departures-table block deleted.
+   ~80 lines covering 9 selectors + @keyframes badge-pulse. The
+   soft-urgency badge system and the per-trip departures availability
+   table were both scaffolded but never wired into HTML. */
 
 /* ---- 7.6 — Testimonials horizontal scroll-snap on mobile ---- */
 @media (max-width: 768px) {

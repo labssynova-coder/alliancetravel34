@@ -72,9 +72,10 @@ select {
        <style> at the head of each HTML page — page-scoped, not site
        tokens.
      • Legacy color shims (--navy-hov, --mint-hov, --sage-light,
-       --danger-light, --bronze, --bronze-*) are kept as literal values
-       matching the pre-cleanup baseline. Components will migrate to
-       the canonical names in Phase D; shims get deleted in Phase J.
+       --danger-light) are kept as literal values matching the pre-
+       cleanup baseline. The --bronze family was deleted in Phase J
+       once all consumers migrated to var(--mint*). Remaining shims
+       will get deleted as components migrate.
 
    ADD-A-TOKEN RULES
      1. Add it here, not in another :root block.
@@ -168,9 +169,8 @@ select {
   --mint-hov:     #7dd4a0;                    /* = mint-soft */
   --sage-light:   rgba(59, 122, 101, .18);    /* = sage-soft */
   --danger-light: rgba(185, 64, 64, .15);     /* v1 red (lower saturation than --danger) */
-  --bronze:       #9ce8b2;                    /* = mint */
-  --bronze-hov:   #7dd4a0;                    /* = mint-soft */
-  --bronze-dim:   rgba(156, 232, 178, .10);   /* = mint-dim */
+  /* v21 phase J: --bronze, --bronze-hov, --bronze-dim deleted — every
+     consumer migrated to var(--mint), var(--mint-hov), var(--mint-dim). */
 }
 
 /* ── Light mode — single canonical override ──────────────────────── */
@@ -217,9 +217,8 @@ select {
 
   /* Legacy color shims (literal values matching baseline) */
   --mint-hov:     #1a6638;                  /* slightly darker than --mint-soft */
-  --bronze:       #237a4a;                  /* = mint */
-  --bronze-hov:   #1a6638;                  /* = mint-hov */
-  --bronze-dim:   rgba(35, 122, 74, .10);   /* = mint-dim */
+  /* v21 phase J: --bronze, --bronze-hov, --bronze-dim deleted — every
+     consumer migrated to var(--mint), var(--mint-hov), var(--mint-dim). */
 }
 
 /* ── Layout ─────────────────────────────────────────────── */
@@ -265,7 +264,7 @@ select {
 }
 
 .nav-logo span {
-  color: var(--bronze);
+  color: var(--mint);
 }
 
 .nav-links {
@@ -288,14 +287,14 @@ select {
   font-size: .875rem;
   font-weight: 500;
   padding: var(--s2) var(--s5);
-  background: var(--bronze);
+  background: var(--mint);
   color: #fff;
   border-radius: 999px;
   transition: background var(--t-fast), transform var(--t-fast);
 }
 
 .nav-cta:hover {
-  background: var(--bronze-hov);
+  background: var(--mint-hov);
   transform: translateY(-1px);
 }
 
@@ -681,8 +680,8 @@ select {
 }
 
 .hotel-card.selected {
-  border-color: var(--bronze);
-  box-shadow: 0 0 0 1px var(--bronze), var(--elev-2);
+  border-color: var(--mint);
+  box-shadow: 0 0 0 1px var(--mint), var(--elev-2);
 }
 
 .hotel-card__img {
@@ -726,7 +725,7 @@ select {
 }
 
 .hotel-card__ribbon.premium {
-  color: var(--bronze);
+  color: var(--mint);
 }
 
 .hotel-card__ribbon.luxe {
@@ -797,15 +796,15 @@ select {
 }
 
 .hotel-card__cta:hover {
-  background: var(--bronze-dim);
-  border-color: var(--bronze);
-  color: var(--bronze);
+  background: var(--mint-dim);
+  border-color: var(--mint);
+  color: var(--mint);
 }
 
 .hotel-card.selected .hotel-card__cta {
-  background: var(--bronze-dim);
-  border-color: var(--bronze);
-  color: var(--bronze);
+  background: var(--mint-dim);
+  border-color: var(--mint);
+  color: var(--mint);
 }
 
 /* Empty state */
@@ -879,9 +878,9 @@ select {
 }
 
 .date-chip.active {
-  border-color: var(--bronze);
-  background: var(--bronze-dim);
-  color: var(--bronze);
+  border-color: var(--mint);
+  background: var(--mint-dim);
+  color: var(--mint);
 }
 
 .date-chip:focus-visible {
@@ -919,8 +918,8 @@ select {
 }
 
 .seg-opt.active {
-  background: var(--bronze-dim);
-  color: var(--bronze);
+  background: var(--mint-dim);
+  color: var(--mint);
   font-weight: 500;
 }
 
@@ -972,8 +971,8 @@ select {
 }
 
 .stepper__btn:hover:not(:disabled) {
-  border-color: var(--bronze);
-  color: var(--bronze);
+  border-color: var(--mint);
+  color: var(--mint);
 }
 
 .stepper__btn:disabled {
@@ -1014,8 +1013,8 @@ select {
 }
 
 .extra-toggle.checked {
-  border-color: var(--bronze);
-  background: var(--bronze-dim);
+  border-color: var(--mint);
+  background: var(--mint-dim);
 }
 
 .extra-toggle__check {
@@ -1030,8 +1029,8 @@ select {
 }
 
 .extra-toggle.checked .extra-toggle__check {
-  background: var(--bronze);
-  border-color: var(--bronze);
+  background: var(--mint);
+  border-color: var(--mint);
 }
 
 .extra-toggle__info {
@@ -1168,7 +1167,7 @@ select {
 }
 
 .breakdown__why summary:hover {
-  color: var(--bronze-hov);
+  color: var(--mint-hov);
 }
 
 /* ── Buttons — canonical primitive (v21 phase D.1) ─────────────────
@@ -1411,8 +1410,8 @@ select {
 }
 
 .pkg-card.recommended {
-  border-color: var(--bronze);
-  box-shadow: 0 0 0 1px var(--bronze);
+  border-color: var(--mint);
+  box-shadow: 0 0 0 1px var(--mint);
 }
 
 .pkg-badge {
@@ -1420,7 +1419,7 @@ select {
   top: -1px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--bronze);
+  background: var(--mint);
   color: #fff;
   font-size: .6875rem;
   font-weight: 600;
@@ -1735,7 +1734,7 @@ select {
 }
 
 .footer-logo span {
-  color: var(--bronze);
+  color: var(--mint);
 }
 
 .footer-tagline {
@@ -1949,7 +1948,7 @@ select {
 }
 
 .text-bronze {
-  color: var(--bronze);
+  color: var(--mint);
 }
 
 .hidden {
@@ -1969,7 +1968,7 @@ select {
 
   30%,
   70% {
-    outline: 2px solid var(--bronze);
+    outline: 2px solid var(--mint);
     outline-offset: 4px;
   }
 }
@@ -2887,8 +2886,8 @@ select {
 }
 
 .trip-card__share:hover {
-  background: var(--bronze);
-  border-color: var(--bronze);
+  background: var(--mint);
+  border-color: var(--mint);
   color: #fff;
   transform: scale(1.08);
 }

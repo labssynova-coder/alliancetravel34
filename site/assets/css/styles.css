@@ -1381,102 +1381,11 @@ select {
   color: var(--txt-3);
 }
 
-/* ── Packages ────────────────────────────────────────────── */
-.packages-bg {
-  background: var(--bg-2);
-}
-
-.packages-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: var(--s5);
-}
-
-.pkg-card {
-  /* bg + border-color from canonical v21-D.2 surface block */
-  border: 1px solid;
-  border-radius: var(--r3);
-  padding: var(--s7);
-  display: flex;
-  flex-direction: column;
-  gap: var(--s5);
-  position: relative;
-  transition: transform var(--t), box-shadow var(--t), border-color var(--t);
-}
-
-.pkg-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--elev-2);
-}
-
-.pkg-card.recommended {
-  border-color: var(--mint);
-  box-shadow: 0 0 0 1px var(--mint);
-}
-
-.pkg-badge {
-  position: absolute;
-  top: -1px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--mint);
-  color: #fff;
-  font-size: .6875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .1em;
-  padding: 4px var(--s4);
-  border-radius: 0 0 var(--r2) var(--r2);
-}
-
-.pkg-tier {
-  font-size: .75rem;
-  font-weight: 500;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--txt-3);
-}
-
-.pkg-name {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 400;
-  color: var(--txt-1);
-}
-
-.pkg-price {
-  font-size: .875rem;
-  color: var(--txt-2);
-}
-
-.pkg-price strong {
-  font-size: 2rem;
-  font-weight: 600;
-  color: var(--txt-1);
-  font-variant-numeric: tabular-nums;
-  display: block;
-}
-
-.pkg-features {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s3);
-  margin-top: var(--s3);
-}
-
-.pkg-feature {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--s3);
-  font-size: .875rem;
-  color: var(--txt-2);
-}
-
-.pkg-feature svg {
-  color: var(--sage);
-  flex-shrink: 0;
-  margin-top: 2px;
-}
+/* v21 phase J.2: ~95 lines of .packages-bg / .packages-grid /
+   .pkg-card / .pkg-card.recommended / .pkg-badge / .pkg-tier /
+   .pkg-name / .pkg-price / .pkg-features / .pkg-feature CSS deleted.
+   The packages tier-comparison feature was never built — zero HTML
+   consumers across all 6 pages, zero JS references. */
 
 /* ── Trust / Social proof ────────────────────────────────── */
 .trust-bg {
@@ -3903,42 +3812,11 @@ body, .hero, .hero__bg, .site-nav, section, .breakdown,
 }
 .branch-card a[href^="tel:"]:hover { color: var(--mint-hov); }
 
-/* Hero paper plane (drifts across hero on first load) */
-.hero__plane {
-  position: absolute;
-  top: 22%;
-  left: -80px;
-  width: 64px;
-  height: auto;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 3;
-  filter: drop-shadow(0 4px 12px rgba(156, 232, 178, .35));
-  animation: plane-arc 14s ease-in-out 1.2s infinite;
-}
-.hero__plane svg { width: 100%; height: auto; display: block; }
-.hero__plane svg path { stroke: var(--mint); fill: var(--mint); fill-opacity: .9; }
-
-@keyframes plane-arc {
-  0%   { left: -10%; top: 30%; transform: rotate(-12deg); opacity: 0; }
-  10%  { opacity: .85; }
-  35%  { left: 35%; top: 12%; transform: rotate(-2deg); }
-  60%  { left: 65%; top: 18%; transform: rotate(8deg); }
-  85%  { left: 95%; top: 8%;  transform: rotate(14deg); opacity: .85; }
-  100% { left: 110%; top: 5%; transform: rotate(20deg); opacity: 0; }
-}
-
-.hero__plane::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: 100%;
-  width: 80px;
-  height: 1.5px;
-  background: linear-gradient(90deg, transparent, var(--mint));
-  opacity: .55;
-  margin-top: -1px;
-}
+/* v21 phase J.2: .hero__plane orphan + @keyframes plane-arc deleted.
+   The paper-plane mascot survey-tagged for keeping had its HTML host
+   removed in an earlier session; only the CSS animation hung around
+   with no element to animate. ~38 lines deleted (selector + keyframe
+   + ::after trail). */
 
 /* v21-phase-C: tilt-bob culled — related-card icon stays still on hover.
    Decoration that competed with the lift+shadow already on the parent card. */
@@ -3957,9 +3835,7 @@ body, .hero, .hero__bg, .site-nav, section, .breakdown,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero__plane,
   .branch-card--hq::before,
-  .related-card:hover .related-card__art > *,
   .hl-card:hover .hl-card__icon {
     animation: none !important;
     opacity: 1 !important;
@@ -9217,8 +9093,7 @@ body { background: var(--bg); color: var(--txt-1); }
 .breakdown,
 .upload-zone,
 .branch-card,
-.hl-card,
-.pkg-card {
+.hl-card {
   background: var(--bg-card);
   border-color: var(--border);
 }

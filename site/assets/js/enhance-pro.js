@@ -26,6 +26,35 @@
   const isCoarse = window.matchMedia?.('(pointer: coarse)').matches;
   const isNarrow = () => window.innerWidth < 768;
 
+  /* ─── Single scroll coordinator (v21 phase F) ────────────────────
+     All scroll-bound subscribers share one rAF-throttled window
+     listener. Replaces the 4 separate addEventListener('scroll', …)
+     bindings that lived in initScrollParallax + initScrollProgress +
+     initWhatsAppFAB + initStickyInquiryBar. Each subscriber registers
+     via onScrollY(fn) and receives the current scrollY once per frame.
+     Per the Performance Contract §0a item 3.
+  */
+  const scrollSubscribers = new Set();
+  let scrollTicking = false;
+  function dispatchScroll() {
+    scrollTicking = false;
+    const y = window.scrollY || window.pageYOffset || 0;
+    scrollSubscribers.forEach((fn) => {
+      // One buggy subscriber shouldn't break the rest of the frame.
+      try { fn(y); } catch (e) { /* swallow */ }
+    });
+  }
+  function onScrollY(fn) {
+    scrollSubscribers.add(fn);
+    // Fire once immediately so initial DOM state matches scroll position.
+    fn(window.scrollY || 0);
+  }
+  window.addEventListener('scroll', () => {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(dispatchScroll);
+  }, { passive: true });
+
   /* ─── 1. Auto-apply [data-fx] reveal markers ─────────────────
      We don't want to edit every page's HTML, so we auto-tag
      candidate elements with sensible reveal animations.
@@ -117,12 +146,9 @@
   /* ─── 3. Hero parallax: bind scrollY → CSS var on document ─── */
   function initScrollParallax() {
     if (reduced) return;
-    let ticking = false;
-    const update = () => {
-      const y = window.scrollY || window.pageYOffset || 0;
+    onScrollY((y) => {
       // Only meaningful while hero is in view (first 100vh)
-      const max = window.innerHeight;
-      const clamped = Math.min(y, max);
+      const clamped = Math.min(y, window.innerHeight);
       document.documentElement.style.setProperty('--scroll-y', clamped);
 
       // Photo collage on homepage: small counter-shift for depth
@@ -130,14 +156,7 @@
       if (collage) {
         collage.style.transform = `translate3d(0, ${clamped * 0.08}px, 0) scale(${1 + clamped * 0.00015})`;
       }
-      ticking = false;
-    };
-    window.addEventListener('scroll', () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(update);
-    }, { passive: true });
-    update();
+    });
   }
 
   /* ─── 4. Magnetic buttons (desktop only) ─────────────────────
@@ -188,20 +207,12 @@
     wrap.appendChild(fill);
     document.body.appendChild(wrap);
 
-    let ticking = false;
-    const update = () => {
+    onScrollY((y) => {
       const h = document.documentElement;
       const max = (h.scrollHeight - h.clientHeight) || 1;
-      const pct = Math.min(100, Math.max(0, (window.scrollY / max) * 100));
+      const pct = Math.min(100, Math.max(0, (y / max) * 100));
       fill.style.setProperty('--p', `${pct}%`);
-      ticking = false;
-    };
-    window.addEventListener('scroll', () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(update);
-    }, { passive: true });
-    update();
+    });
   }
 
   /* ─── 6. Floating WhatsApp FAB ────────────────────────────── */
@@ -229,8 +240,8 @@
     const threshold = () => window.innerHeight * 0.7;
     let visible = false;
     let tooltipShown = false;
-    const update = () => {
-      const should = window.scrollY > threshold();
+    onScrollY((y) => {
+      const should = y > threshold();
       if (should !== visible) {
         visible = should;
         fab.classList.toggle('is-visible', visible);
@@ -243,9 +254,7 @@
           }, 600);
         }
       }
-    };
-    window.addEventListener('scroll', update, { passive: true });
-    update();
+    });
   }
 
   /* ─── 8. Trust strip — injected immediately under the hero ─── */
@@ -338,8 +347,8 @@
     // Show when user has scrolled past the hero (~ first viewport)
     const threshold = () => Math.min(window.innerHeight * 0.85, 600);
     let visible = false;
-    const update = () => {
-      const should = window.scrollY > threshold();
+    onScrollY((y) => {
+      const should = y > threshold();
       if (should !== visible) {
         visible = should;
         bar.classList.toggle('is-visible', visible);
@@ -347,9 +356,7 @@
         // without relying on :has() (Firefox <121 / older Safari).
         document.body.classList.toggle('has-sticky-bar', visible);
       }
-    };
-    window.addEventListener('scroll', update, { passive: true });
-    update();
+    });
   }
 
   /* ─── 10. Lightbox photo gallery ────────────────────────────

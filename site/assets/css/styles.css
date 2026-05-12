@@ -3935,15 +3935,8 @@ body, .hero, .hero__bg, .site-nav, section, .breakdown,
   margin-top: -1px;
 }
 
-/* Subtle travel decorations */
-.related-card:hover .related-card__art > * {
-  animation: tilt-bob 2s ease-in-out infinite;
-}
-@keyframes tilt-bob {
-  0%, 100% { transform: rotate(0deg); }
-  25%      { transform: rotate(1.5deg); }
-  75%      { transform: rotate(-1.5deg); }
-}
+/* v21-phase-C: tilt-bob culled — related-card icon stays still on hover.
+   Decoration that competed with the lift+shadow already on the parent card. */
 
 .hl-card:hover .hl-card__icon {
   transform: rotate(-6deg) scale(1.05);
@@ -5681,11 +5674,9 @@ body.has-sticky-bar .site-nav {
     rgba(156, 232, 178, 0.04) 40%,
     transparent 70%);
   pointer-events: none;
-  animation: globe-aura 14s ease-in-out infinite;
-}
-@keyframes globe-aura {
-  0%, 100% { transform: scale(1); opacity: 0.85; }
-  50%      { transform: scale(1.06); opacity: 1; }
+  /* v21-phase-C: globe-aura culled — halo is now static. Per hero spec
+     §E.1, the globe simplifies to a single slow rotation; the aura's
+     14s breathing loop was the second focal motion competing with it. */
 }
 
 /* The canvas — fills the stage, fades in once cobe paints its first frame */
@@ -5845,17 +5836,13 @@ body.has-sticky-bar .site-nav {
 .globe-hint.is-visible {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
-  animation: globe-hint-bob 2.6s ease-in-out infinite var(--t-slow);
+  /* v21-phase-C: globe-hint-bob culled — hint appears once, stays still.
+     Bobbing was a third ambient motion stacked on the home hero. */
 }
 .globe-hint.is-dismissed {
   opacity: 0 !important;
   transform: translateX(-50%) translateY(-6px) !important;
-  animation: none !important;
   transition: opacity var(--t-base) ease, transform var(--t-base) ease;
-}
-@keyframes globe-hint-bob {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50%      { transform: translateX(-50%) translateY(-3px); }
 }
 :root[data-theme="light"] .globe-hint {
   background: rgba(255, 255, 255, 0.94);

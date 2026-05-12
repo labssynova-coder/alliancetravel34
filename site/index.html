@@ -41,6 +41,22 @@
     "knowsAbout": ["Voyage guidé", "Égypte", "Azerbaïdjan", "Istanbul", "Malaisie", "Sharm El Sheikh"]
   }
   </script>
+  <!-- v21 phase I.2: WebSite + SearchAction (enables Google sitelinks search box) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "url": "https://alliance-travel.dz/",
+    "name": "Alliance Travel",
+    "inLanguage": "fr-DZ",
+    "publisher": { "@type": "Organization", "name": "Alliance Travel" },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://alliance-travel.dz/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link

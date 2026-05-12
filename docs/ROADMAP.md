@@ -831,8 +831,23 @@ Phase order: A → B → C → D → E (Hero) → F (JS) → G (Section) → H (
 | `03022e8` | **I.2 BreadcrumbList + WebSite SearchAction** | Added BreadcrumbList JSON-LD to all 5 trip pages (Accueil → Voyages → [Trip name]) for SERP nav hierarchy. Added WebSite + SearchAction to homepage to enable Google sitelinks search box. All 17 JSON-LD blocks across 6 pages validated with python json.loads — zero parse errors. |
 | `d0aaf28` | **H.1 Surgical dead-code sweep** | Deleted CSS for `.calc-cta-hint` (~20 lines from v16 block + selector list entry) — HTML elements were removed in phase E.2. Deleted `--ease-out-quart` alias declaration — zero consumers found. -22 lines net. Full v-block deletion (v18, v15 info-block, v4 Algeria-map remnants) deferred to a more thorough J pass. |
 | `22f6029` | **J.5 Eliminate `--bronze` legacy shim** | The `--bronze` family was a v1 holdover from when the brand color was bronze (#c8854a) before the v3 mint migration. The shim aliased bronze tokens to mint values to preserve appearance, but kept the legacy name floating in 39 places. Migrated all consumers to var(--mint), var(--mint-hov), var(--mint-dim) — same value both themes, zero behavioral change. Bronze declarations deleted from both canonical blocks. |
+| `472e5c5` | **D.2 Surface selector-list extension** | Extended the v19 'Cards everywhere' selector list to cover `.branch-card`, `.hl-card`, `.pkg-card` — three cards that duplicated `background: var(--bg-card)` and `border: 1px solid var(--border)` declarations inside their individual blocks. 12 cards now share the canonical surface declaration. Padding / radius / transition stay per-card since they vary. |
+| `e78df1a` | **J.2.1 Delete packages section + paper-plane orphan** | Two dead-code blocks (~135 lines): the never-built `.packages-bg` / `.pkg-card` / `.pkg-badge` / `.pkg-tier` / `.pkg-name` / `.pkg-price` / `.pkg-features` family for a tier-comparison feature that never shipped; and the `.hero__plane` + `@keyframes plane-arc` orphan (survey-tagged for keeping but its HTML host was removed in an earlier hero rework). |
+| `4df04b5` | **J.2.2 + J.2.3 Delete badges + departures-table + hero particles** | Three more dead-code blocks (~131 lines): `.badge` family + `@keyframes badge-pulse` (soft-urgency availability badges, never wired in); `.departures-table` family (per-trip availability table, never built); `.hero__deco` + `.hero__particles` + `@keyframes drift-up` (v13 hero decorative orphans, v14 scroll-pinned hero has neither). |
 
-Phase A.2 (spacing/radii/elevation geometric migration) and additional J sub-phases (J.1 BEM consistency, J.2 deeper dead-code, J.3 file split into tokens/base/components/utilities) still pending — defer to a future deep-clean pass.
+### v21 cycle final state — shipping
+
+**`styles.css`: 9582 → 9268 lines (-314, -3.3%)** · **`@keyframes`: 26 → 20** · **Cubic-bezier curves: 10 → 4** · **Raw bezier usages outside canonical: 32 → 0** · **Scroll listeners in `enhance-pro.js`: 4 → 1** · **`:root` token blocks: 5 → 2** · **Sitemap.xml + robots.txt + BreadcrumbList shipped** · **`.btn--primary` definitions: 3 → 1** · **`.calc-cta-hint` in trip-page heroes: 5/5 → 0/5** · **Home-hero visual layers: 6 → 4** · **`--bronze` legacy references: 39 → 0**
+
+### Phases NOT shipped (intentionally deferred)
+
+| Phase | Why deferred |
+|---|---|
+| **A.2 spacing/radii geometric migration** (`--s4 24→16`, `--s7 40→48`, `--s8 40→64`, `--r1 2→4`) | Master plan target. Risks ~150 visual regressions across components that visually depend on the old spacing values. Not robust without a dedicated side-by-side visual-review session. |
+| **D.3 `.pill` baseline** | Audit of 9 pill-like classes (`dep-badge`, `amenity-pill`, `phase-marker`, etc.) revealed 2 size tiers × 2 weight tiers × mixed text-transform — too much variance for a safe one-size-fits-all baseline. |
+| **J.1 BEM consistency rename** | Invasive across many components. Better tackled when a build step is added that can do safe project-wide renames. |
+| **J.2 (remaining) — smaller dead-code blocks** | `.book-form`, `.dest-card`, `.faq__item`, `.btn--copy`, `.hero__strip`, `.hero__dep-card`, `.hero__faded-title`, `.hl-card__photo`, `.hotel-amenities`, `.hotel-card__img-art`, `.text-accent`, `.text-bronze`, etc. ~20 classes × 5-20 lines each. Future polish pass. |
+| **J.3 File split into tokens/base/components/utilities via @import** | Adds 3 HTTP requests per page load — violates Performance Contract §0a. Defer until a concat build step is added. |
 
 ---
 

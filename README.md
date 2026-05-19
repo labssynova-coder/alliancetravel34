@@ -47,7 +47,7 @@ alliance-travel/
 │   ├── sw.js                      ← service worker (cache: alliance-v21-2026-05-13)
 │   ├── {cairo-sharm,sharm-constantine,istanbul,azerbaidjan,kuala-lumpur}/index.html
 │   └── assets/
-│       ├── css/styles.css         ← single CSS file (9,066 lines after v21 cleanup, 50 KB gzip)
+│       ├── css/styles.css         ← single CSS file (~9,115 lines after v21 cleanup + tokens, 50 KB gzip)
 │       ├── js/                    ← 8 vanilla modules (3,913 lines total)
 │       │   ├── enhance.js              reveals, counters, share, toasts          (382)
 │       │   ├── enhance-pro.js          polish layer + single scroll coordinator  (663)
@@ -168,7 +168,7 @@ Current branch `feat/v12-hierarchy-pass` contains **25 commits** ahead of `main`
 
 ### Bottom-line metrics
 
-- `styles.css`: 9,582 → 9,066 lines after v21 (-5.4% with much more architectural clarity)
+- `styles.css`: 9,582 → ~9,115 lines after v21 (-4.9% with much more architectural clarity; minor token additions post-v21)
 - Unique `cubic-bezier()` curves: 10 → 4 (all in canonical block as definitions only)
 - Scroll listeners in `enhance-pro.js`: 4 → 1
 - `:root` token blocks: 5 → 2 (1 dark + 1 light)

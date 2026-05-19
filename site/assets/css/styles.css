@@ -128,6 +128,18 @@ select {
   --danger-soft:  rgba(207, 82, 82, .12);
   --warn:         #e0a04a;
   --warn-soft:    rgba(224, 160, 74, .14);
+  --star-gold:    #F5C842;   /* testimonial stars, luxe-ribbon flag — brighter than --warn */
+
+  /* ── WhatsApp — brand color, immutable in both themes ───────────── */
+  --wa-green:     #25D366;
+  --wa-green-hov: #1ebe5d;
+
+  /* ── Per-region hero atmospheres (always dark, no light override) ─ */
+  --region-bg-egypt:      #0a0703;
+  --region-bg-azerbaijan: #050a14;
+  --region-bg-istanbul:   #080612;
+  --region-bg-malaysia:   #030a05;
+  --region-bg-sharm:      #020a10;
 
   /* ── Typography ────────────────────────────────────────────────── */
   --font-display: 'DM Sans', system-ui, sans-serif;
@@ -636,7 +648,7 @@ select {
 }
 
 .hotel-card__ribbon.luxe {
-  color: #F5C842;
+  color: var(--star-gold);
 }
 
 .hotel-card__body {
@@ -650,7 +662,7 @@ select {
 .hotel-card__stars {
   display: flex;
   gap: 2px;
-  color: #F5C842;
+  color: var(--star-gold);
 }
 
 .hotel-card__name {
@@ -1145,11 +1157,11 @@ select {
 
 /* WhatsApp — brand green */
 .btn--wa {
-  background: #25D366;
+  background: var(--wa-green);
   color: #fff;
 }
 .btn--wa:hover {
-  background: #1ebe5d;
+  background: var(--wa-green-hov);
   transform: translateY(-1px);
 }
 
@@ -1345,7 +1357,7 @@ select {
 }
 
 .testi-stars {
-  color: #F5C842;
+  color: var(--star-gold);
   display: flex;
   gap: 2px;
 }
@@ -2135,7 +2147,7 @@ select {
 }
 
 .bform-preview__header svg {
-  color: #25D366;
+  color: var(--wa-green);
 }
 
 .bform-preview__content {
@@ -3190,31 +3202,31 @@ body, .hero, .hero__bg, .site-nav, section, .breakdown,
    REGIONAL THEME — per-trip atmosphere via body[data-region]
    ══════════════════════════════════════════════════════════ */
 
-[data-region="egypt"] .hero { background-color: #0a0703; }
+[data-region="egypt"] .hero { background-color: var(--region-bg-egypt); }
 [data-region="egypt"] .hero__bg::before {
   background-image: radial-gradient(circle at 20% 80%, rgba(201,135,46,0.18), transparent 50%),
                      radial-gradient(circle at 80% 20%, rgba(180,100,30,0.12), transparent 60%);
 }
 
-[data-region="azerbaijan"] .hero { background-color: #050a14; }
+[data-region="azerbaijan"] .hero { background-color: var(--region-bg-azerbaijan); }
 [data-region="azerbaijan"] .hero__bg::before {
   background-image: radial-gradient(circle at 50% 100%, rgba(232,93,47,0.15), transparent 50%),
                      radial-gradient(circle at 30% 30%, rgba(58,175,175,0.18), transparent 55%);
 }
 
-[data-region="istanbul"] .hero { background-color: #080612; }
+[data-region="istanbul"] .hero { background-color: var(--region-bg-istanbul); }
 [data-region="istanbul"] .hero__bg::before {
   background-image: radial-gradient(circle at 70% 80%, rgba(224,112,64,0.14), transparent 55%),
                      radial-gradient(circle at 30% 30%, rgba(91,158,201,0.15), transparent 60%);
 }
 
-[data-region="malaysia"] .hero { background-color: #030a05; }
+[data-region="malaysia"] .hero { background-color: var(--region-bg-malaysia); }
 [data-region="malaysia"] .hero__bg::before {
   background-image: radial-gradient(circle at 50% 50%, rgba(76,175,130,0.15), transparent 60%),
                      radial-gradient(circle at 80% 20%, rgba(150,210,180,0.10), transparent 50%);
 }
 
-[data-region="sharm"] .hero { background-color: #020a10; }
+[data-region="sharm"] .hero { background-color: var(--region-bg-sharm); }
 [data-region="sharm"] .hero__bg::before {
   background-image: radial-gradient(circle at 50% 70%, rgba(40,180,212,0.18), transparent 55%),
                      radial-gradient(circle at 70% 30%, rgba(232,138,58,0.10), transparent 60%);
@@ -4421,7 +4433,7 @@ section { scroll-margin-top: 90px; }
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: #25D366;
+  background: var(--wa-green);
   color: #fff;
   display: grid;
   place-items: center;
@@ -4443,7 +4455,7 @@ section { scroll-margin-top: 90px; }
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: #25D366;
+  background: var(--wa-green);
   opacity: 0;
   pointer-events: none;
   z-index: -1;
@@ -6849,7 +6861,7 @@ section.section.phase-block + section.section:not(.phase-block) {
   gap: var(--s4);
 }
 .testi-stars {
-  color: #F5C842;
+  color: var(--star-gold);
   letter-spacing: 2px;
   font-size: .875rem;
 }
@@ -7488,7 +7500,7 @@ section.section.phase-block + section.section:not(.phase-block) {
   line-height: 1.5;
 }
 .calc-disclaimer svg {
-  color: #f5c842;
+  color: var(--star-gold);
   flex-shrink: 0;
   margin-top: 1px;
 }
@@ -8156,7 +8168,7 @@ picture.scroll-hero__media {
 .hotel-card__ribbon.economique { color: #5b9eC9; }
 .hotel-card__ribbon.medium     { color: #5cc4c1; }
 .hotel-card__ribbon.premium    { color: #d8a653; }
-.hotel-card__ribbon.luxe       { color: #f5c842; }
+.hotel-card__ribbon.luxe       { color: var(--star-gold); }
 :root[data-theme="light"] .hotel-card__ribbon.economique { color: #1f568a; }
 :root[data-theme="light"] .hotel-card__ribbon.medium     { color: #1f7a78; }
 :root[data-theme="light"] .hotel-card__ribbon.premium    { color: #8a5616; }
@@ -8180,7 +8192,7 @@ picture.scroll-hero__media {
 
 .hotel-card__stars {
   font-size: 14px;
-  color: #F5C842;
+  color: var(--star-gold);
   letter-spacing: 2px;
   line-height: 1;
 }
@@ -8994,7 +9006,7 @@ body { background: var(--bg); color: var(--txt-1); }
   flex-shrink: 0;
 }
 .phone-card__btn--wa {
-  background: #25d366;
+  background: var(--wa-green);
   color: #052e16;
 }
 .phone-card__btn--wa:hover {

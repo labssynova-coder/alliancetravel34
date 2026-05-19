@@ -447,7 +447,7 @@ Acceptance criteria per component: zero `!important`, zero ad-hoc `cubic-bezier`
 - ✅ Visual diff confirms eyebrow → title → CTA hierarchy is the same on all 6 pages
 
 ### Phase F — JS consolidation (was Phase E)
-1. Single scroll coordinator in a new `site/assets/js/motion.js` (merges `enhance.js` + `enhance-pro.js`). Pattern:
+1. Single scroll coordinator consolidated into `site/assets/js/enhance-pro.js` (the original plan named a new `motion.js` file, but execution consolidated in place — `enhance-pro.js` already owned the scroll listener so the merge happened there). Pattern:
    ```js
    const scrollObservers = new Set();
    let ticking = false;
@@ -475,7 +475,7 @@ Acceptance criteria per component: zero `!important`, zero ad-hoc `cubic-bezier`
    ```
    Then CSS: `.is-paused { animation-play-state: paused !important; }`. This is the performance hammer.
 
-Result: `enhance.js` + `enhance-pro.js` → `motion.js` (target: ≤ 600 lines, single scroll listener, single pause-observer).
+Result (as shipped): scroll coordinator + IntersectionObservers + magnetic buttons + FAB + sticky bar + hero choreography all consolidated into `enhance-pro.js` (~663 lines). `enhance.js` (~382 lines) retained for reveals + counters + share + toasts. No new `motion.js` file was created; consolidation happened in place.
 
 ### Phase G — Section choreography (was Phase F)
 Define a **single entrance rhythm** at the section level. When a `<section>` enters viewport:
@@ -577,7 +577,8 @@ Target after Phase H: **`styles.css` ≤ 6 500 lines, ≤ 50 `!important`.**
 - Rename any class that confuses (e.g. `.phase-marker` → `.timeline__phase` if it's a timeline element).
 
 **J.6 — JS module boundaries**
-- `motion.js` — scroll coordinator, reveal observer, magnetic buttons, FAB, sticky bar, hero choreography. (Merged in Phase F.)
+- `enhance-pro.js` — scroll coordinator, magnetic buttons, FAB, sticky bar, hero choreography. (Consolidated in Phase F — the plan called for a new `motion.js`, but the merge happened in place into `enhance-pro.js`.)
+- `enhance.js` — reveal observer, counters, share, toasts. (Kept separate; clear single-responsibility.)
 - `maps.js` — combine `algeria-map.js` + `trip-map.js` *if* sharing the de-clutter engine is worth the merge; otherwise leave separate.
 - `booking-form.js`, `calculator.js`, `scroll-hero.js`, `globe.js` — keep separate (clear single-responsibility boundaries).
 
@@ -603,7 +604,7 @@ Target after Phase H: **`styles.css` ≤ 6 500 lines, ≤ 50 `!important`.**
 | ≤ 50 `!important` | `grep -c "!important" styles.css` |
 | ≤ 10 `@keyframes` *(survey kept many ambient loops, so this lifts to ≤ 14 — see Phase E choreography)* | `grep -c "@keyframes" styles.css` ≤ 14 |
 | Single scroll listener | `grep -E "addEventListener\('scroll'" site/assets/js/*.js \| wc -l` returns `1` (excluding map JS which manages its own) |
-| Single pause-observer for off-screen decoration | Verified in `motion.js` |
+| Single pause-observer for off-screen decoration | Verified in `enhance-pro.js` |
 | No inline `<style>` overrides for components | `grep -A 200 "<style>" site/index.html` carries only utility helpers |
 
 ### Motion fidelity
@@ -699,7 +700,7 @@ For agent reference. Touch order matches phase order.
 
 ### Phase C (ambient cull + choreography)
 - `site/assets/css/styles.css` — delete keyframes for unwanted ambient; add phase-offset to surviving loops
-- `site/assets/js/enhance-pro.js` (or successor `motion.js`) — IntersectionObserver gating
+- `site/assets/js/enhance-pro.js` — IntersectionObserver gating
 
 ### Phase D (component primitives)
 - `site/assets/css/styles.css` — `.surface` + `.btn` + `.pill` definitions; migrate existing components
@@ -710,7 +711,7 @@ For agent reference. Touch order matches phase order.
 - `site/assets/css/styles.css` — `.home-hero` + `.hero` rewrite
 
 ### Phase F (JS consolidation)
-- `site/assets/js/enhance.js` + `enhance-pro.js` → merged into `site/assets/js/motion.js`
+- `site/assets/js/enhance.js` + `enhance-pro.js` — scroll/observer logic consolidated into `enhance-pro.js`; `enhance.js` retained for reveal + counter + share + toast. No new `motion.js` file created (plan called for one; execution chose in-place merge).
 
 ### Phase G (section choreography)
 - `site/assets/css/styles.css` — section-level reveal cascade

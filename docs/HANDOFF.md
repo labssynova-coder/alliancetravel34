@@ -2,7 +2,7 @@
 
 > **Purpose.** This document gives any agent (human or AI) full context to pick up the project from any state. Read this front-to-back if you are new. Everyone else: skim §1, jump to §11 for "what to do next".
 >
-> **Last updated:** 2026-05-13 · written at the end of the v21 cleanup cycle + prod-prep pass · branch `feat/v12-hierarchy-pass` at commit `801eff6`.
+> **Last updated:** 2026-05-19 · post-v21 doc refresh + token hygiene pass (BBA orphan refs, JSON-LD blockers, motion.js doc ghosts cleared) · branch `feat/v12-hierarchy-pass`. Most-recent shipped commits: `647ffd5` (docs refresh) and `801eff6` (WhatsApp FAB + stale-migrations archival) before this pass.
 
 ---
 
@@ -30,7 +30,7 @@
 
 **The site is the only digital surface.** There is no booking backend. All conversions go through WhatsApp deep-links (`wa.me/213XXXXXXXXX`). The calculator on each trip page computes a price in DZD based on dates + room type + traveler count, then pre-fills a WhatsApp message. There is no payment, no account system, no email capture form on the live site.
 
-**Stack:** vanilla HTML + CSS + JS. No build step. Six static HTML pages. One monolithic stylesheet (`site/assets/css/styles.css`, currently 9066 lines after the v21 cleanup). Eight JS modules. One service worker. Designed to be hosted as a static site on any CDN.
+**Stack:** vanilla HTML + CSS + JS. No build step. Six static HTML pages. One monolithic stylesheet (`site/assets/css/styles.css`, currently ~9115 lines after the v21 cleanup). Eight JS modules. One service worker. Designed to be hosted as a static site on any CDN.
 
 **Audience:**
 - Primary: Algerian travelers in Bordj Bou Arreridj, Constantine, Sétif, Alger, Oran, M'Sila — wilayas the agency serves
@@ -75,7 +75,7 @@
 
 ### CSS architecture
 
-One file: `site/assets/css/styles.css` (9066 lines, 50 KB gzip).
+One file: `site/assets/css/styles.css` (~9115 lines, 50 KB gzip).
 
 - **One canonical `:root`** at the top (lines 80-180 after v21 Phase A) defining all design tokens: surfaces, borders, text, brand colors, status colors, typography, spacing, radii, elevation, motion.
 - **One canonical `:root[data-theme="light"]`** override block below it.
@@ -146,7 +146,7 @@ site/
 ├── azerbaidjan/index.html        # Trip page — Azerbaïdjan
 ├── kuala-lumpur/index.html       # Trip page — Kuala Lumpur
 └── assets/
-    ├── css/styles.css            # The monolith (9066 lines, 50 KB gzip)
+    ├── css/styles.css            # The monolith (~9115 lines, 50 KB gzip)
     ├── js/ (8 modules listed above)
     ├── images/
     │   ├── heroes/               # Homepage hero collage photos (WebP + JPG + mobile crops)

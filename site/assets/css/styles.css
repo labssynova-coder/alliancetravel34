@@ -5483,6 +5483,10 @@ body.has-sticky-bar .site-nav {
 
 /* MapLibre's own canvas picks up our border-radius via overflow: hidden */
 #algeria-map .maplibregl-canvas { outline: none; }
+#algeria-map .maplibregl-canvas:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--ring);
+}
 
 /* Override MapLibre's default control styling to match brand */
 #algeria-map .maplibregl-ctrl-group {
@@ -5766,6 +5770,10 @@ body.has-sticky-bar .site-nav {
 }
 
 #trip-map .maplibregl-canvas { outline: none; }
+#trip-map .maplibregl-canvas:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--ring);
+}
 #trip-map .maplibregl-ctrl-group {
   background: rgba(12, 14, 18, .82) !important;
   -webkit-backdrop-filter: blur(10px);

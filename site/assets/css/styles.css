@@ -9113,3 +9113,47 @@ body { background: var(--bg); color: var(--txt-1); }
 /* End v19.2 agency-network ──────────────────────────────────── */
 
 
+
+/* ══════════════════════════════════════════════════════════
+   AOS (Animate On Scroll) — v20 integration layer
+   ══════════════════════════════════════════════════════════
+
+   1. Silence the CSS-keyframe .fade-up animation on any element
+      that is also managed by AOS. AOS starts the element at
+      opacity:0/transform:translateY(30px) via [data-aos] and
+      flips to aos-animate — the keyframe would fight that.
+
+   2. Ensure AOS elements start invisible even before aos.js
+      has initialised (prevents a flash of content on slow
+      connections). The [data-aos]:not(.aos-init) selector
+      covers the pre-init window.
+
+   3. Keep .reveal/.reveal-stagger intact — they cover elements
+      that AOS doesn't touch (inclus columns, related cards).
+══════════════════════════════════════════════════════════ */
+
+/* Silence CSS keyframe animation when AOS is managing the element */
+[data-aos].fade-up,
+[data-aos].fade-up--d1,
+[data-aos].fade-up--d2,
+[data-aos].fade-up--d3 {
+  animation: none;
+}
+
+/* Pre-init hidden state — prevents flash before AOS JS runs */
+[data-aos]:not(.aos-init) {
+  opacity: 0;
+}
+
+/* AOS: honour prefers-reduced-motion by zeroing durations
+   (AOS's own `disable` flag handles this at the JS level,
+   but this CSS fallback covers the edge case where JS hasn't
+   run yet or the flag wasn't set). */
+@media (prefers-reduced-motion: reduce) {
+  [data-aos] {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+}
+
+/* End AOS v20 integration ─────────────────────────────────── */

@@ -144,7 +144,11 @@
     // automatically, cutting the hero from ~3 MB JPG to ~400 KB WebP on mobile.
     pinned.appendChild(buildPictureLayer('scroll-hero__bg', bg, /*alt*/ '', /*ariaHidden*/ true, /*priority*/ 'high', /*sizes*/ '100vw'));
 
-    var mediaPic = buildPictureLayer('scroll-hero__media', fg, /*alt*/ title || (pre + ' ' + post), /*ariaHidden*/ false, /*priority*/ 'high',
+    // fg is the foreground subject layer. It shares the viewport with bg on load
+    // but is NOT the LCP candidate (bg is). Drop its network priority to 'low'
+    // so it queues behind the bg and doesn't compete for the same bandwidth slot.
+    // On fast connections this is imperceptible; on 3G it cuts LCP noticeably.
+    var mediaPic = buildPictureLayer('scroll-hero__media', fg, /*alt*/ title || (pre + ' ' + post), /*ariaHidden*/ false, /*priority*/ 'low',
       /*sizes*/ '(max-width: 768px) 86vw, 78vw');
     if (mediaPic) {
       mediaPic.setAttribute('role', 'img');

@@ -3,9 +3,9 @@
  *
  * Replaces the homepage hand-drawn SVG outline with real geography:
  *   - CARTO Voyager / Dark Matter basemap (theme-aware, free, no API key)
- *   - HQ pin in Bordj Bou Arreridj with a pulsing halo
- *   - Partner branch pins (Alger, Sétif, Constantine, Oran, plus
- *     Annaba and Ouargla as future-network cities)
+ *   - HQ pin in Bordj Bou Arreridj (La Graf) with a pulsing halo
+ *   - Branch pins for the real Alliance Travel network:
+ *     BBA · Cité Zehour and M'Sila
  *   - Animated dashed arcs from HQ to every branch (Bezier curves
  *     so the lines breathe rather than feel rigid)
  *

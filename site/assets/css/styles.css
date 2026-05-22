@@ -2102,7 +2102,14 @@ select {
 
 @media (max-width: 640px) {
   .calc-grid {
-    gap: var(--s7);
+    /* v22 Agent 3 — tighten the calc gap on phones (32px → 24px) so the
+       form + breakdown stack fits more above the fold. */
+    gap: var(--space-4);
+  }
+
+  .calc-form {
+    /* Match: tighter form-internal gaps on phones (32px → 24px). */
+    gap: var(--space-4);
   }
 
   .hero__ctas {
@@ -2578,6 +2585,18 @@ select {
 
   .bf-passport-grid {
     grid-template-columns: 1fr;
+  }
+
+  /* v22 Agent 3 — phone-fit: tighter padding (32 → 24) and tighter
+     internal gaps so each form block consumes ~16px less vertical
+     real-estate. The desktop visual stays unchanged. */
+  .bform-block {
+    padding: var(--space-4);
+    gap: var(--space-4);
+  }
+
+  .bform-left {
+    gap: var(--space-4);
   }
 }
 
@@ -7352,6 +7371,20 @@ section.section.phase-block + section.section:not(.phase-block) {
   .stepper__btn {
     width: 36px;
     height: 36px;
+  }
+}
+
+/* v22 Agent 3 — phone touch targets: the stepper +/- buttons must hit
+   44×44 minimum on phones (Apple HIG + WCAG 2.5.5). The ≤900px rule
+   above set 36×36 for tablet density; this overrides for phones. */
+@media (max-width: 640px) {
+  .stepper__btn {
+    width: var(--touch-min);
+    height: var(--touch-min);
+    font-size: 1.375rem;
+  }
+  .stepper {
+    gap: var(--s4);
   }
 }
 

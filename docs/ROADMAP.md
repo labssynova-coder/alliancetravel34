@@ -881,6 +881,9 @@ Phase order: Agent 1 (foundation + hygiene + tokens) → Agent 2 (perf budget) �
 | `ea973ae` | **Agent 2 · will-change pruning** | Audited 19 static `will-change` declarations. **REMOVED** (one-shot reveal-observer entrances — layer was permanent for nothing once `.is-in` fired): `.hero__bg`, `[data-fx]`, `[data-fx-stagger] > *`, section-head reveal stack, trip-card art. **MOVED to `:hover`**: `.btn`, `.nav-cta`, `.btn--primary`, `.btn--ghost`, book-form submit, `.calc-cta`, `.trip-card`, `.hotel-card`, `.value-card`, `.branch-card`. **KEPT** (continuous animation or rAF scroll-link) and gated to `will-change: auto` at ≤640px via foundation perf block: hero ken-burns, `.home-hero__photos img`, `.fab-whatsapp::before`, `.globe-polaroid`, scroll-hero family. Net: ~14 static layers release on mobile. |
 | `16cb383` | **Agent 2 · drop AOS library** | Removed the unpkg-loaded AOS library (~14 KB JS + ~28 KB CSS over the wire) from all 7 HTML pages; routed 191 `data-aos` attributes through the existing `initRevealObserver` in `enhance.js`. Audited usage: 187 fade-up + 4 zoom-in. `initRevealObserver` extended to query `[data-aos]`, reads `data-aos-delay` / `data-aos-duration`, sets `--aos-delay` / `--aos-duration` custom properties per element (`enhance.js:97-105`). Reduced-motion path marks every target `.visible` immediately. New "AOS-compat reveal" CSS block (6 transform variants), scoped to `html.js` so no-JS users see content normally. Pre-paint `<script>documentElement.classList.add('js')</script>` injected before `styles.css` link. Net: 7 fewer external requests on first paint, ~42 KB cold-cache shed. |
 | `ae17435` | **Release · cache bump** | `sw.js` cache key v21 → `alliance-v22-2026-05-22` so returning visitors fetch the new CSS/JS/HTML instead of stale v21 assets from CacheStorage. The activate handler already purges old buckets on version change. |
+| `39b8e46` | **Agent 5 · QA report** | Independent read-only verification of all 21 agent claims + 10 master-prompt success criteria. 17 VERIFIED · 3 PARTIAL · 0 FAILED. Surfaced the inline-style commit-message off-by-4 (claimed 98, actual 102), the hreflang commit-message stale "deferred" note, and the 4 missed master-prompt targets. Output: [`docs/QA-REPORT-v22.md`](QA-REPORT-v22.md). |
+| `b5f201c` | **Follow-up · a11y + overflow fixes** | Three surgical fixes from the QA top-5: (1) `.phone-card__btn` exemption removed from foundation `pointer: coarse` rule + padding bumped 7/8 → 11/14 + `font-size: .8125rem` + `min-height: var(--touch-min)` so the button hits 44×44 (was ~32px). (2) `.trip-switcher__menu` desktop `min-width: 320px` → `min(320px, calc(100vw - 32px))` to prevent menu = viewport width on iPhone SE. (3) Mobile `right: -120px` → `right: 16px` + `min-width: min(280px, calc(100vw - 32px))` to stop the 120px horizontal-scroll leak. Items #1, #4 (resolved), #3 (only one risky offset of the 5 audited) from the QA hidden-risks list closed. |
+| `e32c2ff` | **Follow-up · !important rationale doc** | Documented at [`docs/CSS-IMPORTANT-RATIONALE-v22.md`](CSS-IMPORTANT-RATIONALE-v22.md) — categorization revealed 124 mandatory load-bearing instances (51 MapLibre overrides + 39 photo-overlay legibility + 34 reduced-motion correctness) that CANNOT be removed without functional regression. The master-prompt `<80` target is mathematically infeasible; honest target is `≤140` after per-case CSS-parser audit of the ~94 non-load-bearing. Decision: documented rather than chased, to prevent re-introducing the v3 "trip card prices invisible in light mode" bug. |
 
 ### v22 cycle state — shipping
 
@@ -898,25 +901,26 @@ Phase order: Agent 1 (foundation + hygiene + tokens) → Agent 2 (perf budget) �
 | Hero AVIF total | <1 MB | 992 KB | **PASS** |
 | SW cache bumped | yes | `alliance-v22-2026-05-22` | **PASS** |
 
-### Hidden risks / regressions from QA
+### Hidden risks / regressions from QA — RESOLVED in `b5f201c`
 
-- **`.phone-card__btn` fails 44×44 touch target** — explicitly excluded from `pointer:coarse` enforcement at `styles.css:125`. Measures ~32px tall via `padding: 7px 8px` + `.75rem` font. Phone CTAs are primary conversion surfaces; the exemption should be removed or a `--touch-min-tertiary: 36px` token introduced.
-- **5 negative `right:-…px` offsets** at `styles.css` L3350 (-120px, worst case), L4401 (-50px), L5535 (-5px), L6717 (-10px), L8620 (-28px) — each must be inside an `overflow: hidden|clip` parent. Body has global `overflow-x: clip` which catches most cases, but per-parent audit deferred.
-- **`min-width: 320px` at `styles.css:3103`** outside any media query — on a 320px iPhone SE viewport this can push siblings outside visible width. Flag for next pass.
+- ~~**`.phone-card__btn` fails 44×44 touch target**~~ — **resolved** in `b5f201c`: exemption removed, padding bumped, `min-height: var(--touch-min)` applied. Measures ~44-46px tall now.
+- **5 negative `right:-…px` offsets** — audited in `b5f201c`. Only L3350 (-120px on `.trip-switcher__menu`) was genuinely risky (caused iPhone SE horizontal scroll); the other 4 sit inside `overflow: hidden|clip` parents (`.hotel-card` line 1011, hero containers, FAB tooltip arrow ~5px which is within shadow falloff) so no per-parent audit needed. **L3350 resolved.**
+- ~~**`min-width: 320px` at `styles.css:3103`**~~ — **resolved** in `b5f201c`: clamped to `min(320px, calc(100vw - 32px))` so the dropdown never exceeds viewport width.
 
 ### Phases NOT shipped (intentionally deferred)
 
 | Phase | Why deferred |
 |---|---|
-| **`!important` reduction pass** (218 → target <80) | No agent was scoped. Pair with `docs/CSS-DUPLICATES-v22.md` consolidation to eliminate the cascade-conflict patterns that drove `!important` in the first place. |
+| **`!important` reduction pass** (218 → target <80) | Master-prompt target deemed infeasible without functional regression — see [`docs/CSS-IMPORTANT-RATIONALE-v22.md`](CSS-IMPORTANT-RATIONALE-v22.md). 124 of the 218 are load-bearing (MapLibre + reduced-motion + photo overlays). Realistic future target: ≤140 after per-case CSS-parser audit of the ~94 non-load-bearing. |
 | **Duplicate-selector consolidation** (10 selectors in `CSS-DUPLICATES-v22.md`) | Pure-documentation pass landed. Consolidating each requires per-selector decisions (which block keeps which property) + visual regression sweep. |
 | **Hardcoded color migration** (60 tokenizable literals in `CSS-COLOR-AUDIT-v22.csv`) | CSV catalog landed; the actual `var(--mint)` substitutions stay deferred to avoid mid-cycle visual drift. Single bulk-migration commit when scheduled. |
-| **Horizontal-scroll prevention sweep** (5 negative-`right` offsets + 1 `min-width: 320px`) | Per-parent `overflow` audit + Lighthouse mobile run. Not blocking, but a small isolated pass. |
-| **`.phone-card__btn` touch target** | Trivial fix: remove exemption at `styles.css:125` or introduce `--touch-min-tertiary`. Highest user-impact follow-up per QA. |
-| **i18n runtime engine + dict extension** | Intentionally not built per `docs/I18N-SEO.md` strategy (c). Revisit when an MSA/EN copywriter is on retainer or non-FR WhatsApp inbound passes 15% for two consecutive months. WIP exists in `stash@{1}` if the policy flips. |
+| ~~**Horizontal-scroll prevention sweep**~~ | **RESOLVED in `b5f201c`** — only the -120px `.trip-switcher__menu` and the min-width:320px were risky; both fixed. The other 4 negative-right offsets sit inside overflow-clipped parents. |
+| ~~**`.phone-card__btn` touch target**~~ | **RESOLVED in `b5f201c`** — exemption removed, padding bumped, min-height applied. |
+| **i18n runtime engine + dict extension** | Intentionally not built per [`docs/I18N-SEO.md`](I18N-SEO.md) strategy (c). Revisit when an MSA/EN copywriter is on retainer or non-FR WhatsApp inbound passes 15% for two consecutive months. WIP exists in `stash@{1}` if the policy flips. |
 | **Mobile nav refactor depending on i18n lang-switcher** | Sits in `stash@{0}`. Held until i18n decision is acted on — under strategy (c) it stays parked indefinitely. |
 | **Tile-1 hero placeholder hygiene** | The 4 lazy collage tiles still ship inline `style` placeholders (~80 bytes each) for FOUC prevention. Replace with CSS `background` on the `<picture>` to shed 4 of the remaining 47 homepage inline styles. |
 | **CSS file split via `@import`** | Same blocker as v21 phase J.3 — adds HTTP requests, violates Performance Contract §0a. Defer until a concat build step exists. |
+| **Lighthouse mobile measurement** | Agent 5 was read-only and didn't run a live audit. The perf wins (AVIF, lazy collage, AOS removal, will-change pruning, backdrop-filter caps) landed but LCP/TBT/CLS deltas remain unmeasured. Next session should run Lighthouse mobile on all 8 pages and capture deltas. |
 
 ---
 

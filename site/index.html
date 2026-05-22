@@ -20,6 +20,9 @@
     content="5 destinations 2026 · Vol + hôtel + excursions inclus · 1.200+ voyageurs satisfaits" />
   <meta name="theme-color" content="#0C0E12" />
   <link rel="canonical" href="https://alliance-travel.dz/" />
+  <!-- v22 i18n-SEO strategy (c): site is FR-only; signal FR as the
+       default surface for crawlers from any locale. See docs/I18N-SEO.md. -->
+  <link rel="alternate" hreflang="x-default" href="https://alliance-travel.dz/" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -241,35 +244,36 @@
   <section class="home-hero" aria-label="Bienvenue chez Alliance Travel">
     <!-- Photographic backdrop: 5 destination photos as horizontal collage -->
     <div class="home-hero__photos" aria-hidden="true">
+      <!-- Tile 1 (LCP): eager + high priority. AVIF → WebP → JPEG fallback. -->
       <picture>
+        <source media="(max-width: 768px)" type="image/avif" srcset="assets/images/heroes/hero__cairo-sharm--mobile.avif"/>
         <source media="(max-width: 768px)" type="image/webp" srcset="assets/images/heroes/hero__cairo-sharm--mobile.webp"/>
         <source media="(max-width: 768px)" type="image/jpeg" srcset="assets/images/heroes/hero__cairo-sharm--mobile.jpg"/>
+        <source type="image/avif" srcset="assets/images/heroes/hero__cairo-sharm.avif"/>
         <source type="image/webp" srcset="assets/images/heroes/hero__cairo-sharm.webp"/>
         <img src="assets/images/heroes/hero__cairo-sharm.jpg" alt="" loading="eager" fetchpriority="high" decoding="async"/>
       </picture>
-      <picture>
-        <source media="(max-width: 768px)" type="image/webp" srcset="assets/images/heroes/hero__azerbaidjan--mobile.webp"/>
-        <source media="(max-width: 768px)" type="image/jpeg" srcset="assets/images/heroes/hero__azerbaidjan--mobile.jpg"/>
-        <source type="image/webp" srcset="assets/images/heroes/hero__azerbaidjan.webp"/>
-        <img src="assets/images/heroes/hero__azerbaidjan.jpg" alt="" loading="lazy" decoding="async"/>
+      <!-- Tiles 2-5: deferred. data-lazy-src holds AVIF source; hero-collage-lazy.js
+           swaps it into a real srcset after the LCP paints + browser is idle. -->
+      <picture data-lazy-hero="azerbaidjan">
+        <img alt="" loading="lazy" decoding="async" width="1" height="1"
+             style="background:#111;width:100%;height:100%;object-fit:cover"
+             src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%2F%3E"/>
       </picture>
-      <picture>
-        <source media="(max-width: 768px)" type="image/webp" srcset="assets/images/heroes/hero__istanbul--mobile.webp"/>
-        <source media="(max-width: 768px)" type="image/jpeg" srcset="assets/images/heroes/hero__istanbul--mobile.jpg"/>
-        <source type="image/webp" srcset="assets/images/heroes/hero__istanbul.webp"/>
-        <img src="assets/images/heroes/hero__istanbul.jpg" alt="" loading="lazy" decoding="async"/>
+      <picture data-lazy-hero="istanbul">
+        <img alt="" loading="lazy" decoding="async" width="1" height="1"
+             style="background:#111;width:100%;height:100%;object-fit:cover"
+             src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%2F%3E"/>
       </picture>
-      <picture>
-        <source media="(max-width: 768px)" type="image/webp" srcset="assets/images/heroes/hero__kuala-lumpur--mobile.webp"/>
-        <source media="(max-width: 768px)" type="image/jpeg" srcset="assets/images/heroes/hero__kuala-lumpur--mobile.jpg"/>
-        <source type="image/webp" srcset="assets/images/heroes/hero__kuala-lumpur.webp"/>
-        <img src="assets/images/heroes/hero__kuala-lumpur.jpg" alt="" loading="lazy" decoding="async"/>
+      <picture data-lazy-hero="kuala-lumpur">
+        <img alt="" loading="lazy" decoding="async" width="1" height="1"
+             style="background:#111;width:100%;height:100%;object-fit:cover"
+             src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%2F%3E"/>
       </picture>
-      <picture>
-        <source media="(max-width: 768px)" type="image/webp" srcset="assets/images/heroes/hero__sharm-constantine--mobile.webp"/>
-        <source media="(max-width: 768px)" type="image/jpeg" srcset="assets/images/heroes/hero__sharm-constantine--mobile.jpg"/>
-        <source type="image/webp" srcset="assets/images/heroes/hero__sharm-constantine.webp"/>
-        <img src="assets/images/heroes/hero__sharm-constantine.jpg" alt="" loading="lazy" decoding="async"/>
+      <picture data-lazy-hero="sharm-constantine">
+        <img alt="" loading="lazy" decoding="async" width="1" height="1"
+             style="background:#111;width:100%;height:100%;object-fit:cover"
+             src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%2F%3E"/>
       </picture>
     </div>
     <div class="home-hero__bg"></div>
@@ -1106,6 +1110,7 @@
   </script>
   <script src="assets/js/enhance.js" defer></script>
   <script src="assets/js/enhance-pro.js" defer></script>
+  <script src="assets/js/hero-collage-lazy.js" defer></script>
   <script type="module" src="assets/js/globe.js"></script>
   <script src="assets/js/algeria-map.js" defer></script>
   <!-- AOS scroll animations (michalsnik/aos) -->

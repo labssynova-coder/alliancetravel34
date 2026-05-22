@@ -66,10 +66,14 @@
       if (media) s.media = media;
       picture.appendChild(s);
     }
-    // Mobile WebP, mobile JPG, then desktop WebP. Browser picks the first
-    // <source> whose media matches AND whose type it supports.
+    // Source order: AVIF first (smallest), then WebP, then JPG fallback.
+    // Each tier is split into mobile-cropped vs desktop. Browser picks
+    // the first <source> whose media matches AND whose type it supports.
+    // v22: AVIF added (heroes-v2 set re-encoded 2026-05-22, saves ~56%).
+    addSource(absBase + '--mobile.avif', 'image/avif', '(max-width: 768px)');
     addSource(absBase + '--mobile.webp', 'image/webp', '(max-width: 768px)');
     addSource(absBase + '--mobile.jpg',  'image/jpeg', '(max-width: 768px)');
+    addSource(absBase + '.avif',         'image/avif');
     addSource(absBase + '.webp',         'image/webp');
 
     var img = document.createElement('img');

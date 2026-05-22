@@ -184,6 +184,38 @@ button {
    ⛰  /RESPONSIVE FOUNDATION
    ════════════════════════════════════════════════════════════════ */
 
+/* ════════════════════════════════════════════════════════════════
+   🔺 Z-INDEX LAYER SYSTEM  (v22 · 2026-05-22)
+   ════════════════════════════════════════════════════════════════
+   Single semantic layer system. Use tokens rather than raw numbers
+   so layer relationships stay explicit and reorderable in one place.
+   Order: base → raised → dropdown → sticky → nav → backdrop →
+   drawer → modal → toast → fab.
+
+   MIGRATION SCOPE: site-chrome layers (nav, sticky, dropdown, modal,
+   toast, fab, lightbox, scroll-progress, sticky-total, skip-link,
+   trip-switcher menu, trip-sticky-bar) → tokens. Intra-component
+   stacking ladders (small integers 0–25 used to order children inside
+   one isolated stacking context, e.g. hero layers, scroll-hero
+   parts, map pins, trip-card overlays) intentionally STAY raw —
+   those numbers form a local ladder a single token can't capture.
+   Negative values (-1, -2) for decorative ::before underlays also
+   stay raw. The 3 z-indexes inside MOBILE NAV DRAWER are locked
+   from d91e50b — do not migrate.
+   ════════════════════════════════════════════════════════════════ */
+:root {
+  --z-base:     0;
+  --z-raised:   1;     /* card hover lifts, image overlays            */
+  --z-dropdown: 100;   /* select dropdowns, tooltips                  */
+  --z-sticky:   200;   /* sticky-total bar                            */
+  --z-nav:      300;   /* fixed site-nav                              */
+  --z-backdrop: 350;   /* nav drawer backdrop (below drawer)          */
+  --z-drawer:   400;   /* nav drawer panel                            */
+  --z-modal:    500;   /* lightbox, full overlays                     */
+  --z-toast:    600;   /* toast notifications                         */
+  --z-fab:      650;   /* WhatsApp FAB                                */
+}
+
 ul {
   list-style: none;
 }
@@ -392,7 +424,7 @@ select {
   position: fixed;
   top: 0;
   inset-inline: 0;
-  z-index: 100;
+  z-index: var(--z-nav);
   padding: var(--s4) var(--s7);
   display: flex;
   align-items: center;
@@ -1433,7 +1465,7 @@ select {
   position: fixed;
   bottom: 0;
   inset-inline: 0;
-  z-index: 50;
+  z-index: var(--z-sticky);
   background: rgba(12, 14, 18, .96);
   backdrop-filter: blur(16px);
   border-top: 1px solid var(--border);
@@ -2876,7 +2908,7 @@ select {
   transform: translateY(-8px) scale(.97);
   transform-origin: top right;
   transition: opacity var(--t-fast) ease, transform var(--t-fast) ease;
-  z-index: 200;
+  z-index: var(--z-dropdown);
 }
 
 .trip-switcher.open .trip-switcher__menu {
@@ -2985,7 +3017,7 @@ select {
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--t-fast) ease, transform var(--t-fast) ease;
-  z-index: 10000;
+  z-index: var(--z-toast);
 }
 
 .toast.show {
@@ -3188,7 +3220,7 @@ select {
   font-weight: 600;
   padding: var(--s2) var(--s4);
   border-radius: var(--r2);
-  z-index: 9999;
+  z-index: var(--z-toast);
   transition: top var(--t);
 }
 .skip-link:focus { top: 8px; }
@@ -3540,7 +3572,7 @@ body, .hero, .hero__bg, .site-nav, section, .breakdown,
   border-radius: 999px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.32),
               inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  z-index: 100;
+  z-index: var(--z-nav);
   gap: var(--s3);
   grid-template-columns: none !important;
   grid-template-rows: none !important;
@@ -4460,7 +4492,7 @@ main, footer, section, .home-hero { position: relative; z-index: 1; }
 }
 
 /* Reinforce nav layering — explicit override against v5 sibling rules */
-.site-nav { z-index: 100 !important; }
+.site-nav { z-index: var(--z-nav) !important; }
 
 /* ══════════════════════════════════════════════════════════
    v6 — Professional motion polish layer
@@ -4670,7 +4702,7 @@ section { scroll-margin-top: 90px; }
   top: 0; left: 0;
   height: 2px;
   width: 100%;
-  z-index: 200;
+  z-index: var(--z-sticky);
   pointer-events: none;
   background: transparent;
 }
@@ -4708,7 +4740,7 @@ section { scroll-margin-top: 90px; }
   color: #fff;
   display: grid;
   place-items: center;
-  z-index: 90;
+  z-index: var(--z-fab);
   /* Static shadow only — not animated. Tighter than before so it fits
      within the 24px breathing room without clipping at the viewport edge. */
   box-shadow: 0 6px 16px -2px rgba(37, 211, 102, .45),
@@ -4948,7 +4980,7 @@ section + section.is-in::before { width: 60%; }
   top: 0;
   left: 0;
   right: 0;
-  z-index: 95;
+  z-index: var(--z-sticky);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -5047,7 +5079,7 @@ section + section.is-in::before { width: 60%; }
   position: fixed;
   inset: 0;
   background: rgba(5, 6, 9, 0.96);
-  z-index: 300;
+  z-index: var(--z-modal);
   display: flex;
   align-items: center;
   justify-content: center;

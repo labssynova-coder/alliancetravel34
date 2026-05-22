@@ -1116,11 +1116,14 @@ select {
 }
 
 .calc-form-label {
-  font-size: .75rem;
+  /* v22 Agent 3 — same uplift as .bform-field label: --txt-3 → --txt-2,
+     fluid --fs-body-sm, tighter letter-spacing. Keeps the calculator
+     and booking form visually consistent. */
+  font-size: var(--fs-body-sm);
   font-weight: 500;
-  letter-spacing: .06em;
+  letter-spacing: .04em;
   text-transform: uppercase;
-  color: var(--txt-3);
+  color: var(--txt-2);
 }
 
 /* Date chips */
@@ -2253,11 +2256,17 @@ select {
 }
 
 .bform-field label {
-  font-size: .75rem;
+  /* v22 Agent 3 — contrast + size up: --txt-3 (#7a7268) → --txt-2
+     (#b6ada0) lifts contrast ratio ~3.4× → ~5.7× on --bg-card.
+     Fluid sizing via --fs-body-sm reaches 14px on desktop while still
+     staying 13px on small phones (legible without taking too much
+     vertical space). Letter-spacing dialled back .06 → .04 so caps
+     don't feel airy at the new size. */
+  font-size: var(--fs-body-sm);
   font-weight: 500;
-  letter-spacing: .06em;
+  letter-spacing: .04em;
   text-transform: uppercase;
-  color: var(--txt-3);
+  color: var(--txt-2);
 }
 
 .bform-field .req {
@@ -7078,12 +7087,17 @@ body.has-sticky-bar .site-nav {
   margin-bottom: 0;
 }
 .calc-form-label {
+  /* v22 Agent 3 — bring this v12 cascade override in line with the
+     foundation: --txt-3 → --txt-2 (contrast lift), fluid --fs-body-sm,
+     letter-spacing dialled from .12 → .04 (was airy at .75rem caps;
+     even airier at the new fluid size if left at .12). Weight kept
+     at 700 because this is the v12 stronger-form spec. */
   display: block;
-  font-size: .75rem;
+  font-size: var(--fs-body-sm);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: .12em;
-  color: var(--txt-3);
+  letter-spacing: .04em;
+  color: var(--txt-2);
   margin-bottom: var(--s3);
 }
 

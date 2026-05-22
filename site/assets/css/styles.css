@@ -16,15 +16,21 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h, 72px) + 12px);
   font-size: 16px;
+  overflow-x: clip;
 }
 
 body {
   background: var(--bg);
   color: var(--txt-1);
   font-family: var(--font-body);
-  line-height: 1.6;
+  font-size: var(--fs-body, 1rem);
+  line-height: var(--lh-relaxed, 1.6);
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+  min-height: 100vh;
+  min-height: 100svh;
 }
 
 img {
@@ -43,6 +49,140 @@ button {
   border: none;
   background: none;
 }
+
+/* ════════════════════════════════════════════════════════════════
+   ⛰  RESPONSIVE FOUNDATION  (v22 · 2026-05-22)
+   ════════════════════════════════════════════════════════════════
+   Single source of truth for breakpoints, spacing scale, fluid type,
+   section rhythm, container gutters, touch safety, mobile-perf gates.
+   ADDITIVE: legacy --s1..--s12 + scattered clamp() are left alone.
+   ════════════════════════════════════════════════════════════════ */
+:root {
+  /* ── BREAKPOINTS (documentation only) ── */
+  --bp-xs:  480px;
+  --bp-sm:  640px;
+  --bp-md:  900px;
+  --bp-lg:  1200px;
+  --bp-xl:  1440px;
+
+  /* ── SPACING SCALE — 8-aligned (user-requested 8/16/24/32/48/64/80) ── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  16px;
+  --space-4:  24px;
+  --space-5:  32px;
+  --space-6:  48px;
+  --space-7:  64px;
+  --space-8:  80px;
+  --space-9:  96px;
+  --space-10: 128px;
+
+  /* ── FLUID SECTION RHYTHM — recovers ~96px per section on mobile ── */
+  --section-y:    clamp(48px, 8vw, 96px);
+  --section-y-sm: clamp(32px, 5vw, 64px);
+  --section-y-lg: clamp(64px, 10vw, 128px);
+
+  /* ── CONTAINER GUTTER ── */
+  --container-x: clamp(16px, 5vw, 80px);
+
+  /* ── FLUID TYPOGRAPHY SCALE ── */
+  --fs-caption:    clamp(0.75rem,    0.70rem  + 0.20vw, 0.8125rem);
+  --fs-body-sm:    clamp(0.8125rem,  0.78rem  + 0.15vw, 0.875rem);
+  --fs-body:       clamp(0.9375rem,  0.90rem  + 0.20vw, 1rem);
+  --fs-body-lg:    clamp(1rem,       0.95rem  + 0.30vw, 1.125rem);
+  --fs-h6:         clamp(1rem,       0.95rem  + 0.30vw, 1.125rem);
+  --fs-h5:         clamp(1.125rem,   1.05rem  + 0.40vw, 1.25rem);
+  --fs-h4:         clamp(1.25rem,    1.10rem  + 0.80vw, 1.5rem);
+  --fs-h3:         clamp(1.5rem,     1.20rem  + 1.40vw, 2rem);
+  --fs-h2:         clamp(1.875rem,   1.40rem  + 2.20vw, 2.75rem);
+  --fs-h1:         clamp(2.25rem,    1.60rem  + 3.00vw, 3.5rem);
+  --fs-display-2:  clamp(2.75rem,    1.80rem  + 4.50vw, 4.5rem);
+  --fs-display-1:  clamp(3rem,       2.00rem  + 6.00vw, 6rem);
+
+  /* ── LINE-HEIGHT TOKENS ── */
+  --lh-tight:    1.1;
+  --lh-snug:     1.25;
+  --lh-normal:   1.5;
+  --lh-relaxed:  1.7;
+
+  /* ── TOUCH & FORM TARGETS ── */
+  --touch-min:   44px;
+  --field-h:     52px;
+  --field-fs:    16px;
+
+  /* ── STICKY CHROME HEIGHTS ── */
+  --nav-h:        72px;
+  --sticky-bar-h: 68px;
+  --fab-size:     56px;
+}
+
+/* Touch-device safety — 44×44 targets + iOS-zoom-safe inputs */
+@media (pointer: coarse) {
+  a[href]:not(.skip-link):not(.nav-logo):not(.lang-btn):not(.phone-card__btn),
+  button:not(.theme-toggle):not(.lang-btn):not(.nav-hamburger),
+  [role="button"],
+  summary {
+    min-height: var(--touch-min);
+  }
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    min-height: var(--field-h);
+    font-size: max(var(--field-fs), 1rem);
+  }
+  a, button, [role="button"], summary, input, select, textarea {
+    touch-action: manipulation;
+  }
+}
+
+/* Performance gates for small viewports */
+@media (max-width: 640px) {
+  .site-nav.scrolled {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .trust-strip {
+    background: rgba(12, 14, 18, 0.92);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  section + section::before { display: none !important; }
+  .home-hero__photos picture:nth-child(n+3) { display: none; }
+}
+
+/* Reduced motion — hard kill switch */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Fluid typography utilities */
+.fs-display-1 { font-size: var(--fs-display-1); line-height: var(--lh-tight);   }
+.fs-display-2 { font-size: var(--fs-display-2); line-height: var(--lh-tight);   }
+.fs-h1        { font-size: var(--fs-h1);        line-height: var(--lh-snug);    }
+.fs-h2        { font-size: var(--fs-h2);        line-height: var(--lh-snug);    }
+.fs-h3        { font-size: var(--fs-h3);        line-height: var(--lh-snug);    }
+.fs-h4        { font-size: var(--fs-h4);        line-height: var(--lh-snug);    }
+.fs-h5        { font-size: var(--fs-h5);        line-height: var(--lh-normal);  }
+.fs-h6        { font-size: var(--fs-h6);        line-height: var(--lh-normal);  }
+.fs-body-lg   { font-size: var(--fs-body-lg);   line-height: var(--lh-relaxed); }
+.fs-body      { font-size: var(--fs-body);      line-height: var(--lh-relaxed); }
+.fs-body-sm   { font-size: var(--fs-body-sm);   line-height: var(--lh-normal);  }
+.fs-caption   { font-size: var(--fs-caption);   line-height: var(--lh-normal);  }
+
+/* Adaptive grid utilities */
+.grid-cards     { display: grid; gap: var(--space-5); grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.grid-cards--sm { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4); }
+.grid-cards--lg { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-5); }
+.grid-cards--xl { grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: var(--space-5); }
+
+/* ════════════════════════════════════════════════════════════════
+   ⛰  /RESPONSIVE FOUNDATION
+   ════════════════════════════════════════════════════════════════ */
 
 ul {
   list-style: none;
@@ -237,16 +377,15 @@ select {
 .container {
   max-width: 1280px;
   margin-inline: auto;
-  padding-inline: clamp(20px, 5vw, 80px);
+  padding-inline: var(--container-x, clamp(16px, 5vw, 80px));
+  width: 100%;
 }
+.container--narrow { max-width: 960px; }
+.container--prose  { max-width: 70ch; }
 
-.section {
-  padding-block: var(--s11);
-}
-
-.section-sm {
-  padding-block: var(--s10);
-}
+.section    { padding-block: var(--section-y,    clamp(48px, 8vw, 96px));  }
+.section-sm { padding-block: var(--section-y-sm, clamp(32px, 5vw, 64px));  }
+.section-lg { padding-block: var(--section-y-lg, clamp(64px, 10vw, 128px));}
 
 /* ── Navigation ─────────────────────────────────────────── */
 .site-nav {
@@ -310,8 +449,127 @@ select {
   transform: translateY(-1px);
 }
 
-.nav-hamburger {
-  display: none;
+/* ════════════════════════════════════════════════════════════════
+   MOBILE NAV DRAWER  (v22 · Phase 3 component #1)
+   - ≤900px: hamburger replaces inline nav controls; drawer slides
+     in from right (LTR) / left (RTL); backdrop + body scroll lock.
+   - ≥901px: drawer wrapper is `display: contents` → desktop layout
+     is byte-identical to pre-drawer.
+   ════════════════════════════════════════════════════════════════ */
+
+.nav-hamburger { display: none; }
+.nav-drawer    { display: contents; }
+.nav-backdrop  { display: none; }
+
+@media (max-width: 900px) {
+  .site-nav { padding: 12px 16px; }
+
+  .nav-hamburger {
+    display: grid;
+    place-items: center;
+    width: var(--touch-min);
+    height: var(--touch-min);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--txt-1);
+    cursor: pointer;
+    transition: border-color var(--t-fast), color var(--t-fast), transform var(--t-fast);
+    margin-inline-start: auto;
+    flex-shrink: 0;
+    z-index: 120;
+  }
+  .nav-hamburger:hover, .nav-hamburger:focus-visible {
+    border-color: var(--mint);
+    color: var(--mint);
+  }
+  .nav-hamburger .icon-close { display: none; }
+  .site-nav.nav-open .nav-hamburger .icon-menu  { display: none; }
+  .site-nav.nav-open .nav-hamburger .icon-close { display: block; }
+
+  .nav-drawer {
+    display: flex;
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: min(85vw, 360px);
+    background: var(--bg-elev);
+    border-inline-start: 1px solid var(--border);
+    z-index: 110;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+    padding: calc(var(--nav-h) + 16px) var(--space-5) var(--space-5);
+    transform: translateX(100%);
+    transition: transform var(--t-base) var(--ease-out), visibility 0s linear var(--t-base);
+    visibility: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-bottom: max(var(--space-5), env(safe-area-inset-bottom));
+    box-shadow: -16px 0 48px rgba(0,0,0,.4);
+  }
+  [dir="rtl"] .nav-drawer {
+    right: auto; left: 0;
+    border-inline-start: none;
+    border-inline-end: 1px solid var(--border);
+    transform: translateX(-100%);
+    box-shadow: 16px 0 48px rgba(0,0,0,.4);
+  }
+  .site-nav.nav-open .nav-drawer {
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform var(--t-base) var(--ease-out);
+  }
+
+  .nav-drawer .nav-links {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column; gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--space-3);
+  }
+  .nav-drawer .nav-links li { border-top: 1px solid var(--border); }
+  .nav-drawer .nav-links a {
+    display: flex; align-items: center;
+    padding: var(--space-3) 0;
+    font-size: var(--fs-h6);
+    color: var(--txt-1);
+    min-height: var(--touch-min);
+    transition: color var(--t-fast);
+  }
+  .nav-drawer .nav-links a:hover, .nav-drawer .nav-links a:focus-visible { color: var(--mint); }
+
+  .nav-drawer .lang-switcher, .nav-drawer .theme-toggle { align-self: flex-start; }
+
+  .nav-drawer .nav-cta {
+    display: flex; justify-content: center; align-items: center;
+    gap: var(--space-2);
+    margin-top: auto;
+    padding: var(--space-3) var(--space-4);
+    min-height: var(--touch-min);
+    font-size: var(--fs-body);
+    border-radius: 999px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .site-nav > .nav-links,
+  .site-nav > .lang-switcher,
+  .site-nav > .theme-toggle,
+  .site-nav > .nav-cta { display: none; }
+
+  .nav-backdrop {
+    display: block;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.55);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 105;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--t-base) var(--ease-out);
+  }
+  .nav-backdrop.is-visible { opacity: 1; pointer-events: auto; }
+
+  body.nav-scroll-lock { overflow: hidden; }
 }
 
 /* ── Hero ───────────────────────────────────────────────── */
@@ -1686,8 +1944,21 @@ select {
     display: flex;
   }
 
-  body {
-    padding-bottom: 68px;
+  /* v22 Phase 3 — only consume bottom padding on pages that ACTUALLY
+     have a sticky-total bar (i.e. trip pages). Homepage previously paid
+     for 68px of non-existent chrome. */
+  body:has(.sticky-total) {
+    padding-bottom: var(--sticky-bar-h, 68px);
+    /* Respect iOS safe-area so the bar sits above the home indicator */
+    padding-bottom: calc(var(--sticky-bar-h, 68px) + env(safe-area-inset-bottom));
+  }
+
+  /* v22 Phase 3 — lift the WhatsApp FAB above the sticky-total bar.
+     The 16px extra buffer covers cases where the sticky bar's actual
+     content height exceeds the --sticky-bar-h token (which is a
+     ladder reference, not a hard pin). */
+  body:has(.sticky-total) .fab-whatsapp {
+    bottom: calc(var(--sticky-bar-h, 68px) + var(--space-4) + env(safe-area-inset-bottom, 0px));
   }
 
   .footer-grid {
@@ -1696,15 +1967,15 @@ select {
 }
 
 @media (max-width: 768px) {
+  /* v22 Phase 3 — trip-page hero mobile reclamation */
+  .hero { min-height: auto; }
   .hero__inner {
     grid-template-columns: 1fr;
-    gap: var(--s7);
-    padding-top: 100px;
+    padding: calc(var(--nav-h) + var(--space-5)) var(--container-x) var(--space-7);
+    gap: var(--space-4);
   }
 
-  .hero__visual {
-    display: none;
-  }
+  .hero__visual { display: none; }
 
   .hero__strip-inner {
     flex-direction: column;
@@ -6787,10 +7058,10 @@ body.has-sticky-bar .site-nav {
   color: var(--accent);
 }
 
-/* ── 14. Section spacing — consistent vertical rhythm ─────── */
+/* ── 14. Section spacing — v22 foundation-aligned ─────── */
 section.section {
-  padding-block: clamp(var(--s8), 7vw, var(--s10));
-  scroll-margin-top: 88px;
+  padding-block: var(--section-y, clamp(48px, 8vw, 96px));
+  scroll-margin-top: calc(var(--nav-h, 72px) + 16px);
   position: relative;
 }
 

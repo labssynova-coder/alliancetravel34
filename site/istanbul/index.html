@@ -200,7 +200,7 @@
 <!-- ── ITINERARY MAP ───────────────────────────────────────────── -->
 <section class="trip-map-section section" id="trip-map-section" aria-label="Carte de l'itinéraire">
   <div class="container">
-    <div class="section-head" style="text-align:center;max-width:680px;margin-inline:auto">
+    <div class="section-head u-text-center u-measure-lg u-mx-auto">
       <p class="section-head__eyebrow" data-aos="fade-up" data-aos-duration="400">Votre voyage en un coup d'œil</p>
       <h2 class="section-head__title" data-aos="fade-up" data-aos-duration="500">L'itinéraire <em>sur la carte</em></h2>
       <p class="section-head__sub">Sultanahmet, Bosphore, Îles des Princes, côté asiatique — votre semaine à Istanbul géolocalisée.</p>
@@ -400,7 +400,7 @@
 </section>
 <section class="faq-bg section" id="faq">
   <div class="container">
-    <div class="section-head" style="text-align:center;max-width:600px;margin-inline:auto"><p class="section-head__eyebrow" data-aos="fade-up" data-aos-duration="400">FAQ</p><h2 class="section-head__title" data-aos="fade-up" data-aos-duration="500">Questions <em>fréquentes</em></h2></div>
+    <div class="section-head u-text-center u-measure-md u-mx-auto"><p class="section-head__eyebrow" data-aos="fade-up" data-aos-duration="400">FAQ</p><h2 class="section-head__title" data-aos="fade-up" data-aos-duration="500">Questions <em>fréquentes</em></h2></div>
     <div class="faq-list">
       <div class="faq-item open"><button class="faq-q" aria-expanded="true">Depuis quel aéroport part-on ?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button><div class="faq-a">Le départ se fait depuis l'<strong>aéroport de Constantine (CZL)</strong> avec Turkish Airlines, directement vers Istanbul. Pas besoin de se déplacer à Alger.</div></div>
       <div class="faq-item" data-aos="fade-up" data-aos-delay="0" data-aos-duration="500"><button class="faq-q" aria-expanded="false">Comment obtenir le visa turc ?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button><div class="faq-a">Le visa turc se paie au centre <strong>Gateway</strong>. Il n'est pas inclus dans le package. Notre équipe vous fournit toutes les instructions et vous guide dans la démarche, qui est simple et rapide.</div></div>
@@ -513,7 +513,7 @@
         </div>
         <div class="calc-form-group">
           <label class="calc-form-label" for="hotel-select">Hôtel</label>
-          <select id="hotel-select" style="background:var(--bg);color:var(--txt-1);border:1px solid var(--border);border-radius:var(--r2);padding:var(--s3) var(--s4);font-size:.875rem;width:100%;cursor:pointer;">
+          <select id="hotel-select" class="fs-body-sm u-text-1" style="background:var(--bg); border:1px solid var(--border); border-radius:var(--r2); padding:var(--space-3) var(--space-4); width:100%; cursor:pointer">
             <option value="river">Hotel River 3★ — dès 123.000 DA</option>
             <option value="ozer">Hotel Ozer Palace 4★ — dès 128.000 DA</option>
             <option value="alpin">Hotel Alpin Due 4★ — dès 130.000 DA</option>
@@ -550,9 +550,9 @@
         </div>
         <div class="calc-form-group">
           <label class="calc-form-label">À noter</label>
-          <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r2);padding:var(--s4);font-size:.8125rem;color:var(--txt-2)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--accent);display:inline;margin-right:4px"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-            Visa turc <strong style="color:var(--txt-1)">non inclus</strong> — à régler séparément au centre Gateway. Notre équipe vous accompagne dans la démarche.
+          <div class="fs-body-sm u-text-2" style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--r2); padding:var(--space-4)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="u-text-accent" style="display:inline; margin-right:4px"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            Visa turc <strong class="u-text-1">non inclus</strong> — à régler séparément au centre Gateway. Notre équipe vous accompagne dans la démarche.
           </div>
         </div>
       </div>
@@ -560,10 +560,10 @@
         <div class="breakdown" id="breakdown">
           <div class="breakdown__header">Récapitulatif</div>
           <div class="breakdown__lines" id="breakdown-lines" aria-live="polite"><p class="breakdown__empty">Choisissez un hôtel pour calculer.</p></div>
-          <div style="height:1px;background:var(--border)"></div>
+          <div class="u-divider"></div>
           <div class="breakdown__total"><span class="breakdown__total-label">Total estimé</span><span class="breakdown__total-amount" id="breakdown-total" aria-live="polite" aria-atomic="true">—</span></div>
-          <div class="breakdown__usd" id="breakdown-usd" style="display:none"></div>
-          <div class="breakdown__why"><details><summary>Pourquoi ce prix ?</summary><p id="breakdown-why-details" style="margin-top:var(--s3);line-height:1.65">Prix par personne en chambre double, vol TK Constantine–Istanbul–Constantine inclus, 7 nuits petit-déjeuner, transferts aéroport–hôtel, 4 jours d'excursions guidées inclus.</p></details></div>
+          <div class="breakdown__usd u-hidden" id="breakdown-usd"></div>
+          <div class="breakdown__why"><details><summary>Pourquoi ce prix ?</summary><p id="breakdown-why-details" class="u-mt-sp3" style="line-height:1.65">Prix par personne en chambre double, vol TK Constantine–Istanbul–Constantine inclus, 7 nuits petit-déjeuner, transferts aéroport–hôtel, 4 jours d'excursions guidées inclus.</p></details></div>
           <div class="breakdown__ctas">
             <a href="#booking" class="btn btn--primary btn--full" data-track-event="calc_continue_to_booking">
               Continuer vers la réservation
@@ -571,16 +571,16 @@
             </a>
           </div>
         </div>
-        <p style="font-size:.75rem;color:var(--txt-3);margin-top:var(--s3);text-align:center">Étape suivante : remplissez votre dossier ci-dessous</p>
+        <p class="fs-caption u-text-3 u-mt-sp3 u-text-center">Étape suivante : remplissez votre dossier ci-dessous</p>
       </div>
     </div>
   </div>
 </section>
 <section class="booking-section section" id="booking" aria-label="Formulaire de réservation">
- en ligne</h3><p style="margin:0 0 16px;color:#c9cdd4;line-height:1.6">Le formulaire de réservation interactif requiert JavaScript. En attendant, vous pouvez nous contacter directement&nbsp;:</p><p style="margin:0;font-size:1.0625rem"><a href="https://wa.me/213561616266" style="color:#9ce8b2;font-weight:600;text-decoration:none">WhatsApp&nbsp;: 0561 616 266</a><br><br><a href="tel:+213561616266" style="color:#9ce8b2;text-decoration:none">Téléphone&nbsp;: 0561 616 266</a></p></div></noscript>
+ en ligne</h3><p class="u-noscript-msg">Le formulaire de réservation interactif requiert JavaScript. En attendant, vous pouvez nous contacter directement&nbsp;:</p><p class="fs-body-lg u-m-0"><a href="https://wa.me/213561616266" class="u-text-mint u-fw-600 u-no-decoration">WhatsApp&nbsp;: 0561 616 266</a><br><br><a href="tel:+213561616266" class="u-text-mint u-no-decoration">Téléphone&nbsp;: 0561 616 266</a></p></div></noscript>
 
 </section>
-<noscript><div style="max-width:680px;margin:48px auto;padding:24px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;text-align:center;color:#fbf8f1"><h3 style="margin:0 0 12px;font-size:1.25rem">Activez JavaScript pour réserver en ligne</h3><p style="margin:0 0 16px;color:#c9cdd4;line-height:1.6">Le formulaire de réservation interactif requiert JavaScript. En attendant, vous pouvez nous contacter directement&nbsp;:</p><p style="margin:0;font-size:1.0625rem"><a href="https://wa.me/213561616266" style="color:#9ce8b2;font-weight:600;text-decoration:none">WhatsApp&nbsp;: 0561 616 266</a><br><br><a href="tel:+213561616266" style="color:#9ce8b2;text-decoration:none">Téléphone&nbsp;: 0561 616 266</a></p></div></noscript>
+<noscript><div class="u-measure-lg u-text-center u-noscript-card"><h3 class="fs-h5 u-noscript-title">Activez JavaScript pour réserver en ligne</h3><p class="u-noscript-msg">Le formulaire de réservation interactif requiert JavaScript. En attendant, vous pouvez nous contacter directement&nbsp;:</p><p class="fs-body-lg u-m-0"><a href="https://wa.me/213561616266" class="u-text-mint u-fw-600 u-no-decoration">WhatsApp&nbsp;: 0561 616 266</a><br><br><a href="tel:+213561616266" class="u-text-mint u-no-decoration">Téléphone&nbsp;: 0561 616 266</a></p></div></noscript>
 
 <section class="info-block-section section" id="conditions" aria-label="Informations pratiques pour votre réservation">
   <div class="container">
@@ -691,8 +691,8 @@
     <div class="related-grid">
 
       <a href="../azerbaidjan/" class="related-card reveal">
-        <div class="related-card__art" style="border-radius:var(--r2);overflow:hidden">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+        <div class="related-card__art u-radius-clip">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="u-size-full">
 <rect width="100" height="100" fill="#060a16"/>
 <radialGradient id="az-azerbaidjan-g" cx="50%" cy="100%" r="80%"><stop offset="0" stop-color="#3AAFAF" stop-opacity=".35"/><stop offset="1" stop-color="transparent"/></radialGradient>
 <rect width="100" height="100" fill="url(#az-azerbaidjan-g)"/>
@@ -712,8 +712,8 @@
         </div>
       </a>
       <a href="../sharm-constantine/" class="related-card reveal">
-        <div class="related-card__art" style="border-radius:var(--r2);overflow:hidden">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+        <div class="related-card__art u-radius-clip">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="u-size-full">
 <rect width="100" height="100" fill="#020c12"/>
 <radialGradient id="ssh-sharm-constantine-g" cx="50%" cy="60%" r="60%"><stop offset="0" stop-color="#28B4D4" stop-opacity=".3"/><stop offset="1" stop-color="transparent"/></radialGradient>
 <rect width="100" height="100" fill="url(#ssh-sharm-constantine-g)"/>
@@ -778,7 +778,7 @@
         </div>
         <div class="phone-group">
           <p class="phone-group__head"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Adresse</p>
-          <p style="font-size:.875rem;color:var(--txt-2);line-height:1.5;margin:0">Cité 5 Juillet, Bd. de l'ALN<br>Bordj Bou Arreridj, Algérie</p>
+          <p class="fs-body-sm u-text-2 u-m-0">Cité 5 Juillet, Bd. de l'ALN<br>Bordj Bou Arreridj, Algérie</p>
         </div>
       </div></div><div class="footer-bottom"><p>© 2026 Alliance Travel · Bordj Bou Arreridj</p><p>Prix en DA · Visa non inclus pour Istanbul · Indicatifs</p></div></div></footer>
 

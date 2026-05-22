@@ -180,6 +180,55 @@ button {
 .grid-cards--lg { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-5); }
 .grid-cards--xl { grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: var(--space-5); }
 
+/* Atomic utilities — minimal set for inline-style migration (v22 Phase A) */
+.u-hidden        { display: none; }
+.u-block         { display: block; }
+.u-inline-block  { display: inline-block; }
+.u-text-center   { text-align: center; }
+.u-mx-auto       { margin-inline: auto; }
+.u-m-0           { margin: 0; }
+.u-mt-1          { margin-top: 4px; }
+.u-mt-2          { margin-top: 6px; }
+.u-mt-3          { margin-top: 8px; }
+.u-mt-sp3        { margin-top: var(--space-3); }
+.u-mt-sp4        { margin-top: var(--space-4); }
+.u-mt-sp5        { margin-top: var(--space-5); }
+.u-mb-1          { margin-bottom: 4px; }
+.u-mb-sp3        { margin-bottom: var(--space-3); }
+.u-mb-sp4        { margin-bottom: var(--space-4); }
+.u-mb-sp5        { margin-bottom: var(--space-5); }
+.u-mb-sp7        { margin-bottom: var(--space-7); }
+.u-size-full     { width: 100%; height: 100%; }
+.u-measure-sm    { max-width: 500px; }
+.u-measure-md    { max-width: 600px; }
+.u-measure-lg    { max-width: 680px; }
+.u-measure-xl    { max-width: 720px; }
+.u-text-1        { color: var(--txt-1); }
+.u-text-2        { color: var(--txt-2); }
+.u-text-3        { color: var(--txt-3); }
+.u-text-mint     { color: var(--mint); }
+.u-text-accent   { color: var(--accent); }
+.u-fw-300        { font-weight: 300; }
+.u-fw-400        { font-weight: 400; }
+.u-fw-500        { font-weight: 500; }
+.u-fw-600        { font-weight: 600; }
+.u-font-display  { font-family: var(--font-display); }
+.u-radius-clip   { border-radius: var(--r2); overflow: hidden; }
+.u-divider       { height: 1px; background: var(--border); }
+.u-bg-2          { background: var(--bg-2); }
+.u-no-decoration { text-decoration: none; }
+.u-uppercase     { text-transform: uppercase; }
+.u-letter-wide   { letter-spacing: .1em; }
+.u-link-mint     { color: var(--mint); text-decoration: none; }
+
+/* Noscript fallback styling (used in 5 region pages' booking-section <noscript>) */
+.u-noscript-card { margin: 48px auto; padding: 24px; background: rgba(255,255,255,.04);
+                   border: 1px solid rgba(255,255,255,.1); border-radius: 14px; color: #fbf8f1; }
+.u-noscript-msg  { margin: 0 0 16px; color: #c9cdd4; line-height: 1.6; }
+.u-noscript-title { margin: 0 0 12px; }
+.u-cluster       { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+.u-cluster--sm   { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
 /* ════════════════════════════════════════════════════════════════
    ⛰  /RESPONSIVE FOUNDATION
    ════════════════════════════════════════════════════════════════ */

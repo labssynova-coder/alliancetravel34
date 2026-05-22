@@ -1888,6 +1888,10 @@ select {
 }
 
 .footer-grid {
+  /* v22 Agent 3 — auto-fit collapse ladder.
+     - desktop: 2fr 1fr 1fr explicit (kept — brand col is 2× wider)
+     - tablet/phone (≤1024 / ≤768): controlled in the responsive blocks below
+       and ultimately auto-fit at ≤480px so the columns can re-flow. */
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
   gap: var(--s9);
@@ -2048,8 +2052,13 @@ select {
     bottom: calc(var(--sticky-bar-h, 68px) + var(--space-4) + env(safe-area-inset-bottom, 0px));
   }
 
+  /* v22 Agent 3 — at ≤1024px, swap to auto-fit so each column has a
+     min-width floor (220px) and the grid naturally reflows to 1 col
+     at ≤480px without needing a 3rd explicit breakpoint. Replaces the
+     previous fixed 1fr 1fr which broke awkwardly on phones. */
   .footer-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-5);
   }
 }
 
@@ -2086,8 +2095,11 @@ select {
     grid-template-columns: 1fr;
   }
 
+  /* v22 Agent 3 — at ≤768px, drop the brand col bias so its 2fr can
+     match the others; auto-fit still controls the column count.
+     Final hard collapse to 1 col happens at ≤480px below. */
   .footer-grid {
-    grid-template-columns: 1fr;
+    gap: var(--space-4);
   }
 
   .nav-links {
@@ -2097,6 +2109,18 @@ select {
   .footer-bottom {
     flex-direction: column;
     text-align: center;
+  }
+}
+
+/* v22 Agent 3 — narrowest tier: guarantee 1-column footer + tighter
+   gap (auto-fit already collapses but we belt-and-brace it here). */
+@media (max-width: 480px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  .footer-tagline {
+    max-width: none;
   }
 }
 

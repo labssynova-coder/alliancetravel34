@@ -73,8 +73,9 @@
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Sans:ital,wght@1,400&display=swap"
     rel="stylesheet" />
+  <!-- v22: html.js flag for [data-aos] reveal CSS -->
+  <script>document.documentElement.classList.add("js");</script>
   <link rel="stylesheet" href="assets/css/styles.css" />
-  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
   <style>
     :root {
       --accent: #B2E89C;
@@ -1113,22 +1114,6 @@
   <script src="assets/js/hero-collage-lazy.js" defer></script>
   <script type="module" src="assets/js/globe.js"></script>
   <script src="assets/js/algeria-map.js" defer></script>
-  <!-- AOS scroll animations (michalsnik/aos) -->
-  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-  <script>
-    (function () {
-      var pref = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      AOS.init({
-        duration: 650,
-        easing:   "ease-out-cubic",
-        once:     true,
-        offset:   60,
-        disable:  pref
-      });
-      /* Recalc positions after all resources load (fonts/images shift layout) */
-      window.addEventListener("load", function () { AOS.refresh(); });
-    })();
-  </script>
 </body>
 
 </html>

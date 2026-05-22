@@ -64,17 +64,45 @@ function animateCounter(el) {
   requestAnimationFrame(step);
 }
 
-/* ─── Scroll reveals with stagger ────────────────────────── */
+/* ─── Scroll reveals with stagger ──────────────────────────
+   Unified reveal system (v22): handles legacy `.reveal` /
+   `.reveal-stagger` classes AND `data-aos` attributes (replaced AOS
+   library 2026-05-22). Reads optional `data-aos-delay` (ms) and
+   `data-aos-duration` (ms) — applied inline so per-element timing
+   tracks the same values the AOS markup specified. The CSS variant
+   per `data-aos` value lives in styles.css under "AOS-compat reveal". */
 function initRevealObserver() {
-  const els = document.querySelectorAll('.reveal, .reveal-stagger > *, [data-counter]');
+  const els = document.querySelectorAll(
+    '.reveal, .reveal-stagger > *, [data-counter], [data-aos]'
+  );
   if (!els.length) return;
 
-  // Mark stagger children with index
+  // Reduced motion: skip animation entirely, mark every element visible now
+  if (reducedMotion) {
+    els.forEach(el => {
+      el.classList.add('visible');
+      if (el.hasAttribute('data-counter')) animateCounter(el);
+    });
+    return;
+  }
+
+  // Mark stagger children with index for sequential reveal
   document.querySelectorAll('.reveal-stagger').forEach(parent => {
     [...parent.children].forEach((child, i) => {
       child.style.setProperty('--i', i);
       if (!child.classList.contains('reveal')) child.classList.add('reveal');
     });
+  });
+
+  // Per-element timing from data-aos-* attributes — applied as CSS vars so
+  // the transition rule in styles.css can pick them up without extra JS.
+  els.forEach(el => {
+    if (el.hasAttribute('data-aos')) {
+      const delay = parseInt(el.getAttribute('data-aos-delay') || '0', 10);
+      const dur   = parseInt(el.getAttribute('data-aos-duration') || '650', 10);
+      if (delay) el.style.setProperty('--aos-delay', delay + 'ms');
+      if (dur)   el.style.setProperty('--aos-duration', dur + 'ms');
+    }
   });
 
   const obs = new IntersectionObserver(entries => {

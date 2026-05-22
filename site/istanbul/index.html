@@ -6,8 +6,9 @@
   <meta name="description" content="Voyage guidé à Istanbul depuis Constantine. 8 jours / 7 nuits, Turkish Airlines, départs hebdomadaires mars-mai 2026. À partir de 123.000 DA."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Sans:ital,opsz,wght@1,9..40,400&display=swap" rel="stylesheet"/>
+  <!-- v22: html.js flag for [data-aos] reveal CSS -->
+  <script>document.documentElement.classList.add("js");</script>
   <link rel="stylesheet" href="../assets/css/styles.css"/>
-  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
   <style>
     :root {
       --accent:      #70b8e0;
@@ -804,21 +805,5 @@ window.TRIP_DATA = {
 <script src="../assets/js/booking-form.js" defer></script>
 <script src="../assets/js/enhance.js" defer></script>
 <script src="../assets/js/enhance-pro.js" defer></script>
-  <!-- AOS scroll animations (michalsnik/aos) -->
-  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-  <script>
-    (function () {
-      var pref = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      AOS.init({
-        duration: 650,
-        easing:   "ease-out-cubic",
-        once:     true,
-        offset:   60,
-        disable:  pref
-      });
-      /* Recalc positions after all resources load (fonts/images shift layout) */
-      window.addEventListener("load", function () { AOS.refresh(); });
-    })();
-  </script>
-</body>
+  </body>
 </html>

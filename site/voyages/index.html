@@ -8,8 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Sans:ital,wght@1,400&display=swap" rel="stylesheet"/>
+  <!-- v22: html.js flag for [data-aos] reveal CSS -->
+  <script>document.documentElement.classList.add("js");</script>
   <link rel="stylesheet" href="../assets/css/styles.css"/>
-  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
   <!-- Open Graph / Social -->
   <meta property="og:type" content="website"/>
   <meta property="og:title" content="Nos voyages 2026 — Alliance Travel"/>
@@ -225,14 +226,5 @@
 </script>
 <script src="../assets/js/enhance.js" defer></script>
 <script src="../assets/js/enhance-pro.js" defer></script>
-  <!-- AOS scroll animations -->
-  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-  <script>
-    (function () {
-      var pref = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      AOS.init({ duration: 650, easing: "ease-out-cubic", once: true, offset: 60, disable: pref });
-      window.addEventListener("load", function () { AOS.refresh(); });
-    })();
-  </script>
 </body>
 </html>

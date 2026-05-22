@@ -2821,6 +2821,35 @@ select {
   transition-delay: calc(var(--i, 0) * 60ms);
 }
 
+/* ── AOS-compat reveal (v22: replaces michalsnik/aos library) ──
+   Mirrors the subset of AOS attributes actually used in our HTML
+   (fade-up + zoom-in only — verified 191 of 191 data-aos values).
+   `enhance.js#initRevealObserver` adds .visible on intersection;
+   `--aos-delay` and `--aos-duration` are set per-element from
+   data-aos-delay / data-aos-duration when present.
+
+   Scoped to `html.js` so no-JS / pre-JS users see content normally
+   (matches AOS's html:not(.no-js) pattern). The .js class is added
+   by an inline script at the head of every page. */
+html.js [data-aos] {
+  opacity: 0;
+  transition:
+    opacity var(--aos-duration, 650ms) var(--ease-out, ease-out)
+      var(--aos-delay, 0ms),
+    transform var(--aos-duration, 650ms) var(--ease-spring, ease-out)
+      var(--aos-delay, 0ms);
+}
+html.js [data-aos="fade-up"]    { transform: translateY(28px); }
+html.js [data-aos="fade-down"]  { transform: translateY(-28px); }
+html.js [data-aos="fade-left"]  { transform: translateX(40px); }
+html.js [data-aos="fade-right"] { transform: translateX(-40px); }
+html.js [data-aos="zoom-in"]    { transform: scale(.92); }
+html.js [data-aos="zoom-out"]   { transform: scale(1.08); }
+html.js [data-aos].visible {
+  opacity: 1;
+  transform: none;
+}
+
 /* ── Stat counter ─────────────────────────────────────────── */
 [data-counter] {
   font-variant-numeric: tabular-nums;
@@ -9666,45 +9695,20 @@ body { background: var(--bg); color: var(--txt-1); }
 
 
 /* ══════════════════════════════════════════════════════════
-   AOS (Animate On Scroll) — v20 integration layer
+   AOS integration layer — REMOVED v22 (2026-05-22)
    ══════════════════════════════════════════════════════════
-
-   1. Silence the CSS-keyframe .fade-up animation on any element
-      that is also managed by AOS. AOS starts the element at
-      opacity:0/transform:translateY(30px) via [data-aos] and
-      flips to aos-animate — the keyframe would fight that.
-
-   2. Ensure AOS elements start invisible even before aos.js
-      has initialised (prevents a flash of content on slow
-      connections). The [data-aos]:not(.aos-init) selector
-      covers the pre-init window.
-
-   3. Keep .reveal/.reveal-stagger intact — they cover elements
-      that AOS doesn't touch (inclus columns, related cards).
+   AOS library dropped (~14 KB JS + ~28 KB CSS). The replacement
+   lives at line ~2824 ("AOS-compat reveal") and the JS side
+   in enhance.js#initRevealObserver. Reduced-motion is now
+   handled by the foundation-level prefers-reduced-motion rule.
+   This tombstone exists so future spelunkers don't recreate it.
 ══════════════════════════════════════════════════════════ */
 
-/* Silence CSS keyframe animation when AOS is managing the element */
+/* Silence CSS keyframe animation on data-aos elements that also
+   carry the legacy .fade-up* classes — keep, still relevant. */
 [data-aos].fade-up,
 [data-aos].fade-up--d1,
 [data-aos].fade-up--d2,
 [data-aos].fade-up--d3 {
   animation: none;
 }
-
-/* Pre-init hidden state — prevents flash before AOS JS runs */
-[data-aos]:not(.aos-init) {
-  opacity: 0;
-}
-
-/* AOS: honour prefers-reduced-motion by zeroing durations
-   (AOS's own `disable` flag handles this at the JS level,
-   but this CSS fallback covers the edge case where JS hasn't
-   run yet or the flag wasn't set). */
-@media (prefers-reduced-motion: reduce) {
-  [data-aos] {
-    transition-duration: 0ms !important;
-    animation-duration: 0ms !important;
-  }
-}
-
-/* End AOS v20 integration ─────────────────────────────────── */

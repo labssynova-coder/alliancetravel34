@@ -8778,8 +8778,28 @@ picture.scroll-hero__media {
     transform: translate(-3px, -3px);
     box-shadow: 9px 9px 0 var(--hc-shadow);
   }
+
+  /* v22 Agent 3 — when cards stack in 1-col, the 16/10 photo gets too
+     wide and pulls the card too tall. Switch to 4/3 so stacked cards
+     keep uniform image heights and the price block stays in reach. */
+  .hotel-card__img {
+    aspect-ratio: 4 / 3;
+  }
+
+  /* v22 Agent 3 — readable price even on tiny screens. */
   .hotel-card__price strong { font-size: 24px; }
-  .hotel-card__cta { padding: 11px 14px; font-size: 12px; }
+  .hotel-card__price-meta   { font-size: var(--fs-body-sm); }
+
+  /* v22 Agent 3 — CTA hit area enforced to 44px (WCAG 2.5.5).
+     Previous 11/14 padding × 12px font-size totalled ≈34px tap height. */
+  .hotel-card__cta {
+    padding: 13px 16px;
+    font-size: 13px;
+    min-height: var(--touch-min);
+  }
+
+  /* v22 Agent 3 — stars upsized so 5-star rendering doesn't look like noise. */
+  .hotel-card__stars { font-size: 16px; }
 }
 
 /* ── Reduced motion ─────────────────────────────────────── */

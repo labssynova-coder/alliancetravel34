@@ -10,7 +10,11 @@
  * Bump CACHE_NAME on any release; the activate handler purges old caches.
  * Vanilla JS, no Workbox / build step.
  */
-const CACHE_NAME = 'alliance-v21-2026-05-13';
+
+/* CACHE NAME RULE: bump version on every release that changes site/.
+   The activate handler purges old caches automatically. Query-param
+   cache busting (?v=) does NOT work for SW-cached resources. */
+const CACHE_NAME = 'alliance-v22-2026-05-22';
 const RUNTIME    = 'alliance-runtime';
 
 // Install: pre-cache the homepage shell so offline users see something

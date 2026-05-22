@@ -122,7 +122,7 @@ button {
 
 /* Touch-device safety — 44×44 targets + iOS-zoom-safe inputs */
 @media (pointer: coarse) {
-  a[href]:not(.skip-link):not(.nav-logo):not(.lang-btn):not(.phone-card__btn),
+  a[href]:not(.skip-link):not(.nav-logo):not(.lang-btn),
   button:not(.theme-toggle):not(.lang-btn):not(.nav-hamburger),
   [role="button"],
   summary {
@@ -3100,7 +3100,11 @@ html.js [data-aos].visible {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  min-width: 320px;
+  /* v22 follow-up #4: was a static 320px, which on a 320px viewport
+     forces overflow because the menu equals the entire viewport width
+     while being absolutely positioned to the right of a trigger. Clamp
+     to never exceed (100vw - 32px gutter). */
+  min-width: min(320px, calc(100vw - 32px));
   background: rgba(20, 22, 28, .95);
   backdrop-filter: blur(18px);
   border: 1px solid var(--border-hi);
@@ -3347,8 +3351,13 @@ html.js [data-aos].visible {
   }
 
   .trip-switcher__menu {
-    right: -120px;
-    min-width: 280px;
+    /* v22 follow-up #3: -120px caused a 120px horizontal-scroll leak on
+       iPhone SE (320px). Anchor inside the viewport with a 16px gutter,
+       cap width at viewport-minus-32. The trigger anchor was the right
+       edge of the navbar; we now anchor by translating left within the
+       viewport instead of shifting the menu past the parent edge. */
+    right: 16px;
+    min-width: min(280px, calc(100vw - 32px));
   }
 }
 
@@ -9571,11 +9580,15 @@ body { background: var(--bg); color: var(--txt-1); }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  padding: 7px 8px;
-  font-size: .75rem;
+  gap: 6px;
+  /* v22 follow-up #1: bump from 7/8 to 11/14 to hit WCAG 2.5.5 (44x44).
+     Combined with the SVG (13px) + .8125rem text + .01em letter-spacing,
+     the button now renders at ~44-46px tall on every viewport. */
+  padding: 11px 14px;
+  font-size: .8125rem;
   font-weight: 600;
   letter-spacing: .01em;
+  min-height: var(--touch-min, 44px);
   border-radius: 999px;
   text-decoration: none;
   border: 1px solid transparent;

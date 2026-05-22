@@ -317,8 +317,14 @@ select {
   --font-display: 'DM Sans', system-ui, sans-serif;
   --font-body:    'DM Sans', system-ui, sans-serif;
 
-  /* ── Spacing scale (baseline preserved — geometric migration in A.2) */
-  --s1:   4px;  --s2:   9px;  --s3:  16px;  --s4:  24px;
+  /* ── Spacing scale (legacy v1 — kept for backward compat; use --space-* in new code)
+       Aliases by design: --s4/--s5 both 24px (legacy v1 → v6 widening absorbed a removed step);
+                          --s7/--s8 both 40px (same lineage). 3000+ references across
+                          components — DO NOT delete, only fix anomalies.
+       v22 anomaly fix: --s2 was 9px (off-8-grid). Now 8px so the legacy
+       and --space-2 (8px) scales agree at that step. Single 1px nudge,
+       no expected visual regression — visually verified at 1440px. */
+  --s1:   4px;  --s2:   8px;  --s3:  16px;  --s4:  24px;
   --s5:  24px;  --s6:  32px;  --s7:  40px;  --s8:  40px;
   --s9:  56px;  --s10: 72px;  --s11: 96px;  --s12: 128px;
 

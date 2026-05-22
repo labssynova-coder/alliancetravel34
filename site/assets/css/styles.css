@@ -281,6 +281,29 @@ button {
    ⛰  /RESPONSIVE FOUNDATION
    ════════════════════════════════════════════════════════════════ */
 
+/* Mobile will-change gates (v22) — release compositor layers for
+   continuous-animation + scroll-linked selectors on ≤640px. The
+   keyframes / scroll handlers still run, but the browser is allowed
+   to manage layer creation per-frame instead of permanently. Outside
+   the foundation block so component-level concerns stay editable. */
+@media (max-width: 640px) {
+  [data-region] .hero,
+  .home-hero__photos img,
+  .fab-whatsapp::before,
+  .globe-polaroid,
+  .scroll-hero__bg,
+  .scroll-hero__media,
+  .scroll-hero__media::after,
+  .scroll-hero__title-pre,
+  .scroll-hero__title-post,
+  .scroll-hero__eyebrow,
+  .scroll-hero__caption,
+  .scroll-hero__skip,
+  .scroll-hero__continuation {
+    will-change: auto;
+  }
+}
+
 /* ════════════════════════════════════════════════════════════════
    🔺 Z-INDEX LAYER SYSTEM  (v22 · 2026-05-22)
    ════════════════════════════════════════════════════════════════
@@ -4672,7 +4695,9 @@ main, footer, section, .home-hero { position: relative; z-index: 1; }
 
 .hero__bg {
   transform: translate3d(0, calc(var(--scroll-y, 0) * 0.18px), 0);
-  will-change: transform;
+  /* will-change removed (v22): the scroll handler re-applies the transform
+     every frame while scrolling, so the compositor layer is created on-demand
+     and torn down when scroll settles — keeping it permanent leaks GPU memory. */
 }
 [data-region] .hero {
   background-attachment: scroll;
@@ -4694,6 +4719,8 @@ main, footer, section, .home-hero { position: relative; z-index: 1; }
 .hero__inner, .hero__content { position: relative; z-index: 3; }
 
 .home-hero__photos img {
+  /* photo-fade is an infinite keyframe animation — layer must stay composited.
+     Gated below ≤640px (collage limited to 2 visible photos per perf-gate). */
   will-change: transform, opacity;
   transform-origin: center;
 }
@@ -4705,7 +4732,8 @@ main, footer, section, .home-hero { position: relative; z-index: 1; }
     opacity var(--t-cinema) var(--ease-spring),
     transform var(--t-cinema) var(--ease-spring),
     filter   var(--t-cinema) var(--ease-spring);
-  will-change: opacity, transform;
+  /* will-change removed (v22): one-time entrance fires once on intersection.
+     The browser composites the transform on-demand when the transition runs. */
 }
 [data-fx="up"]      { transform: translate3d(0, 32px, 0); }
 [data-fx="down"]    { transform: translate3d(0, -28px, 0); }
@@ -4730,7 +4758,8 @@ main, footer, section, .home-hero { position: relative; z-index: 1; }
     opacity var(--t-slow) var(--ease-spring),
     transform var(--t-slow) var(--ease-spring);
   transition-delay: calc(var(--d, 0) * 70ms);
-  will-change: opacity, transform;
+  /* will-change removed (v22): one-time stagger entrance — layer per child
+     would multiply mobile compositor pressure linearly with list length. */
 }
 [data-fx-stagger].is-in > * {
   opacity: 1;
@@ -4753,6 +4782,17 @@ a.btn--ghost,
     color var(--t-fast) var(--ease-snap),
     box-shadow var(--t-base) var(--ease-spring),
     border-color var(--t-fast) var(--ease-snap);
+}
+/* will-change only during hover/focus — the magnet effect runs JS rAF
+   updates of --mx/--my while pointer is over the button. Outside hover,
+   transform never changes so no compositor layer needed (v22). */
+.btn:hover, .btn:focus-visible,
+.nav-cta:hover, .nav-cta:focus-visible,
+a.btn--primary:hover, a.btn--primary:focus-visible,
+a.btn--ghost:hover, a.btn--ghost:focus-visible,
+.book-form button[type="submit"]:hover,
+.book-form button[type="submit"]:focus-visible,
+.calc-cta:hover, .calc-cta:focus-visible {
   will-change: transform;
 }
 .btn--primary {
@@ -4790,13 +4830,15 @@ a.btn--ghost,
     border-color var(--t-fast) var(--ease-snap),
     background var(--t-fast) var(--ease-snap);
   cursor: pointer;
-  will-change: transform;
 }
 .trip-card:hover,
 .hotel-card:hover,
 .value-card:hover,
 .branch-card:hover {
   transform: translate3d(0, -6px, 0);
+  /* will-change scoped to hover: layer created on enter, dropped on leave
+     so 12+ cards in a grid don't sit as permanent compositor layers (v22). */
+  will-change: transform;
   box-shadow: 0 28px 50px -22px rgba(0, 0, 0, .55),
               0 0 0 1px rgba(156, 232, 178, .12);
 }
@@ -4812,11 +4854,12 @@ a.btn--ghost,
 .trip-card__art,
 .trip-card img {
   transition: transform 1.2s var(--ease-spring);
-  will-change: transform;
 }
 .trip-card:hover .trip-card__art,
 .trip-card:hover img {
   transform: scale(1.06);
+  /* layer scoped to parent :hover — created on enter, freed on leave (v22) */
+  will-change: transform;
 }
 
 .trip-card { position: relative; isolation: isolate; }
@@ -4845,7 +4888,8 @@ section { scroll-margin-top: 90px; }
   transition:
     opacity var(--t-cinema) var(--ease-spring),
     transform var(--t-cinema) var(--ease-spring);
-  will-change: opacity, transform;
+  /* will-change removed (v22): one-time entrance from observer.
+     Permanent layer on every section header inflates mobile GPU. */
 }
 .section-head.is-in .section-head__eyebrow { opacity: 1; transform: none; transition-delay: 0ms; }
 .section-head.is-in h2,

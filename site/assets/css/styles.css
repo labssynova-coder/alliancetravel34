@@ -29,6 +29,10 @@ body {
   line-height: var(--lh-relaxed, 1.6);
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
+  /* v22 Agent 3 — svh = smallest viewport height (URL bar showing). Body
+     uses svh so the page always fits regardless of iOS Safari URL-bar
+     state; pre-15.4 falls back to vh. Sticky/full-bleed regions use
+     dvh instead — see scroll-hero__pinned for the rationale. */
   min-height: 100vh;
   min-height: 100svh;
 }
@@ -7457,7 +7461,13 @@ section.section.phase-block + section.section:not(.phase-block) {
 .scroll-hero__pinned {
   position: sticky;
   top: 0;
+  /* v22 Agent 3 — 3-tier viewport-height fallback (vh → svh → dvh) so
+     iOS Safari pre-15.4 still renders sanely. dvh is the modern choice
+     here (NOT svh): it adapts as the URL bar shows/hides, which is what
+     a sticky-pinned hero needs. svh would leave a gap when the bar
+     collapses. */
   height: 100vh;
+  height: 100svh;
   height: 100dvh;
   width: 100%;
   overflow: hidden;
@@ -7772,12 +7782,16 @@ section.section.phase-block + section.section:not(.phase-block) {
 @media (prefers-reduced-motion: reduce) {
   .scroll-hero__scrub {
     height: auto;
+    /* v22 Agent 3 — 3-tier fallback (vh → svh → dvh). See note on
+       .scroll-hero__pinned for why dvh is the final preferred value. */
     min-height: 100vh;
+    min-height: 100svh;
     min-height: 100dvh;
   }
   .scroll-hero__pinned {
     position: relative;
     height: 100vh;
+    height: 100svh;
     height: 100dvh;
   }
   .scroll-hero {

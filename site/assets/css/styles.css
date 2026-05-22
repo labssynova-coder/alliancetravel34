@@ -139,7 +139,11 @@ button {
   }
 }
 
-/* Performance gates for small viewports */
+/* Performance gates for small viewports.
+   Heavy backdrop-filter blurs cost GPU cycles on mobile; cap or strip
+   them per selector. Only touches blurs > 12px on selectors that appear
+   on mobile trip + landing pages. Locked-out: .nav-backdrop (Phase 3),
+   .site-nav.scrolled (already gated above), .trust-strip (already nulled). */
 @media (max-width: 640px) {
   .site-nav.scrolled {
     backdrop-filter: blur(8px);
@@ -149,6 +153,46 @@ button {
     background: rgba(12, 14, 18, 0.92);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
+  }
+  /* Floating pill site-nav: 24px sat(180%) → 8px no-sat */
+  .site-nav {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  /* Sticky bars: cap 16-20px → 8px, drop saturate */
+  .sticky-total,
+  .trip-sticky-bar {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  /* Dropdown menu (trip switcher), toast: cap 12-18px → 8px */
+  .trip-switcher__menu,
+  .toast {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  /* Hero ghost button: 12px → 8px */
+  .scroll-hero .btn--ghost,
+  .home-hero .btn--ghost,
+  .hero .btn--ghost {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  /* Trip-card overlays (mobile shows ~3 cards stacked, each with 2 blurred chips) */
+  .trip-card__from,
+  .trip-card__monument {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+  /* Globe-hint pill (~480-640px range, visible briefly) */
+  .globe-hint {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  /* Glass elevation wrapper utility */
+  [data-elev="glass"] {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
   section + section::before { display: none !important; }
   .home-hero__photos picture:nth-child(n+3) { display: none; }

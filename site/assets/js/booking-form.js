@@ -515,12 +515,37 @@ class BookingForm {
     const preview = this.el.msgPreview;
     if (!preview) return;
 
-    // Escape HTML but preserve bold (*text*)
-    const escaped = msg
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-      .replace(/\*(.+?)\*/g, '<strong>$1</strong>');
+    // v22 Agent 3 — empty-state guard.
+    // If the calculator has no hotel selected AND the user hasn't typed
+    // anything into the contact fields, render a friendly empty-state
+    // instead of a barely-filled WhatsApp preview. The skeleton message
+    // is intimidating before the user has done anything.
+    const calc = window.__calcState;
+    const hasCalcSelection = !!(calc && calc.hotel);
+    const name = this.mount.querySelector('#bf-name')?.value.trim();
+    const phone = this.mount.querySelector('#bf-phone')?.value.trim();
+    const hasContact = !!(name || phone);
+    if (!hasCalcSelection && !hasContact) {
+      // TODO(i18n): Agent 4 may extend i18n.js with a `booking.empty_state`
+      // key — once that lands, swap the innerHTML to use a single
+      // <p data-i18n="booking.empty_state"> element. Until then we hard-
+      // code FR (primary locale) with EN + AR strings in data-i18n-fallback
+      // attributes so a future i18n script can pick them up.
+      preview.innerHTML = `<p class="bform-preview__empty"
+        data-i18n="booking.empty_state"
+        data-i18n-en="Configure your trip with the calculator above — your WhatsApp summary will appear here."
+        data-i18n-ar="اضبط رحلتك باستخدام الحاسبة أعلاه — سيظهر ملخّص واتساب الخاص بك هنا."
+      >Configurez votre voyage avec le calculateur ci-dessus — votre récap WhatsApp apparaîtra ici.</p>`;
+      // Keep the send buttons disabled in this state — fall through to the
+      // _validate() block below so href/aria stay coherent.
+    } else {
+      // Escape HTML but preserve bold (*text*)
+      const escaped = msg
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/\*(.+?)\*/g, '<strong>$1</strong>');
 
-    preview.innerHTML = `<pre>${escaped}</pre>`;
+      preview.innerHTML = `<pre>${escaped}</pre>`;
+    }
 
     // Validate silently for the gate (don't show errors until user tries to send
     // or has touched the field). _validate() with silent:true skips the UI render.

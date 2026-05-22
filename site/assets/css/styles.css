@@ -3415,7 +3415,7 @@ html.js [data-aos].visible {
 
 /* ══════════════════════════════════════════════════════════
    ALLIANCE TRAVEL BRAND SYSTEM — Token overrides applied
-   Navy #002c51 · Mint #9ce8b2 · DM Sans · Waypoint scale
+   Navy var(--navy) · Mint var(--mint) · DM Sans · Waypoint scale
    ══════════════════════════════════════════════════════════ */
 
 /* ── Global focus ring ───────────────────────────────────── */
@@ -3641,7 +3641,7 @@ body, .hero, .hero__bg, .site-nav, section, .breakdown,
 }
 
 /* Logo: swap cream fills to navy in light mode */
-:root[data-theme="light"] .nav-logo svg path[fill="#efe8df"] { fill: #002c51 !important; }
+:root[data-theme="light"] .nav-logo svg path[fill="#efe8df"] { fill: var(--navy) !important; }
 
 /* Hero: cream gradient instead of black */
 :root[data-theme="light"] .hero__bg {
@@ -3650,7 +3650,7 @@ body, .hero, .hero__bg, .site-nav, section, .breakdown,
 :root[data-theme="light"] .hero__bg::before,
 :root[data-theme="light"] .hero__bg::after { opacity: 0.5; }
 :root[data-theme="light"] .hero__noise { opacity: 0.015; }
-:root[data-theme="light"] .hero__faded-title { color: #002c51; opacity: 0.04; }
+:root[data-theme="light"] .hero__faded-title { color: var(--navy); opacity: 0.04; }
 :root[data-theme="light"] .hero__visual { border: 1px solid rgba(0,44,81,0.2); }
 :root[data-theme="light"] .hero__strip {
   background: rgba(251,248,241,0.92);
@@ -4657,6 +4657,13 @@ main, footer, section, .home-hero { position: relative; z-index: 1; }
 .home-hero__photos img:nth-child(4) { animation-delay: -7.2s; }
 .home-hero__photos img:nth-child(5) { animation-delay: -9.6s; }
 
+/* Lazy-tile placeholder fill (tiles 2-5). The 1x1 SVG src paints nothing,
+   so without this dark background the parent collage bleeds through until
+   hero-collage-lazy.js swaps the real srcset in after window.load + idle. */
+.home-hero__photos picture[data-lazy-hero] > img {
+  background: #111;
+}
+
 @keyframes photo-fade {
   0%, 100% { opacity: 0.35; transform: scale(1.0); }
   50%      { opacity: 0.7;  transform: scale(1.04); }
@@ -5191,7 +5198,7 @@ section + section.is-in::before { width: 60%; }
 }
 .trust-strip__item svg {
   flex-shrink: 0;
-  color: var(--mint, #9ce8b2);
+  color: var(--mint, var(--mint));
 }
 .trust-strip__item strong {
   color: var(--txt-1);
@@ -5286,7 +5293,7 @@ section + section.is-in::before { width: 60%; }
   gap: 8px;
   padding: 10px 18px;
   background: var(--mint);
-  color: var(--navy, #002c51);
+  color: var(--navy, var(--navy));
   font-weight: 600;
   font-size: 0.875rem;
   border-radius: 999px;
@@ -5463,7 +5470,7 @@ img.lb-target:hover {
   height: 34px;
   border-radius: 50%;
   background: var(--mint-dim, rgba(156, 232, 178, 0.15));
-  color: var(--mint, #9ce8b2);
+  color: var(--mint, var(--mint));
   font-weight: 700;
   font-size: 0.8125rem;
   flex-shrink: 0;
@@ -5695,7 +5702,7 @@ img.lb-target:hover {
 .value-prop:hover .value-prop__icon {
   transform: translateY(-3px) scale(1.05);
   background: var(--mint);
-  color: var(--navy, #002c51);
+  color: var(--navy, var(--navy));
 }
 .value-prop__icon svg { width: 26px; height: 26px; }
 .value-prop__title {
@@ -5898,8 +5905,8 @@ body.has-sticky-bar .site-nav {
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.04em;
-  background: var(--mint, #9ce8b2);
-  color: var(--navy, #002c51);
+  background: var(--mint, var(--mint));
+  color: var(--navy, var(--navy));
   border-radius: 999px;
   white-space: nowrap;
   box-shadow:
@@ -5968,7 +5975,7 @@ body.has-sticky-bar .site-nav {
   box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.5);
 }
 .globe-hint svg {
-  color: var(--mint, #9ce8b2);
+  color: var(--mint, var(--mint));
   flex-shrink: 0;
 }
 .globe-hint.is-visible {
@@ -6057,7 +6064,7 @@ body.has-sticky-bar .site-nav {
   background: rgba(12, 14, 18, .65) !important;
   color: rgba(255, 255, 255, .7) !important;
 }
-#algeria-map .maplibregl-ctrl-attrib a { color: var(--mint, #9ce8b2) !important; }
+#algeria-map .maplibregl-ctrl-attrib a { color: var(--mint, var(--mint)) !important; }
 
 /* Light theme — flip the chrome */
 :root[data-theme="light"] #algeria-map {
@@ -6090,7 +6097,7 @@ body.has-sticky-bar .site-nav {
   width: 16px; height: 16px;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: var(--mint, #9ce8b2);
+  background: var(--mint, var(--mint));
   box-shadow:
     0 0 0 3px rgba(255, 255, 255, .95),
     0 4px 10px -2px rgba(0, 0, 0, .35);
@@ -6102,7 +6109,7 @@ body.has-sticky-bar .site-nav {
   width: 28px; height: 28px;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: var(--mint, #9ce8b2);
+  background: var(--mint, var(--mint));
   opacity: .55;
   z-index: 1;
   animation: amap-pulse 1.9s ease-out infinite;
@@ -6120,7 +6127,7 @@ body.has-sticky-bar .site-nav {
   font-size: .75rem;
   font-weight: 700;
   letter-spacing: .02em;
-  color: var(--mint, #9ce8b2);
+  color: var(--mint, var(--mint));
   text-shadow:
     0 0 4px rgba(0, 0, 0, .55),
     0 1px 2px rgba(0, 0, 0, .4);
@@ -6158,7 +6165,7 @@ body.has-sticky-bar .site-nav {
   width: 10px; height: 10px;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: var(--mint, #9ce8b2);
+  background: var(--mint, var(--mint));
   box-shadow:
     0 0 0 2.5px rgba(255, 255, 255, .9),
     0 3px 6px -1px rgba(0, 0, 0, .3);
@@ -6181,7 +6188,7 @@ body.has-sticky-bar .site-nav {
   pointer-events: none;
 }
 :root[data-theme="light"] .amap-branch__label {
-  color: var(--navy, #002c51);
+  color: var(--navy, var(--navy));
   text-shadow: 0 1px 3px rgba(255, 255, 255, .9), 0 0 8px rgba(255, 255, 255, .6);
 }
 
@@ -6214,7 +6221,7 @@ body.has-sticky-bar .site-nav {
 }
 :root[data-theme="light"] .maplibregl-popup-content {
   background: #fff !important;
-  color: var(--txt-1, #002c51) !important;
+  color: var(--txt-1, var(--navy)) !important;
   border-color: rgba(35, 122, 74, .22) !important;
 }
 :root[data-theme="light"] .maplibregl-popup-tip {
@@ -6226,7 +6233,7 @@ body.has-sticky-bar .site-nav {
   font-size: .625rem;
   letter-spacing: .14em;
   font-weight: 700;
-  color: var(--mint, #9ce8b2);
+  color: var(--mint, var(--mint));
   margin-bottom: 4px;
   text-transform: uppercase;
 }
@@ -6247,7 +6254,7 @@ body.has-sticky-bar .site-nav {
   gap: 6px;
   font-size: .875rem;
   font-weight: 600;
-  color: var(--mint, #9ce8b2) !important;
+  color: var(--mint, var(--mint)) !important;
   text-decoration: none;
   padding: 4px 0;
 }
@@ -6342,7 +6349,7 @@ body.has-sticky-bar .site-nav {
   background: rgba(12, 14, 18, .65) !important;
   color: rgba(255, 255, 255, .7) !important;
 }
-#trip-map .maplibregl-ctrl-attrib a { color: var(--mint, #9ce8b2) !important; }
+#trip-map .maplibregl-ctrl-attrib a { color: var(--mint, var(--mint)) !important; }
 
 :root[data-theme="light"] #trip-map {
   background: var(--bg-2, #f3ede1);
@@ -6379,7 +6386,7 @@ body.has-sticky-bar .site-nav {
     0 4px 10px -1px rgba(0, 0, 0, .4);
   transition: transform var(--t-fast) var(--ease-spring),
               box-shadow var(--t-fast) ease;
-  color: var(--navy, #002c51);
+  color: var(--navy, var(--navy));
 }
 .tmap-pin:hover .tmap-pin__dot {
   transform: translate(-50%, -50%) scale(1.35);
@@ -6423,17 +6430,17 @@ body.has-sticky-bar .site-nav {
 /* Hotel pins — mint with white bed icon. Always slightly larger than
    site/tour pins so users can spot bookable accommodation at a glance. */
 .tmap-pin--hotel .tmap-pin__dot {
-  background: var(--mint, #9ce8b2);
+  background: var(--mint, var(--mint));
   width: 22px; height: 22px;
 }
 .tmap-pin--hotel .tmap-pin__dot svg {
   width: 13px; height: 13px;
-  stroke: var(--navy, #002c51);
+  stroke: var(--navy, var(--navy));
 }
 
 /* Site pins — warm amber */
 .tmap-pin--site .tmap-pin__dot {
-  background: #e0a04a;       /* amber */
+  background: var(--warn);       /* amber */
 }
 .tmap-pin--site.tmap-pin--featured .tmap-pin__dot {
   width: 22px; height: 22px;
@@ -6481,7 +6488,7 @@ body.has-sticky-bar .site-nav {
   width: 14px; height: 14px;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: var(--mint, #9ce8b2);
+  background: var(--mint, var(--mint));
   box-shadow:
     0 0 0 3px rgba(255, 255, 255, .95),
     0 4px 10px -2px rgba(0, 0, 0, .4);
@@ -6493,7 +6500,7 @@ body.has-sticky-bar .site-nav {
   width: 28px; height: 28px;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: var(--mint, #9ce8b2);
+  background: var(--mint, var(--mint));
   opacity: .5;
   z-index: 1;
   animation: tmap-pulse 2s ease-out infinite;
@@ -6507,7 +6514,7 @@ body.has-sticky-bar .site-nav {
   font-size: .8125rem;
   font-weight: 700;
   letter-spacing: .015em;
-  color: var(--mint, #9ce8b2);
+  color: var(--mint, var(--mint));
   text-shadow: 0 0 4px rgba(0, 0, 0, .6), 0 1px 2px rgba(0, 0, 0, .5);
   pointer-events: none;
   padding: 3px 10px;
@@ -6546,7 +6553,7 @@ body.has-sticky-bar .site-nav {
 }
 :root[data-theme="light"] #trip-map .maplibregl-popup-content {
   background: #fff !important;
-  color: var(--txt-1, #002c51) !important;
+  color: var(--txt-1, var(--navy)) !important;
   border-color: rgba(35, 122, 74, .22) !important;
 }
 :root[data-theme="light"] #trip-map .maplibregl-popup-tip {
@@ -6557,7 +6564,7 @@ body.has-sticky-bar .site-nav {
   font-size: .625rem;
   letter-spacing: .14em;
   font-weight: 700;
-  color: var(--mint, #9ce8b2);
+  color: var(--mint, var(--mint));
   margin-bottom: 4px;
   text-transform: uppercase;
 }
@@ -6630,8 +6637,8 @@ body.has-sticky-bar .site-nav {
   border-radius: 50%;
   box-shadow: 0 0 0 2px rgba(255,255,255,.85);
 }
-.trip-map-legend__chip--hotel { background: var(--mint, #9ce8b2); }
-.trip-map-legend__chip--site  { background: #e0a04a; }
+.trip-map-legend__chip--hotel { background: var(--mint, var(--mint)); }
+.trip-map-legend__chip--site  { background: var(--warn); }
 .trip-map-legend__chip--tour  { background: #3aa3a8; }
 
 /* ─── Recenter button (floats bottom-left over the map) ───────
@@ -6651,7 +6658,7 @@ body.has-sticky-bar .site-nav {
   background: rgba(12, 14, 18, .85);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  color: var(--mint, #9ce8b2);
+  color: var(--mint, var(--mint));
   border: 1px solid rgba(156, 232, 178, .25);
   border-radius: 999px;
   font-size: .75rem;
@@ -6730,8 +6737,8 @@ body.has-sticky-bar .site-nav {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--mint, #9ce8b2);
-  color: var(--navy, #002c51);
+  background: var(--mint, var(--mint));
+  color: var(--navy, var(--navy));
   font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: -.01em;
@@ -6800,7 +6807,7 @@ body.has-sticky-bar .site-nav {
 #algeria-map .amap-branch.is-focused .amap-branch__dot {
   box-shadow:
     0 0 0 3px #fff,
-    0 0 0 6px var(--mint, #9ce8b2),
+    0 0 0 6px var(--mint, var(--mint)),
     0 6px 14px -2px rgba(0, 0, 0, .5) !important;
 }
 
@@ -7842,7 +7849,7 @@ section.section.phase-block + section.section:not(.phase-block) {
 }
 .scroll-hero__continuation h1 em {
   font-style: italic;
-  color: var(--accent, #9ce8b2);
+  color: var(--accent, var(--mint));
 }
 .scroll-hero__continuation p {
   max-width: 56ch;
@@ -8084,14 +8091,14 @@ section.section.phase-block + section.section:not(.phase-block) {
 
 /* ── Date chips: keyboard focus + active visual ──────────── */
 .date-chip:focus-visible {
-  outline: 2px solid var(--accent, #9ce8b2);
+  outline: 2px solid var(--accent, var(--mint));
   outline-offset: 2px;
 }
 .date-chip[aria-checked="true"] {
   /* Already styled by .date-chip.active in v12; aria-checked mirror */
-  background: var(--accent, #9ce8b2);
+  background: var(--accent, var(--mint));
   color: var(--bg, #0a0c12);
-  border-color: var(--accent, #9ce8b2);
+  border-color: var(--accent, var(--mint));
   font-weight: 600;
 }
 
@@ -8150,7 +8157,7 @@ section.section.phase-block + section.section:not(.phase-block) {
 .info-card__head::-webkit-details-marker { display: none; }
 .info-card__head:hover { background: rgba(255, 255, 255, .02); }
 .info-card__head:focus-visible {
-  outline: 2px solid var(--accent, #9ce8b2);
+  outline: 2px solid var(--accent, var(--mint));
   outline-offset: -2px;
 }
 
@@ -8159,7 +8166,7 @@ section.section.phase-block + section.section:not(.phase-block) {
   height: 36px;
   border-radius: 10px;
   background: var(--accent-dim, rgba(156, 232, 178, .12));
-  color: var(--accent, #9ce8b2);
+  color: var(--accent, var(--mint));
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -8194,7 +8201,7 @@ section.section.phase-block + section.section:not(.phase-block) {
   margin-top: 14px;
   padding: 12px 14px;
   background: rgba(156, 232, 178, .06);
-  border-left: 3px solid var(--accent, #9ce8b2);
+  border-left: 3px solid var(--accent, var(--mint));
   border-radius: 0 8px 8px 0;
   font-size: .875rem;
   line-height: 1.6;
@@ -8224,7 +8231,7 @@ section.section.phase-block + section.section:not(.phase-block) {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--accent, #9ce8b2);
+  background: var(--accent, var(--mint));
 }
 .info-list li strong {
   color: var(--txt-1, #fbf8f1);
@@ -8236,7 +8243,7 @@ section.section.phase-block + section.section:not(.phase-block) {
   padding: 10px 14px 10px 32px;
   background: rgba(255, 255, 255, .02);
   border-radius: 8px;
-  border: 1px solid var(--border, rgba(255,255,255,.06));
+  border: 1px solid var(--border, var(--border));
 }
 .info-list--tiered li::before {
   left: 14px;
@@ -8299,7 +8306,7 @@ section.section.phase-block + section.section:not(.phase-block) {
 :root[data-theme="light"] .hero .btn--ghost {
   background: rgba(255, 255, 255, .85);
   border-color: rgba(0, 44, 81, .25);
-  color: var(--navy, #002c51);
+  color: var(--navy, var(--navy));
   text-shadow: none;
 }
 
@@ -8331,14 +8338,14 @@ section.section.phase-block + section.section:not(.phase-block) {
   letter-spacing: .02em;
 }
 .dest-filter__pill:hover {
-  border-color: var(--accent, #9ce8b2);
+  border-color: var(--accent, var(--mint));
   color: var(--txt-1, #fbf8f1);
   background: var(--accent-dim, rgba(156, 232, 178, .08));
 }
 .dest-filter__pill[aria-pressed="true"] {
-  background: var(--accent, #9ce8b2);
+  background: var(--accent, var(--mint));
   color: var(--bg, #0a0c12);
-  border-color: var(--accent, #9ce8b2);
+  border-color: var(--accent, var(--mint));
 }
 .dest-filter__pill .dest-filter__count {
   display: inline-block;
@@ -8392,7 +8399,7 @@ section.section.phase-block + section.section:not(.phase-block) {
 .contact-form__field input:focus,
 .contact-form__field select:focus {
   outline: none;
-  border-color: var(--accent, #9ce8b2);
+  border-color: var(--accent, var(--mint));
   box-shadow: 0 0 0 3px var(--accent-dim, rgba(156, 232, 178, .15));
 }
 .contact-form__submit-wrap {
@@ -8435,9 +8442,9 @@ section.section.phase-block + section.section:not(.phase-block) {
   text-decoration: none;
 }
 .footer-social a:hover {
-  background: var(--accent, #9ce8b2);
+  background: var(--accent, var(--mint));
   color: var(--bg, #0a0c12);
-  border-color: var(--accent, #9ce8b2);
+  border-color: var(--accent, var(--mint));
   transform: translateY(-2px);
 }
 .footer-social a svg {
@@ -8451,7 +8458,7 @@ section.section.phase-block + section.section:not(.phase-block) {
 .dep-badge {
   /* Already styled in v5 via accent tokens. Add a fallback for older states. */
   background: var(--accent-dim, rgba(156, 232, 178, .14));
-  color: var(--accent, #9ce8b2);
+  color: var(--accent, var(--mint));
   font-weight: 700;
 }
 :root[data-theme="light"] .dep-badge {
@@ -8564,7 +8571,7 @@ picture.scroll-hero__media {
    Adapted from a Uiverse pattern: bold border, hard offset shadow
    (no blur), tilted tag, cut corner with star, dashed price divider
    with scissors, hard-shadow CTA. All within Alliance Travel's palette
-   (mint #9ce8b2, navy #002c51, cream #fbf8f1).
+   (mint var(--mint), navy var(--navy), cream #fbf8f1).
 
    Overrides v1/v12 .hotel-card rules via source-order cascade.
    ════════════════════════════════════════════════════════════ */
@@ -9073,7 +9080,7 @@ picture.scroll-hero__media {
 }
 
 /* Per-region accent — overrides default mint with the trip's signature hue */
-.trip-card[data-region="egypt"]      { --tc-region-accent: #e0a04a; }
+.trip-card[data-region="egypt"]      { --tc-region-accent: var(--warn); }
 .trip-card[data-region="azerbaijan"] { --tc-region-accent: #e07b5a; }
 .trip-card[data-region="istanbul"]   { --tc-region-accent: #5cb1c1; }
 .trip-card[data-region="malaysia"]   { --tc-region-accent: #8acaa1; }

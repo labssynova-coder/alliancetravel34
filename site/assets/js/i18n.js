@@ -57,10 +57,10 @@
         trip_booking: 'Réserver'
       },
       hero: {
-        eyebrow: 'Agence agréée · Bordj Bou Arreridj · Algérie',
+        eyebrow: 'Agence de voyage · Bordj Bou Arreridj · Algérie',
         title_l1: 'Le monde,',
         title_em: 'guidé et organisé',
-        lede: "Vol, visa, hôtel 4★/5★, transferts, accompagnateur arabophone — tout est compris. Depuis Bordj Bou Arreridj, partez vers l'Égypte, la Turquie, l'Azerbaïdjan ou la Malaisie, l'esprit léger.",
+        lede: "Alliance Travel organise des voyages guidés depuis Bordj Bou Arreridj vers les plus belles destinations. Vol, hôtel, excursions, transferts — tout est inclus. Vous n'avez qu'à profiter.",
         cta_voyages: 'Voir nos voyages',
         cta_contact: 'Nous contacter',
         cta_whatsapp: 'WhatsApp',

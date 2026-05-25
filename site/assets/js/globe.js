@@ -64,10 +64,22 @@ const ASPIRATIONAL_SIZE = 0.035;
 const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 const ROT_SPEED = reduced ? 0 : 0.0028;
 
+// PC-only viewport gate — keep this aligned with the CSS rule
+// `.home-hero__globe { display: none }` at ≤1024px in index.html.
+// Below the threshold the entire globe column is invisible, so
+// downloading cobe (~50 KB) + running the rAF render loop is
+// pure waste. Reading matchMedia is cheap; this also fires on
+// orientation change via the `resize` listener below.
+const GLOBE_BREAKPOINT = '(min-width: 1025px)';
+const isDesktop = () => window.matchMedia?.(GLOBE_BREAKPOINT).matches;
+
 async function init() {
   const canvas = document.getElementById('alliance-globe');
   const stage = document.getElementById('globe-stage');
   if (!canvas || !stage) return;
+
+  // Mobile / tablet: bail before any network or GPU work happens.
+  if (!isDesktop()) return;
 
   // Try to load cobe — if the CDN is unreachable, fall back to the
   // CSS-only stage and reveal polaroids in a static cluster instead.

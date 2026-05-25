@@ -9877,13 +9877,21 @@ body { background: var(--bg); color: var(--txt-1); }
   font-style: normal;
   font-weight: 700;
 }
-/* Arabic numerals stay LTR even in RTL flow */
+/* Arabic numerals stay LTR even in RTL flow — numbers must NEVER flip/reorder
+   in Arabic. Covers stat counters, prices (incl. the <strong> inside hero/hotel
+   price blocks) and phone numbers. `unicode-bidi: isolate` fully isolates each
+   numeric run from the surrounding RTL text so digit+separator+symbol sequences
+   keep their natural left-to-right order. */
 :root[lang="ar"] .value-card__num,
 :root[lang="ar"] [data-counter],
 :root[lang="ar"] .price,
-:root[lang="ar"] .phone-card__num {
+:root[lang="ar"] .phone-card__num,
+:root[lang="ar"] .stat-card__num,
+:root[lang="ar"] .hero__price strong,
+:root[lang="ar"] .hotel-card__price strong,
+:root[lang="ar"] .trip-card__cta-price {
   direction: ltr;
-  unicode-bidi: embed;
+  unicode-bidi: isolate;
   font-family: 'DM Sans', system-ui, sans-serif;
 }
 

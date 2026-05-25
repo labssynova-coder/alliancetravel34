@@ -705,35 +705,68 @@
     if (el && value != null) el.setAttribute(attr, value);
   }
 
-  function translate(lang) {
-    const dict = T[lang] || T[DEFAULT_LANG];
-    const fallback = T[DEFAULT_LANG];
+  /* ── Live-DOM FR baseline ──────────────────────────────────────────
+     Captured ONCE before the first translate. French always restores the
+     exact on-page copy (never a stale dict value), and any missing EN/AR key
+     falls back to the live French text rather than a drifted dict string.
+     This lets pages add data-i18n attributes freely without keeping T.fr in
+     sync with the markup. */
+  const BASE = { text: {}, html: {}, attr: {} };
+  let baselineCaptured = false;
 
-    // textContent
+  const ATTRS = [
+    ['aria-label',  'i18nAriaLabel'],
+    ['title',       'i18nTitle'],
+    ['placeholder', 'i18nPlaceholder'],
+    ['alt',         'i18nAlt']
+  ];
+
+  function captureBaseline() {
+    if (baselineCaptured) return;
     document.querySelectorAll('[data-i18n]').forEach(el => {
-      const val = lookup(el.dataset.i18n, dict) ?? lookup(el.dataset.i18n, fallback);
+      const k = el.dataset.i18n;
+      if (k && !(k in BASE.text)) BASE.text[k] = el.textContent;
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const k = el.dataset.i18nHtml;
+      if (k && !(k in BASE.html)) BASE.html[k] = el.innerHTML;
+    });
+    ATTRS.forEach(([attr, prop]) => {
+      if (!BASE.attr[attr]) BASE.attr[attr] = {};
+      document.querySelectorAll(`[data-i18n-${attr}]`).forEach(el => {
+        const k = el.dataset[prop];
+        if (k && !(k in BASE.attr[attr])) BASE.attr[attr][k] = el.getAttribute(attr);
+      });
+    });
+    baselineCaptured = true;
+  }
+
+  /* Resolve a key for a language: dict[lang] → live-FR baseline → dict.fr.
+     For French the live baseline wins, so visible on-page copy is preserved. */
+  function resolve(key, lang, base) {
+    if (lang === DEFAULT_LANG) return base[key] ?? lookup(key, T[DEFAULT_LANG]);
+    return lookup(key, T[lang]) ?? base[key] ?? lookup(key, T[DEFAULT_LANG]);
+  }
+
+  function translate(lang) {
+    captureBaseline();   // no-op after the first call
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const val = resolve(el.dataset.i18n, lang, BASE.text);
       if (val != null) el.textContent = val;
     });
 
     // innerHTML (allows embedded <em>, <strong>, etc. — strings should be trusted)
     document.querySelectorAll('[data-i18n-html]').forEach(el => {
-      const val = lookup(el.dataset.i18nHtml, dict) ?? lookup(el.dataset.i18nHtml, fallback);
+      const val = resolve(el.dataset.i18nHtml, lang, BASE.html);
       if (val != null) el.innerHTML = val;
     });
 
-    // attribute translations
-    const attrMap = [
-      ['aria-label',  'i18nAriaLabel'],
-      ['title',       'i18nTitle'],
-      ['placeholder', 'i18nPlaceholder'],
-      ['alt',         'i18nAlt']
-    ];
-    attrMap.forEach(([attr, prop]) => {
-      document.querySelectorAll(`[data-${attr.replace('aria-', 'i18n-aria-')}], [data-i18n-${attr}]`).forEach(() => {});
-      // simpler: query by attr name
-      document.querySelectorAll(`[data-i18n-${attr === 'aria-label' ? 'aria-label' : attr}]`).forEach(el => {
-        const key = el.dataset[prop];
-        const val = lookup(key, dict) ?? lookup(key, fallback);
+    // attribute translations (aria-label / title / placeholder / alt)
+    ATTRS.forEach(([attr, prop]) => {
+      const base = BASE.attr[attr] || {};
+      document.querySelectorAll(`[data-i18n-${attr}]`).forEach(el => {
+        const val = resolve(el.dataset[prop], lang, base);
         if (val != null) el.setAttribute(attr, val);
       });
     });

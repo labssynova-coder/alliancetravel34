@@ -620,7 +620,17 @@ select {
 .nav-backdrop  { display: none; }
 
 @media (max-width: 900px) {
-  .site-nav { padding: 12px 16px; }
+  .site-nav {
+    padding: 12px 16px;
+    /* Strip backdrop-filter on mobile — it creates a containing block that
+       traps the position:fixed .nav-drawer inside the nav's ~72px height box.
+       Replace with a solid bg so visual identity stays consistent. Bonus:
+       backdrop-filter is GPU-expensive on phones; removing it is a perf win. */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: var(--bg-deep, #06090d);
+  }
+  :root[data-theme="light"] .site-nav { background: rgba(251, 248, 241, 0.98); }
 
   .nav-hamburger {
     display: grid;
@@ -672,17 +682,40 @@ select {
     transform: translateX(-100%);
     box-shadow: 16px 0 48px rgba(0,0,0,.4);
   }
-  .site-nav.nav-open .nav-drawer {
-    transform: translateX(0);
-    visibility: visible;
+  /* Drawer lives on <body> (not inside .site-nav, because nav's
+     backdrop-filter creates a containing block that would clip a
+     fixed-positioned child). The .is-open class is added to the
+     drawer itself by initNavDrawer's setOpen(). */
+  .nav-drawer.is-open {
+    transform: translateX(0) !important;
+    visibility: visible !important;
     transition: transform var(--t-base) var(--ease-out);
   }
+  [dir="rtl"] .nav-drawer.is-open {
+    transform: translateX(0) !important;
+  }
 
+  /* !important needed to beat the later .site-nav .nav-links rules at
+     L3596, L3835, L3952 which set display:none, flex-direction:row,
+     order:1, grid-column — all designed for the inline desktop nav. */
   .nav-drawer .nav-links {
     list-style: none; margin: 0; padding: 0;
-    display: flex; flex-direction: column; gap: 0;
+    display: flex !important;
+    flex-direction: column !important;
+    order: 0 !important;
+    gap: 0 !important;
     border-bottom: 1px solid var(--border);
     margin-bottom: var(--space-3);
+  }
+  .nav-drawer .nav-links li {
+    list-style: none;
+    width: 100%;
+  }
+  .nav-drawer .nav-links a {
+    display: flex !important;
+    align-items: center;
+    width: 100%;
+    white-space: normal !important;
   }
   .nav-drawer .nav-links li { border-top: 1px solid var(--border); }
   .nav-drawer .nav-links a {

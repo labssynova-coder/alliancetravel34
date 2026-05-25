@@ -345,6 +345,11 @@ function initNavDrawer() {
       if (el) drawer.appendChild(el);
     });
 
+    // Drawer is appended INSIDE .site-nav so at desktop its `display: contents`
+    // declaration makes its children become flex items of .site-nav. On mobile,
+    // a CSS rule strips .site-nav's backdrop-filter at <=900px so the drawer's
+    // position:fixed escapes the nav's containing block and resolves to the
+    // viewport (fills full height + slides from edge).
     nav.appendChild(drawer);
   }
 
@@ -360,6 +365,7 @@ function initNavDrawer() {
   /* ── 4. Open / close ── */
   const setOpen = (open) => {
     nav.classList.toggle('nav-open', open);
+    drawer.classList.toggle('is-open', open);            // drives drawer transform
     backdrop.classList.toggle('is-visible', open);
     document.body.classList.toggle('nav-scroll-lock', open);
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');

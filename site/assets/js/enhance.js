@@ -286,12 +286,23 @@ function initHeroParallax() {
   });
 }
 
-/* ─── Mobile hamburger menu ───────────────────────────────── */
-function initHamburger() {
+/* ─── Mobile nav drawer ─────────────────────────────────────
+   Builds the hamburger button + drawer panel + backdrop on first
+   run, then moves the existing right-side controls (nav-links,
+   lang-switcher, theme-toggle, nav-cta) into the drawer. The drawer
+   wrapper has `display: contents` at desktop so the layout is
+   identical to pre-drawer at ≥901px. */
+function initNavDrawer() {
   const nav = document.querySelector('.site-nav');
   if (!nav) return;
+  // Wait one tick so i18n.js can finish building .lang-switcher first.
+  // (i18n.js runs before this script via defer + DOMContentLoaded order,
+  //  but if the switcher is built async this still catches it.)
+  if (!nav.querySelector('.lang-switcher')) {
+    return setTimeout(initNavDrawer, 50);
+  }
 
-  // Inject hamburger button if not already in HTML
+  /* ── 1. Hamburger button ── */
   let btn = nav.querySelector('.nav-hamburger');
   if (!btn) {
     btn = document.createElement('button');
@@ -299,39 +310,101 @@ function initHamburger() {
     btn.type = 'button';
     btn.setAttribute('aria-label', 'Ouvrir le menu');
     btn.setAttribute('aria-expanded', 'false');
-    btn.setAttribute('aria-controls', 'nav-links-list');
+    btn.setAttribute('aria-controls', 'nav-drawer');
     btn.innerHTML = `
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      <svg class="icon-menu" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="6"  x2="21" y2="6" />
         <line x1="3" y1="12" x2="21" y2="12"/>
         <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+      <svg class="icon-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="18" y1="6"  x2="6"  y2="18"/>
+        <line x1="6"  y1="6"  x2="18" y2="18"/>
       </svg>`;
     nav.appendChild(btn);
   }
 
-  // Give the nav-links ul an id for aria-controls
-  const links = nav.querySelector('.nav-links');
-  if (links) links.id = 'nav-links-list';
+  /* ── 2. Drawer container ── */
+  let drawer = nav.querySelector('.nav-drawer');
+  if (!drawer) {
+    drawer = document.createElement('div');
+    drawer.className = 'nav-drawer';
+    drawer.id = 'nav-drawer';
+    drawer.setAttribute('role', 'dialog');
+    drawer.setAttribute('aria-modal', 'true');
+    drawer.setAttribute('aria-label', 'Menu de navigation');
+    drawer.setAttribute('aria-hidden', 'true');
 
-  const toggle = (open) => {
+    // Move (not clone) right-side controls into the drawer so existing
+    // event listeners (lang-switcher click, theme toggle, i18n bindings)
+    // survive intact.
+    ['.nav-links', '.lang-switcher', '.theme-toggle', '.nav-cta'].forEach((sel) => {
+      const el = nav.querySelector(`:scope > ${sel}`);
+      if (el) drawer.appendChild(el);
+    });
+
+    nav.appendChild(drawer);
+  }
+
+  /* ── 3. Backdrop overlay (under drawer, over page content) ── */
+  let backdrop = document.querySelector('.nav-backdrop');
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.className = 'nav-backdrop';
+    backdrop.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(backdrop);
+  }
+
+  /* ── 4. Open / close ── */
+  const setOpen = (open) => {
     nav.classList.toggle('nav-open', open);
+    backdrop.classList.toggle('is-visible', open);
+    document.body.classList.toggle('nav-scroll-lock', open);
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     btn.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
+    drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
+
+    if (open) {
+      // Move focus to first interactive in drawer (accessibility)
+      const firstFocusable = drawer.querySelector('a, button, [tabindex]:not([tabindex="-1"])');
+      requestAnimationFrame(() => firstFocusable?.focus({ preventScroll: true }));
+    } else {
+      btn.focus({ preventScroll: true });
+    }
   };
 
-  btn.addEventListener('click', () => toggle(!nav.classList.contains('nav-open')));
+  /* ── 5. Wire events ── */
+  btn.addEventListener('click', () => setOpen(!nav.classList.contains('nav-open')));
+  backdrop.addEventListener('click', () => setOpen(false));
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && nav.classList.contains('nav-open')) {
-      toggle(false);
-      btn.focus();
+      setOpen(false);
     }
   });
 
-  // Close on outside click
-  document.addEventListener('click', (e) => {
-    if (!nav.contains(e.target)) toggle(false);
+  // Auto-close when a nav link is tapped (gives immediate UI feedback that
+  // navigation has been initiated). Skip the lang buttons + theme toggle so
+  // users can switch language/theme without the drawer disappearing.
+  drawer.addEventListener('click', (e) => {
+    const link = e.target.closest('a[href]');
+    if (link && !link.closest('.lang-switcher, .theme-toggle')) {
+      setTimeout(() => setOpen(false), 200);
+    }
+  });
+
+  // If viewport widens past 900px while drawer is open (rotation, resize),
+  // close it so the desktop layout takes over cleanly.
+  let resizeRaf;
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(resizeRaf);
+    resizeRaf = requestAnimationFrame(() => {
+      if (window.innerWidth > 900 && nav.classList.contains('nav-open')) {
+        setOpen(false);
+      }
+    });
   });
 }
 
@@ -342,7 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTripSwitcher();
   initSmoothScroll();
   initHeroParallax();
-  initHamburger();
+  initNavDrawer();   // v22 Phase 3 — mobile nav drawer
 });
 
 // Export toast for other scripts

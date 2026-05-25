@@ -709,15 +709,13 @@ select {
     box-sizing: border-box;
   }
 
-  /* NOTE: the original drawer plan hid these controls at <=900px because
-     they were supposed to be MOVED into .nav-drawer. The JS that does
-     the move (initNavDrawer) was reverted, so the drawer was never built
-     and hiding these elements made mobile nav inaccessible. Until the
-     drawer JS is restored, keep the inline controls visible. */
-  /* .site-nav > .nav-links,
-     .site-nav > .lang-switcher,
-     .site-nav > .theme-toggle,
-     .site-nav > .nav-cta { display: none; } */
+  /* Controls move into .nav-drawer at <=900px via initNavDrawer() in
+     enhance.js. Hide their inline-nav slots so they don't render twice
+     during the brief moment between page parse and JS execution. */
+  .site-nav > .nav-links,
+  .site-nav > .lang-switcher,
+  .site-nav > .theme-toggle,
+  .site-nav > .nav-cta { display: none; }
 
   .nav-backdrop {
     display: block;

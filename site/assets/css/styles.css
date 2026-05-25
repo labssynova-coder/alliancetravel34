@@ -709,10 +709,15 @@ select {
     box-sizing: border-box;
   }
 
-  .site-nav > .nav-links,
-  .site-nav > .lang-switcher,
-  .site-nav > .theme-toggle,
-  .site-nav > .nav-cta { display: none; }
+  /* NOTE: the original drawer plan hid these controls at <=900px because
+     they were supposed to be MOVED into .nav-drawer. The JS that does
+     the move (initNavDrawer) was reverted, so the drawer was never built
+     and hiding these elements made mobile nav inaccessible. Until the
+     drawer JS is restored, keep the inline controls visible. */
+  /* .site-nav > .nav-links,
+     .site-nav > .lang-switcher,
+     .site-nav > .theme-toggle,
+     .site-nav > .nav-cta { display: none; } */
 
   .nav-backdrop {
     display: block;
@@ -9732,3 +9737,143 @@ body { background: var(--bg); color: var(--txt-1); }
 [data-aos].fade-up--d3 {
   animation: none;
 }
+
+/* ════════════════════════════════════════════════════════════════
+   I18N — LANGUAGE SWITCHER + ARABIC TYPOGRAPHY + RTL  (restored 2026-05-25)
+   ════════════════════════════════════════════════════════════════
+   Recovered from stash@{1} (2026-05-22). Paired with site/assets/js/i18n.js
+   which injects a 3-button switcher into .site-nav. The site reverted
+   from FR-only (strategy c) to FR+EN+AR; docs/I18N-SEO.md updated.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── LANGUAGE SWITCHER  (FR · EN · AR — pill in the navbar) ── */
+.lang-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  height: 38px;
+}
+.lang-btn {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: var(--txt-2);
+  font: 500 12px/1 var(--font-display);
+  letter-spacing: 0.04em;
+  padding: 0 10px;
+  height: 30px;
+  min-width: 32px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color var(--t), color var(--t);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.lang-btn:hover {
+  color: var(--txt-1);
+  background: rgba(255,255,255,.05);
+}
+.lang-btn--active {
+  background: var(--mint);
+  color: var(--navy);
+  font-weight: 600;
+}
+.lang-btn--active:hover {
+  background: var(--mint);
+  color: var(--navy);
+}
+.lang-btn--ar {
+  font-family: 'Tajawal', 'Cairo', 'DM Sans', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* Light-mode tweaks */
+[data-theme="light"] .lang-switcher {
+  background: rgba(0,44,81,0.04);
+  border-color: rgba(0,44,81,0.18);
+}
+[data-theme="light"] .lang-btn { color: #4a5b6f; }
+[data-theme="light"] .lang-btn:hover {
+  color: var(--navy);
+  background: rgba(0,44,81,0.05);
+}
+[data-theme="light"] .lang-btn--active {
+  background: var(--navy);
+  color: #fff;
+}
+
+/* Mobile — compress padding so the pill fits next to theme + WA CTA */
+@media (max-width: 768px) {
+  .lang-switcher { height: 34px; padding: 2px; }
+  .lang-btn { height: 28px; min-width: 28px; padding: 0 7px; font-size: 11px; }
+  .lang-btn--ar { font-size: 13px; }
+}
+
+/* Note: the original drawer-system design hid the inline switcher at
+   <=480px and moved it inside the mobile nav drawer. The drawer system
+   was reverted, so the switcher must stay visible at all viewports.
+   At <=768px the .lang-switcher block above already compresses the
+   pill (height 34, btn 28x28) so it fits a 375px viewport. */
+
+/* ── ARABIC TYPOGRAPHY  (Cairo for display · Tajawal for body) ── */
+:root[lang="ar"] {
+  --font-display: 'Cairo', 'Tajawal', 'DM Sans', system-ui, sans-serif;
+  --font-body:    'Tajawal', 'Cairo', 'DM Sans', system-ui, sans-serif;
+}
+:root[lang="ar"] body {
+  font-family: var(--font-body);
+  line-height: 1.7;
+}
+:root[lang="ar"] h1,
+:root[lang="ar"] h2,
+:root[lang="ar"] h3,
+:root[lang="ar"] .hero__title,
+:root[lang="ar"] .home-hero__content h1,
+:root[lang="ar"] .section-head__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.25;
+  font-style: normal !important;
+}
+:root[lang="ar"] em {
+  font-style: normal;
+  font-weight: 700;
+}
+/* Arabic numerals stay LTR even in RTL flow */
+:root[lang="ar"] .value-card__num,
+:root[lang="ar"] [data-counter],
+:root[lang="ar"] .price,
+:root[lang="ar"] .phone-card__num {
+  direction: ltr;
+  unicode-bidi: embed;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+/* ── RTL LAYOUT ADJUSTMENTS  (Arabic only) ── */
+/* Flip directional arrows */
+[dir="rtl"] .btn svg.btn__arrow,
+[dir="rtl"] .nav-cta svg.nav-cta__arrow,
+[dir="rtl"] .trip-card__cta svg,
+[dir="rtl"] .related-card__cta svg,
+[dir="rtl"] .voyage-arrow,
+[dir="rtl"] .arrow-right {
+  transform: scaleX(-1);
+}
+/* Trip card price ribbons originate from left edge — flip to right */
+[dir="rtl"] .trip-card__flag,
+[dir="rtl"] .hotel-card__ribbon { left: auto; right: var(--s3); }
+[dir="rtl"] .trip-card__from,
+[dir="rtl"] .trip-card__share { right: auto; left: var(--s3); }
+/* Logo letter-spacing tweak for Arabic */
+[dir="rtl"] .nav-logo,
+[lang="ar"] .nav-logo { letter-spacing: 0; }
+[dir="rtl"] .nav-links { padding-inline-start: 0; }
+/* WhatsApp FAB anchors right by default — flip to left for RTL */
+[dir="rtl"] .fab-whatsapp { left: var(--s5); right: auto; }

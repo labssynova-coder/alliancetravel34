@@ -32,3 +32,6 @@ venv/
 
 # Local-only
 .claude/launch.json
+
+# Editor metadata — never commit
+.obsidian/

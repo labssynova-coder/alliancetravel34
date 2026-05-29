@@ -13,6 +13,7 @@
     "verify:links": "node scripts/verify-links.cjs"
   },
   "devDependencies": {
+    "jsdom": "^29.1.1",
     "vitest": "^2.1.8"
   }
 }

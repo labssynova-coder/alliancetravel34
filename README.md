@@ -21,11 +21,12 @@ Open <http://localhost:5500/>.
 ### Tests
 
 The site ships as static files, but the client-side business logic (pricing
-calculator, booking-form rules) is unit-tested with [Vitest](https://vitest.dev/):
+calculator, booking-form rules) is unit-tested with [Vitest](https://vitest.dev/),
+plus a jsdom integration test covering the calculator → booking-form wiring:
 
 ```bash
-npm install        # one-time: installs Vitest
-npm test           # run the unit suite
+npm install        # one-time: installs Vitest + jsdom
+npm test           # run the unit + integration suite
 npm run test:watch  # watch mode while developing
 npm run verify:i18n  # check every data-i18n key resolves in FR/EN/AR
 npm run verify:links # check sitemap, _redirects, and all internal links resolve

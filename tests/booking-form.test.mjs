@@ -83,7 +83,9 @@ describe('classifyFiles — upload gate', () => {
   });
 
   it('rejects a file over the 8 MB per-file limit', () => {
-    const { accepted, errors } = classifyFiles([file('big.jpg', okType, FILE_RULES.MAX_FILE_BYTES + 1)]);
+    const { accepted, errors } = classifyFiles([
+      file('big.jpg', okType, FILE_RULES.MAX_FILE_BYTES + 1),
+    ]);
     expect(accepted).toHaveLength(0);
     expect(errors[0]).toContain('trop lourd');
   });
@@ -96,8 +98,8 @@ describe('classifyFiles — upload gate', () => {
   it('enforces the 12-file count cap including pre-existing uploads', () => {
     const batch = Array.from({ length: 5 }, (_, i) => file(`x${i}.jpg`, okType, 100));
     const { accepted, errors } = classifyFiles(batch, { existingCount: 10, existingBytes: 1000 });
-    expect(accepted).toHaveLength(2);                 // only room for 2 more (10 + 2 = 12)
-    expect(errors.some(e => e.includes('Limite atteinte'))).toBe(true);
+    expect(accepted).toHaveLength(2); // only room for 2 more (10 + 2 = 12)
+    expect(errors.some((e) => e.includes('Limite atteinte'))).toBe(true);
   });
 
   it('enforces the 40 MB total budget across the batch', () => {
@@ -106,7 +108,7 @@ describe('classifyFiles — upload gate', () => {
     const { accepted, errors } = classifyFiles(batch);
     // 40 MB / 8 MB = 5 fit, the 6th busts the total
     expect(accepted).toHaveLength(5);
-    expect(errors.some(e => e.includes('taille totale'))).toBe(true);
+    expect(errors.some((e) => e.includes('taille totale'))).toBe(true);
   });
 
   it('counts already-uploaded bytes against the total budget', () => {
@@ -115,7 +117,7 @@ describe('classifyFiles — upload gate', () => {
       { existingCount: 1, existingBytes: FILE_RULES.MAX_TOTAL_BYTES }, // already full
     );
     expect(accepted).toHaveLength(0);
-    expect(errors.some(e => e.includes('taille totale'))).toBe(true);
+    expect(errors.some((e) => e.includes('taille totale'))).toBe(true);
   });
 
   it('returns empty results for an empty file list', () => {

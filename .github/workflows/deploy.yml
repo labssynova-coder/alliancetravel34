@@ -23,9 +23,9 @@ concurrency:
 
 jobs:
   # ── Quality gate ───────────────────────────────────────────────────
-  # Unit tests (pricing calculator + booking-form rules), the i18n
-  # key-coverage check, and the link/sitemap/redirect integrity check.
-  # The deploy job below depends on this passing.
+  # Unit + integration tests, test-code formatting, the i18n key-coverage
+  # check, and the link/sitemap/redirect integrity check. The deploy job
+  # below depends on this passing.
   test:
     runs-on: ubuntu-latest
     steps:
@@ -45,6 +45,9 @@ jobs:
 
       - name: Unit tests
         run: npm test
+
+      - name: Test-code formatting
+        run: npm run format:check
 
       - name: i18n key coverage
         run: npm run verify:i18n

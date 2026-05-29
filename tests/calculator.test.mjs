@@ -14,7 +14,14 @@ const TRIP = {
     {
       id: 'tivoli',
       name: 'Tivoli 4★',
-      prices: { double: 200000, triple: 190000, single: 250000, child1: 100000, child2: 150000, baby: 25000 },
+      prices: {
+        double: 200000,
+        triple: 190000,
+        single: 250000,
+        child1: 100000,
+        child2: 150000,
+        baby: 25000,
+      },
     },
     {
       // Intentionally missing `triple` and `child2` to exercise the fallbacks.
@@ -80,7 +87,10 @@ describe('computePricing — adults & room rates', () => {
 
   it('falls back to the double rate when the room rate key is absent', () => {
     // `sparse` hotel has no `triple` price → falls back to double (180000)
-    const { totalDA } = computePricing(TRIP, baseState({ hotelId: 'sparse', room: 'triple', adults: 2 }));
+    const { totalDA } = computePricing(
+      TRIP,
+      baseState({ hotelId: 'sparse', room: 'triple', adults: 2 }),
+    );
     expect(totalDA).toBe(360000); // 180000 × 2
   });
 
@@ -98,13 +108,19 @@ describe('computePricing — adults & room rates', () => {
 
 describe('computePricing — children & babies', () => {
   it('prices a baby (age < 2) at the baby rate', () => {
-    const { totalDA, lines } = computePricing(TRIP, baseState({ adults: 2, kids: [{ age: 0, type: 'baby' }] }));
+    const { totalDA, lines } = computePricing(
+      TRIP,
+      baseState({ adults: 2, kids: [{ age: 0, type: 'baby' }] }),
+    );
     expect(totalDA).toBe(400000 + 25000);
-    expect(lines.find(l => l.label.startsWith('Bébé'))).toBeTruthy();
+    expect(lines.find((l) => l.label.startsWith('Bébé'))).toBeTruthy();
   });
 
   it('prices the first child at child1 and the second at child2', () => {
-    const kids = [{ age: 4, type: 'child_a' }, { age: 9, type: 'child_b' }];
+    const kids = [
+      { age: 4, type: 'child_a' },
+      { age: 9, type: 'child_b' },
+    ];
     const { totalDA, lines } = computePricing(TRIP, baseState({ adults: 2, kids }));
     // adults 400000 + child1 100000 + child2 150000
     expect(totalDA).toBe(650000);
@@ -117,7 +133,7 @@ describe('computePricing — children & babies', () => {
     // baby should be priced as baby and NOT advance the child index
     const kids = [
       { age: 4, type: 'child_a' }, // 1st child → child1
-      { age: 1, type: 'baby' },    // baby → baby rate, no index advance
+      { age: 1, type: 'baby' }, // baby → baby rate, no index advance
       { age: 9, type: 'child_b' }, // still counts as 2nd child → child2
     ];
     const { totalDA } = computePricing(TRIP, baseState({ adults: 2, kids }));
@@ -138,17 +154,26 @@ describe('computePricing — children & babies', () => {
   });
 
   it('falls back to child1 when child2 price is missing on the hotel', () => {
-    const kids = [{ age: 4, type: 'child_a' }, { age: 9, type: 'child_b' }];
+    const kids = [
+      { age: 4, type: 'child_a' },
+      { age: 9, type: 'child_b' },
+    ];
     const { lines } = computePricing(TRIP, baseState({ hotelId: 'sparse', adults: 2, kids }));
     // sparse has no child2 → 2nd child falls back to child1 (90000)
     expect(lines[2].amount).toBe(90000);
   });
 
   it('uses the 2–5 age label for child_a and 2–11.99 for child_b', () => {
-    const { lines } = computePricing(TRIP, baseState({
-      adults: 2,
-      kids: [{ age: 4, type: 'child_a' }, { age: 9, type: 'child_b' }],
-    }));
+    const { lines } = computePricing(
+      TRIP,
+      baseState({
+        adults: 2,
+        kids: [
+          { age: 4, type: 'child_a' },
+          { age: 9, type: 'child_b' },
+        ],
+      }),
+    );
     expect(lines[1].label).toContain('2–5 ans');
     expect(lines[2].label).toContain('2–11.99 ans');
   });

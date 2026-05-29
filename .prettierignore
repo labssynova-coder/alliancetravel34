@@ -1,0 +1,13 @@
+# Prettier is intentionally scoped to code we author and actively develop
+# (the test suite). The deployed site/ assets are hand-tuned — their CSS,
+# inline styles, and aligned JS object literals are deliberate and must NOT
+# be auto-reformatted (see docs/AUDIT.md). Everything below is left as-is.
+
+node_modules/
+package-lock.json
+site/
+scripts/
+docs/
+_archive/
+*.md
+*.html

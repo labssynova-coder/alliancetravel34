@@ -24,7 +24,18 @@ const TRIP = {
   name: 'Le Caire & Sharm · Juin 2026',
   dates: ['12 Juin 2026'],
   hotels: [
-    { id: 'tivoli', name: 'Tivoli 4★', prices: { double: 200000, triple: 190000, single: 250000, child1: 100000, child2: 150000, baby: 25000 } },
+    {
+      id: 'tivoli',
+      name: 'Tivoli 4★',
+      prices: {
+        double: 200000,
+        triple: 190000,
+        single: 250000,
+        child1: 100000,
+        child2: 150000,
+        baby: 25000,
+      },
+    },
   ],
   extras: [],
 };
@@ -68,11 +79,19 @@ beforeEach(() => {
   document.body.innerHTML = '<section id="booking"></section>';
   delete window.__calcState;
   delete require.cache[BF_PATH]; // force re-boot (boot() reads #booking at require time)
-  require(BF_PATH);              // mounts the form into #booking
+  require(BF_PATH); // mounts the form into #booking
 });
 
 describe('calculator ↔ booking-form integration (jsdom)', () => {
-  const baseState = (o = {}) => ({ hotelId: 'tivoli', date: '12 Juin 2026', room: 'double', adults: 2, kids: [], extras: [], ...o });
+  const baseState = (o = {}) => ({
+    hotelId: 'tivoli',
+    date: '12 Juin 2026',
+    room: 'double',
+    adults: 2,
+    kids: [],
+    extras: [],
+    ...o,
+  });
 
   it('mounts an empty-state summary before any calc selection', () => {
     expect(document.getElementById('bf-trip-summary')).toBeTruthy();
@@ -125,10 +144,14 @@ describe('calculator ↔ booking-form integration (jsdom)', () => {
     fillContact({ name: 'Ahmed', phone: '0561616266', city: 'Alger' });
 
     // User adds a child in the calculator and re-publishes.
-    const { totalDA } = publishCalcState(baseState({ adults: 2, kids: [{ age: 4, type: 'child_a' }] }));
+    const { totalDA } = publishCalcState(
+      baseState({ adults: 2, kids: [{ age: 4, type: 'child_a' }] }),
+    );
     fire(document.getElementById('bf-phone'), 'blur'); // re-render the preview
 
-    const text = decodeURIComponent(document.getElementById('bf-send-btn').getAttribute('href').split('?text=')[1]);
+    const text = decodeURIComponent(
+      document.getElementById('bf-send-btn').getAttribute('href').split('?text=')[1],
+    );
     expect(text).toContain('Enfants/Bébés : 1');
     expect(text).toContain(new Intl.NumberFormat('fr-DZ').format(totalDA)); // 500000
   });

@@ -10,10 +10,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "verify:i18n": "node scripts/verify-i18n.cjs",
-    "verify:links": "node scripts/verify-links.cjs"
+    "verify:links": "node scripts/verify-links.cjs",
+    "format": "prettier --write \"tests/**/*.mjs\"",
+    "format:check": "prettier --check \"tests/**/*.mjs\""
   },
   "devDependencies": {
     "jsdom": "^29.1.1",
+    "prettier": "^3.8.3",
     "vitest": "^2.1.8"
   }
 }

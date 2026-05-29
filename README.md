@@ -30,9 +30,14 @@ npm test           # run the unit + integration suite
 npm run test:watch  # watch mode while developing
 npm run verify:i18n  # check every data-i18n key resolves in FR/EN/AR
 npm run verify:links # check sitemap, _redirects, and all internal links resolve
+npm run format       # auto-format the test suite (Prettier; scoped to tests/)
 ```
 
-All three (`npm test`, `npm run verify:i18n`, `npm run verify:links`) run in CI
+Formatting is governed by `.editorconfig` (repo-wide) and Prettier (scoped to
+`tests/` only — the hand-tuned `site/` assets are intentionally left untouched;
+see `.prettierignore`).
+
+All gates (`npm test`, `npm run format:check`, `npm run verify:i18n`, `npm run verify:links`) run in CI
 (`.github/workflows/deploy.yml`) and **gate the Cloudflare deploy** — a red
 suite blocks the release. The pure,
 testable logic lives at the top of `site/assets/js/calculator.js` and

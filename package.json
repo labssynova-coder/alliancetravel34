@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "Alliance Travel — static multilingual (FR/EN/AR) travel site for Cloudflare Pages.",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",

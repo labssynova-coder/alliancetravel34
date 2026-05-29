@@ -38,17 +38,17 @@ testable logic lives at the top of `site/assets/js/calculator.js` and
 `site/assets/js/booking-form.js`, exported via a `module.exports` guard that is
 a no-op in the browser.
 
-> **First-time? Read [`docs/HANDOFF.md`](docs/HANDOFF.md) — the master context document.** It covers every decision, every failed approach, every architectural choice, and the full v21 cleanup cycle. Other docs are referenced from there.
+> **First-time? Read [`docs/_archive/HANDOFF.md`](docs/_archive/HANDOFF.md) — the master context document.** It covers every decision, every failed approach, every architectural choice, and the full v21 cleanup cycle. Other docs are referenced from there.
 
 ---
 
 ## Critical docs (in reading order)
 
-1. **[`docs/HANDOFF.md`](docs/HANDOFF.md)** — Master context. Read first.
-2. **[`docs/ROADMAP.md`](docs/ROADMAP.md)** — Phase-by-phase commit log with metrics.
+1. **[`docs/_archive/HANDOFF.md`](docs/_archive/HANDOFF.md)** — Master context. Read first.
+2. **[`docs/_archive/ROADMAP.md`](docs/_archive/ROADMAP.md)** — Phase-by-phase commit log with metrics.
 3. **[`docs/DEPLOY.md`](docs/DEPLOY.md)** — 30-minute Cloudflare Pages go-live walkthrough.
-4. **[`docs/MOTION-CLEANUP-MASTER.md`](docs/MOTION-CLEANUP-MASTER.md)** — Design contract: tokens, motion vocab, performance contract, cinematic doctrine.
-5. **[`docs/CLEANUP-SURVEY.md`](docs/CLEANUP-SURVEY.md)** — The 19 locked design decisions.
+4. **[`docs/_archive/MOTION-CLEANUP-MASTER.md`](docs/_archive/MOTION-CLEANUP-MASTER.md)** — Design contract: tokens, motion vocab, performance contract, cinematic doctrine.
+5. **[`docs/_archive/CLEANUP-SURVEY.md`](docs/_archive/CLEANUP-SURVEY.md)** — The 19 locked design decisions.
 
 ---
 
@@ -86,17 +86,17 @@ alliance-travel/
 │           ├── favicon/            16/32/96/180/192/512 + .ico
 │           └── icons/              inline-SVG icons stored locally
 ├── docs/                          ← living documentation (see "Critical docs" above)
-├── source of truth/               ← client PDFs / DOCX briefs (immutable)
-├── _archive/                      ← historical artifacts (frozen)
-│   ├── migrations/                ← 38 stale _vNN_*.py / _vNN_*.css migration scripts
-│   ├── handoff-snapshot-v5.2/
-│   ├── heroes-original/           ← uncompressed source photos
-│   └── ...
 ├── .github/workflows/deploy.yml   ← optional CI auto-deploy via Cloudflare API
 ├── wrangler.toml                  ← CF Pages config (project: "alliance-travel", output: "site")
 ├── .gitignore
 └── README.md                      ← you are here
 ```
+
+> **Removed in cleanup (2026-05-29):** the non-deployed `source of truth/` (client
+> PDF/DOCX briefs) and `_archive/` (frozen migration scripts, old CSS, original
+> hero photos) directories were removed from the working tree to slim the repo
+> (~37 MB). They are preserved in git history and recoverable with:
+> `git checkout archive/pre-cleanup-2026-05-29 -- 'source of truth' _archive`
 
 ---
 

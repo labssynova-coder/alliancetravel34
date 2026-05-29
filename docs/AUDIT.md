@@ -1,6 +1,8 @@
 # 🔍 Final Codebase Audit
 
 > Snapshot of the project at the docs-consolidation commit (`main` HEAD, 2026-05-26). Inventory + obsolete-file flags + outstanding tech debt. Compare to the v22 QA report at [`_archive/QA-REPORT-v22.md`](_archive/QA-REPORT-v22.md) for the previous milestone.
+>
+> **Update 2026-05-29:** the non-deployed root directories `source of truth/` and `_archive/` (inventoried under "Keep as-is" below) were removed from the working tree to slim the repo (~37 MB). They remain in git history — recover with `git checkout archive/pre-cleanup-2026-05-29 -- 'source of truth' _archive`. The inventory below is preserved as the 2026-05-26 snapshot.
 
 ---
 

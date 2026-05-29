@@ -95,8 +95,9 @@ alliance-travel/
 > **Removed in cleanup (2026-05-29):** the non-deployed `source of truth/` (client
 > PDF/DOCX briefs) and `_archive/` (frozen migration scripts, old CSS, original
 > hero photos) directories were removed from the working tree to slim the repo
-> (~37 MB). They are preserved in git history and recoverable with:
-> `git checkout archive/pre-cleanup-2026-05-29 -- 'source of truth' _archive`
+> (~37 MB). They are preserved in git history (last present in commit `af9cebf`)
+> and recoverable with:
+> `git checkout af9cebf -- 'source of truth' _archive`
 
 ---
 

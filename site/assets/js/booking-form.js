@@ -13,6 +13,136 @@
 const fmt = (n) =>
   n ? new Intl.NumberFormat('fr-DZ').format(n) + ' DA' : null;
 
+/* ─── Pure logic (unit-tested) ────────────────────────────────────
+   These helpers carry the form's real rules with no DOM/IO so they can
+   be exercised in isolation (see tests/booking-form.test.mjs). The
+   BookingForm class methods below delegate to them. */
+
+// Canonical Algerian mobile rule. MUST stay in sync with the
+// pattern="" attribute on #bf-phone in FORM_HTML below.
+const ALGERIAN_PHONE_RE = /^(\+213|0)[5-7][0-9 ]{8,}$/;
+function validatePhoneFormat(value) {
+  return ALGERIAN_PHONE_RE.test((value || '').trim());
+}
+
+// Upload gate limits — generous for passport scans, hard enough to stop a
+// 50 MB drag-drop from freezing the UI.
+const FILE_RULES = {
+  MAX_FILE_BYTES:  8 * 1024 * 1024,   // 8 MB
+  MAX_TOTAL_BYTES: 40 * 1024 * 1024,  // 40 MB
+  MAX_FILE_COUNT:  12,
+  ALLOWED_TYPES:   /^(image\/(jpeg|jpg|png|webp|heic|heif)|application\/pdf)$/i,
+};
+
+/* Pure upload gate: decide which of `files` are acceptable given what's
+   already uploaded. Returns { accepted, errors } — performs no I/O. */
+function classifyFiles(files, { existingCount = 0, existingBytes = 0 } = {}) {
+  const errors = [];
+  const accepted = [];
+  let totalAfter = existingBytes;
+
+  [...files].forEach(file => {
+    // 1. Type check (browser also filters via accept= but double-check)
+    if (!FILE_RULES.ALLOWED_TYPES.test(file.type)) {
+      errors.push(`${file.name} — type non supporté (JPG, PNG, WebP, HEIC ou PDF uniquement)`);
+      return;
+    }
+    // 2. Per-file size check
+    if (file.size > FILE_RULES.MAX_FILE_BYTES) {
+      const mb = (file.size / 1024 / 1024).toFixed(1);
+      errors.push(`${file.name} — fichier trop lourd (${mb} MB, max 8 MB)`);
+      return;
+    }
+    // 3. Total count check
+    if (existingCount + accepted.length >= FILE_RULES.MAX_FILE_COUNT) {
+      errors.push(`Limite atteinte (${FILE_RULES.MAX_FILE_COUNT} fichiers maximum)`);
+      return;
+    }
+    // 4. Total size check
+    if (totalAfter + file.size > FILE_RULES.MAX_TOTAL_BYTES) {
+      errors.push(`${file.name} — taille totale dépassée (max 40 MB)`);
+      return;
+    }
+    totalAfter += file.size;
+    accepted.push(file);
+  });
+
+  return { accepted, errors };
+}
+
+/* Passport-validity rule advertised in the hint under each expiry field
+   ("Doit être valide ≥ 6 mois"). A passport must remain valid at least
+   `monthsRequired` months past the reference date (defaults to today).
+   Empty is treated as OK because passport details are an optional section.
+   Returns { ok, error }. */
+function validatePassportExpiry(expiry, { from = new Date(), monthsRequired = 6 } = {}) {
+  if (!expiry) return { ok: true, error: null };
+  const exp = new Date(expiry);
+  if (isNaN(exp.getTime())) {
+    return { ok: false, error: 'Date d’expiration invalide.' };
+  }
+  const min = new Date(from);
+  min.setMonth(min.getMonth() + monthsRequired);
+  if (exp < min) {
+    return { ok: false, error: `Le passeport doit être valide encore au moins ${monthsRequired} mois.` };
+  }
+  return { ok: true, error: null };
+}
+
+/* Pure WhatsApp/email message composer. Takes already-extracted values
+   (no DOM, no window) so the exact output can be asserted in tests. */
+function buildBookingMessage({
+  calc = {}, name = '', phone = '', city = '', notes = '',
+  passports = [], uploadCount = 0,
+} = {}) {
+  const s = calc;
+  const validPassports = passports.filter(p => p.name || p.number);
+
+  const lines = [
+    '🌍 *Demande de réservation — Alliance Travel*',
+    '',
+    '📋 *VOYAGE SÉLECTIONNÉ*',
+    `• Destination : ${s.tripName || '—'}`,
+    s.hotel  ? `• Hôtel : ${s.hotel}`          : null,
+    s.date   ? `• Date de départ : ${s.date}`   : null,
+    s.room   ? `• Chambre : ${s.room}`           : null,
+    s.adults ? `• Adultes : ${s.adults}`         : null,
+    (s.kids?.length) ? `• Enfants/Bébés : ${s.kids.length}` : null,
+    s.totalDA ? `• Prix estimé : ${fmt(s.totalDA)}` : null,
+    s.totalUSD ? `• Taxe locale : ${s.totalUSD} USD (sur place)` : null,
+    '',
+    '👤 *RESPONSABLE DU DOSSIER*',
+    name ? `• Nom : ${name}`             : '• Nom : (non renseigné)',
+    phone ? `• Téléphone WA : ${phone}`  : null,
+    city ? `• Wilaya/Ville : ${city}`    : null,
+  ];
+
+  if (validPassports.length) {
+    lines.push('', '📄 *INFORMATIONS PASSEPORTS*');
+    validPassports.forEach((p, i) => {
+      const parts = [
+        p.name   ? p.name   : null,
+        p.number ? `N° ${p.number}` : null,
+        p.expiry ? `Exp. ${p.expiry}` : null,
+        p.dob    ? `Né(e) le ${p.dob}` : null,
+      ].filter(Boolean);
+      lines.push(`• Voyageur ${i + 1} : ${parts.join(' · ') || '—'}`);
+    });
+  }
+
+  if (uploadCount) {
+    lines.push('', `📎 *${uploadCount} copie(s) de passeport* seront envoyées dans ce chat.`);
+  }
+
+  if (notes) {
+    lines.push('', `💬 *NOTE :* ${notes}`);
+  }
+
+  lines.push('', 'Merci ! ✅');
+
+  return lines.filter(l => l !== null).join('\n');
+}
+
 /* ─── HTML Template ───────────────────────────────────────────── */
 const FORM_HTML = `
 <div class="container">
@@ -324,45 +454,37 @@ class BookingForm {
     bindField('.pp-num',    'number');
     bindField('.pp-expiry', 'expiry');
     bindField('.pp-dob',    'dob');
+
+    // Enforce the "valide ≥ 6 mois" rule advertised under each expiry field.
+    // Non-blocking by design: passport details are an optional section, so
+    // this surfaces an inline warning but doesn't gate the send buttons.
+    this.el.passportList.querySelectorAll('.pp-expiry').forEach(inp => {
+      const check = () => {
+        const { ok, error } = validatePassportExpiry(inp.value);
+        inp.classList.toggle('is-invalid', !ok);
+        inp.setAttribute('aria-invalid', ok ? 'false' : 'true');
+        const hint = this.mount.querySelector('#pp-expiry-' + inp.dataset.idx + '-hint');
+        if (!hint) return;
+        if (!ok) {
+          if (hint.dataset.origText == null) hint.dataset.origText = hint.textContent;
+          hint.textContent = error;
+          hint.classList.add('bf-field-err');
+        } else if (hint.dataset.origText != null) {
+          hint.textContent = hint.dataset.origText;
+          hint.classList.remove('bf-field-err');
+        }
+      };
+      inp.addEventListener('change', check);
+      inp.addEventListener('blur', check);
+    });
   }
 
   /* ── File upload ─────────────────────────────────────────── */
-  /** Per-file and total upload limits — kept generous for passport scans
-   *  but hard enough to prevent a 50MB drag-drop from blocking the UI. */
-  static MAX_FILE_BYTES = 8 * 1024 * 1024;   // 8 MB
-  static MAX_TOTAL_BYTES = 40 * 1024 * 1024; // 40 MB
-  static MAX_FILE_COUNT = 12;
-  static ALLOWED_TYPES = /^(image\/(jpeg|jpg|png|webp|heic|heif)|application\/pdf)$/i;
-
   _handleFiles(files) {
-    const errors = [];
-    const accepted = [];
-    let totalAfter = this.uploads.reduce((sum, f) => sum + (f.size || 0), 0);
-
-    [...files].forEach(file => {
-      // 1. Type check (browser already filters via accept= but double-check)
-      if (!BookingForm.ALLOWED_TYPES.test(file.type)) {
-        errors.push(`${file.name} — type non supporté (JPG, PNG, WebP, HEIC ou PDF uniquement)`);
-        return;
-      }
-      // 2. Per-file size check
-      if (file.size > BookingForm.MAX_FILE_BYTES) {
-        const mb = (file.size / 1024 / 1024).toFixed(1);
-        errors.push(`${file.name} — fichier trop lourd (${mb} MB, max 8 MB)`);
-        return;
-      }
-      // 3. Total count check
-      if (this.uploads.length + accepted.length >= BookingForm.MAX_FILE_COUNT) {
-        errors.push(`Limite atteinte (${BookingForm.MAX_FILE_COUNT} fichiers maximum)`);
-        return;
-      }
-      // 4. Total size check
-      if (totalAfter + file.size > BookingForm.MAX_TOTAL_BYTES) {
-        errors.push(`${file.name} — taille totale dépassée (max 40 MB)`);
-        return;
-      }
-      totalAfter += file.size;
-      accepted.push(file);
+    const existingBytes = this.uploads.reduce((sum, f) => sum + (f.size || 0), 0);
+    const { accepted, errors } = classifyFiles(files, {
+      existingCount: this.uploads.length,
+      existingBytes,
     });
 
     // Surface errors via toast (one per error, queued)
@@ -416,57 +538,15 @@ class BookingForm {
 
   /* ── Message builder ─────────────────────────────────────── */
   _buildMessage() {
-    const s    = window.__calcState ?? {};
-    const name = this.mount.querySelector('#bf-name')?.value.trim()  || '';
-    const ph   = this.mount.querySelector('#bf-phone')?.value.trim() || '';
-    const city = this.mount.querySelector('#bf-city')?.value.trim()  || '';
-    const notes = this.mount.querySelector('#bf-notes')?.value.trim() || '';
-
-    const validPassports = this.passports.filter(p => p.name || p.number);
-
-    const lines = [
-      '🌍 *Demande de réservation — Alliance Travel*',
-      '',
-      '📋 *VOYAGE SÉLECTIONNÉ*',
-      `• Destination : ${s.tripName || '—'}`,
-      s.hotel  ? `• Hôtel : ${s.hotel}`          : null,
-      s.date   ? `• Date de départ : ${s.date}`   : null,
-      s.room   ? `• Chambre : ${s.room}`           : null,
-      s.adults ? `• Adultes : ${s.adults}`         : null,
-      (s.kids?.length) ? `• Enfants/Bébés : ${s.kids.length}` : null,
-      s.totalDA ? `• Prix estimé : ${fmt(s.totalDA)}` : null,
-      s.totalUSD ? `• Taxe locale : ${s.totalUSD} USD (sur place)` : null,
-      '',
-      '👤 *RESPONSABLE DU DOSSIER*',
-      name ? `• Nom : ${name}`             : '• Nom : (non renseigné)',
-      ph   ? `• Téléphone WA : ${ph}`      : null,
-      city ? `• Wilaya/Ville : ${city}`    : null,
-    ];
-
-    if (validPassports.length) {
-      lines.push('', '📄 *INFORMATIONS PASSEPORTS*');
-      validPassports.forEach((p, i) => {
-        const parts = [
-          p.name   ? p.name   : null,
-          p.number ? `N° ${p.number}` : null,
-          p.expiry ? `Exp. ${p.expiry}` : null,
-          p.dob    ? `Né(e) le ${p.dob}` : null,
-        ].filter(Boolean);
-        lines.push(`• Voyageur ${i + 1} : ${parts.join(' · ') || '—'}`);
-      });
-    }
-
-    if (this.uploads.length) {
-      lines.push('', `📎 *${this.uploads.length} copie(s) de passeport* seront envoyées dans ce chat.`);
-    }
-
-    if (notes) {
-      lines.push('', `💬 *NOTE :* ${notes}`);
-    }
-
-    lines.push('', 'Merci ! ✅');
-
-    return lines.filter(l => l !== null).join('\n');
+    return buildBookingMessage({
+      calc:  window.__calcState ?? {},
+      name:  this.mount.querySelector('#bf-name')?.value.trim()  || '',
+      phone: this.mount.querySelector('#bf-phone')?.value.trim() || '',
+      city:  this.mount.querySelector('#bf-city')?.value.trim()  || '',
+      notes: this.mount.querySelector('#bf-notes')?.value.trim() || '',
+      passports:   this.passports,
+      uploadCount: this.uploads.length,
+    });
   }
 
   /* ── Validation gate ─────────────────────────────────────────
@@ -719,10 +799,26 @@ function boot() {
   if (!mount) return;
   new BookingForm(mount);
 }
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', boot);
-} else {
-  boot();   // already loaded (script ran after DOMContentLoaded)
+// Guarded so the module can be imported in a DOM-less (Node) test
+// environment without running the browser bootstrap.
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();   // already loaded (script ran after DOMContentLoaded)
+  }
+}
+
+// Export the pure helpers for unit tests (no-op in the browser).
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    validatePhoneFormat,
+    ALGERIAN_PHONE_RE,
+    classifyFiles,
+    FILE_RULES,
+    validatePassportExpiry,
+    buildBookingMessage,
+  };
 }
 
 })();

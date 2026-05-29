@@ -18,6 +18,24 @@ npx serve site -p 5501 --no-clipboard
 
 Open <http://localhost:5500/>.
 
+### Tests
+
+The site ships as static files, but the client-side business logic (pricing
+calculator, booking-form rules) is unit-tested with [Vitest](https://vitest.dev/):
+
+```bash
+npm install        # one-time: installs Vitest
+npm test           # run the unit suite
+npm run test:watch # watch mode while developing
+npm run verify:i18n # check every data-i18n key resolves in FR/EN/AR
+```
+
+Both `npm test` and `npm run verify:i18n` run in CI (`.github/workflows/deploy.yml`)
+and **gate the Cloudflare deploy** — a red suite blocks the release. The pure,
+testable logic lives at the top of `site/assets/js/calculator.js` and
+`site/assets/js/booking-form.js`, exported via a `module.exports` guard that is
+a no-op in the browser.
+
 > **First-time? Read [`docs/HANDOFF.md`](docs/HANDOFF.md) — the master context document.** It covers every decision, every failed approach, every architectural choice, and the full v21 cleanup cycle. Other docs are referenced from there.
 
 ---

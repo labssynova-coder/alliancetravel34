@@ -23,8 +23,8 @@ concurrency:
 
 jobs:
   # ── Quality gate ───────────────────────────────────────────────────
-  # Unit tests (pricing calculator) + i18n key-coverage check. The deploy
-  # job below depends on this passing.
+  # Unit tests (pricing calculator + booking-form rules) and the i18n
+  # key-coverage check. The deploy job below depends on this passing.
   test:
     runs-on: ubuntu-latest
     steps:

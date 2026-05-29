@@ -26,12 +26,14 @@ calculator, booking-form rules) is unit-tested with [Vitest](https://vitest.dev/
 ```bash
 npm install        # one-time: installs Vitest
 npm test           # run the unit suite
-npm run test:watch # watch mode while developing
-npm run verify:i18n # check every data-i18n key resolves in FR/EN/AR
+npm run test:watch  # watch mode while developing
+npm run verify:i18n  # check every data-i18n key resolves in FR/EN/AR
+npm run verify:links # check sitemap, _redirects, and all internal links resolve
 ```
 
-Both `npm test` and `npm run verify:i18n` run in CI (`.github/workflows/deploy.yml`)
-and **gate the Cloudflare deploy** — a red suite blocks the release. The pure,
+All three (`npm test`, `npm run verify:i18n`, `npm run verify:links`) run in CI
+(`.github/workflows/deploy.yml`) and **gate the Cloudflare deploy** — a red
+suite blocks the release. The pure,
 testable logic lives at the top of `site/assets/js/calculator.js` and
 `site/assets/js/booking-form.js`, exported via a `module.exports` guard that is
 a no-op in the browser.

@@ -6,7 +6,8 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify:i18n": "node scripts/verify-i18n.cjs"
+    "verify:i18n": "node scripts/verify-i18n.cjs",
+    "verify:links": "node scripts/verify-links.cjs"
   },
   "devDependencies": {
     "vitest": "^2.1.8"

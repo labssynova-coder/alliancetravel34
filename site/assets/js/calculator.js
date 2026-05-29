@@ -6,6 +6,59 @@
 
 const fmt = (n) => new Intl.NumberFormat('fr-DZ').format(n) + ' DA';
 
+/* ─── Pure pricing core ───────────────────────────────────────────
+   Extracted from the DOM class so the money logic can be unit-tested
+   in isolation (see tests/calculator.test.mjs). Takes a trip dataset
+   and a selection `state`, returns the priced breakdown — no DOM. */
+function roomLabelFor(r) {
+  return { double: 'Double', triple: 'Triple', single: 'Individuelle' }[r] ?? r;
+}
+
+function computePricing(trip, state) {
+  if (!trip) return null;
+  const hotel = trip.hotels.find(h => h.id === state.hotelId);
+  if (!hotel) return null;
+
+  const lines = [];
+  const room  = state.room;
+
+  // Adults
+  const rateKey = room === 'triple' ? 'triple' : room === 'single' ? 'single' : 'double';
+  const rate = hotel.prices[rateKey] ?? hotel.prices.double;
+  lines.push({
+    label: `${hotel.name} — ${roomLabelFor(room)} × ${state.adults} adulte${state.adults > 1 ? 's' : ''}`,
+    amount: rate * state.adults,
+    currency: 'DA',
+  });
+
+  // Children — first, second, baby per trip rules
+  let childIdx = 0;
+  (state.kids || []).forEach(kid => {
+    if (kid.age < 2) {
+      lines.push({ label: 'Bébé (0–2 ans)', amount: hotel.prices.baby, currency: 'DA' });
+    } else {
+      const isFirst = childIdx === 0;
+      const priceKey = isFirst ? 'child1' : 'child2';
+      const ageLabel = kid.type === 'child_a' ? '2–5 ans' : '2–11.99 ans';
+      lines.push({
+        label: `${isFirst ? '1ᵉʳ' : (childIdx + 1) + 'ᵉ'} enfant (${ageLabel})`,
+        amount: hotel.prices[priceKey] ?? hotel.prices.child1,
+        currency: 'DA',
+      });
+      childIdx++;
+    }
+  });
+
+  // Extras
+  (state.extras || []).filter(e => e.checked).forEach(e => {
+    lines.push({ label: e.label, amount: e.amount, currency: e.currency ?? 'DA' });
+  });
+
+  const totalDA  = lines.filter(l => l.currency === 'DA').reduce((s, l) => s + l.amount, 0);
+  const totalUSD = lines.filter(l => l.currency === 'USD').reduce((s, l) => s + l.amount, 0);
+  return { lines, totalDA, totalUSD, hotel };
+}
+
 class TripCalculator {
   constructor() {
     this.trip = window.TRIP_DATA;
@@ -168,48 +221,7 @@ class TripCalculator {
   }
 
   calculate() {
-    const hotel = this.trip.hotels.find(h => h.id === this.state.hotelId);
-    if (!hotel) return null;
-
-    const lines = [];
-    const room  = this.state.room;
-
-    // Adults
-    const rateKey = room === 'triple' ? 'triple' : room === 'single' ? 'single' : 'double';
-    const rate = hotel.prices[rateKey] ?? hotel.prices.double;
-    lines.push({
-      label: `${hotel.name} — ${this.roomLabel(room)} × ${this.state.adults} adulte${this.state.adults > 1 ? 's' : ''}`,
-      amount: rate * this.state.adults,
-      currency: 'DA',
-    });
-
-    // Children — first, second, baby per trip rules
-    let childIdx = 0;
-    this.state.kids.forEach(kid => {
-      if (kid.age < 2) {
-        lines.push({ label: 'Bébé (0–2 ans)', amount: hotel.prices.baby, currency: 'DA' });
-      } else {
-        const isFirst = childIdx === 0;
-        const priceKey = isFirst ? 'child1' : 'child2';
-        const ageLabel = kid.type === 'child_a' ? '2–5 ans' : '2–11.99 ans';
-        lines.push({
-          label: `${isFirst ? '1ᵉʳ' : (childIdx + 1) + 'ᵉ'} enfant (${ageLabel})`,
-          amount: hotel.prices[priceKey] ?? hotel.prices.child1,
-          currency: 'DA',
-        });
-        childIdx++;
-      }
-    });
-
-    // Extras
-    const enabledExtras = this.state.extras.filter(e => e.checked);
-    enabledExtras.forEach(e => {
-      lines.push({ label: e.label, amount: e.amount, currency: e.currency ?? 'DA' });
-    });
-
-    const totalDA  = lines.filter(l => l.currency === 'DA').reduce((s, l) => s + l.amount, 0);
-    const totalUSD = lines.filter(l => l.currency === 'USD').reduce((s, l) => s + l.amount, 0);
-    return { lines, totalDA, totalUSD, hotel };
+    return computePricing(this.trip, this.state);
   }
 
   render() {
@@ -271,7 +283,7 @@ class TripCalculator {
   }
 
   roomLabel(r) {
-    return { double: 'Double', triple: 'Triple', single: 'Individuelle' }[r] ?? r;
+    return roomLabelFor(r);
   }
 
   /**
@@ -386,10 +398,12 @@ function initHotelPicker() {
   }
 }
 
-window.resetFilters = () => {
-  document.querySelectorAll('.tier-tab').forEach((t, i) => t.setAttribute('aria-pressed', i === 0 ? 'true' : 'false'));
-  document.querySelectorAll('.hotel-card').forEach(c => c.style.display = '');
-};
+if (typeof window !== 'undefined') {
+  window.resetFilters = () => {
+    document.querySelectorAll('.tier-tab').forEach((t, i) => t.setAttribute('aria-pressed', i === 0 ? 'true' : 'false'));
+    document.querySelectorAll('.hotel-card').forEach(c => c.style.display = '');
+  };
+}
 
 // Nav scroll effect
 function initNav() {
@@ -422,11 +436,19 @@ function initTimeline() {
   });
 }
 
-// Boot
-document.addEventListener('DOMContentLoaded', () => {
-  initNav();
-  initHotelPicker();
-  initFAQ();
-  initTimeline();
-  new TripCalculator();
-});
+// Boot — guarded so this module can be imported in a DOM-less environment
+// (e.g. the Node-based unit tests) without executing the browser bootstrap.
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    initNav();
+    initHotelPicker();
+    initFAQ();
+    initTimeline();
+    new TripCalculator();
+  });
+}
+
+// Export the pure pricing core for unit tests (no-op in the browser).
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { computePricing, roomLabelFor };
+}

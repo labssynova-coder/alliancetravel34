@@ -22,7 +22,34 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # ── Quality gate ───────────────────────────────────────────────────
+  # Unit tests (pricing calculator) + i18n key-coverage check. The deploy
+  # job below depends on this passing.
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Unit tests
+        run: npm test
+
+      - name: i18n key coverage
+        run: npm run verify:i18n
+
   deploy:
+    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -1,0 +1,14 @@
+{
+  "name": "alliance-travel",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Alliance Travel — static multilingual (FR/EN/AR) travel site for Cloudflare Pages.",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "verify:i18n": "node scripts/verify-i18n.cjs"
+  },
+  "devDependencies": {
+    "vitest": "^2.1.8"
+  }
+}

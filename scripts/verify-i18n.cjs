@@ -1,5 +1,7 @@
-/* TEMP verification: confirm every data-i18n* key used in the HTML resolves
-   in the FR/EN/AR dictionaries of site/assets/js/i18n.js. Deleted after use. */
+/* i18n key-coverage check (CI gate): confirm every data-i18n* key used in the
+   HTML resolves in the FR/EN/AR dictionaries of site/assets/js/i18n.js.
+   Exits non-zero if any key is missing in any language so the deploy
+   workflow can block on it. Run via `npm run verify:i18n`. */
 const fs = require('fs');
 const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
@@ -50,3 +52,9 @@ console.log('\nunique keys used:', allKeys.size);
 console.log('missing in FR dict (' + missFR.length + '):', missFR.join(', ') || '—');
 console.log('missing in EN dict (' + missEN.length + '):', missEN.join(', ') || '—');
 console.log('missing in AR dict (' + missAR.length + '):', missAR.join(', ') || '—');
+
+if (missFR.length || missEN.length || missAR.length) {
+  console.error('\n❌ i18n key coverage incomplete — see missing keys above.');
+  process.exit(1);
+}
+console.log('\n✓ All i18n keys resolve in FR / EN / AR.');

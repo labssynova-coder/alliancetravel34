@@ -9,7 +9,12 @@ const {
   FILE_RULES,
   validatePassportExpiry,
   buildBookingMessage,
+  escapeHtml,
+  WA_NUMBER,
 } = require('../site/assets/js/booking-form.js');
+
+const fs = require('node:fs');
+const path = require('node:path');
 
 // Lightweight stand-in for the browser File object — classifyFiles only
 // reads `.name`, `.type`, `.size`.
@@ -244,5 +249,55 @@ describe('buildBookingMessage', () => {
     const msg = buildBookingMessage({ calc, name: 'Ahmed & Co', notes: 'a/b?c=d' });
     expect(() => encodeURIComponent(msg)).not.toThrow();
     expect(decodeURIComponent(encodeURIComponent(msg))).toBe(msg);
+  });
+});
+
+describe('escapeHtml (innerHTML hardening)', () => {
+  it('neutralises the HTML-significant characters', () => {
+    expect(escapeHtml('<script>')).toBe('&lt;script&gt;');
+    expect(escapeHtml('a & b')).toBe('a &amp; b');
+    expect(escapeHtml('say "hi"')).toBe('say &quot;hi&quot;');
+    expect(escapeHtml("it's")).toBe('it&#39;s');
+  });
+
+  it('defuses an attribute-breakout payload (self-XSS via passport field)', () => {
+    const out = escapeHtml('"><img src=x onerror=alert(1)>');
+    expect(out).not.toContain('<');
+    expect(out).not.toContain('>');
+    expect(out).not.toContain('"');
+  });
+
+  it('coerces null/undefined/numbers to a safe string', () => {
+    expect(escapeHtml(null)).toBe('');
+    expect(escapeHtml(undefined)).toBe('');
+    expect(escapeHtml(42)).toBe('42');
+  });
+
+  it('leaves benign text untouched', () => {
+    expect(escapeHtml('Ahmed Benkhalifa')).toBe('Ahmed Benkhalifa');
+  });
+});
+
+describe('WhatsApp number — single source of truth + drift guard', () => {
+  const tripPages = [
+    'cairo-sharm',
+    'sharm-constantine',
+    'istanbul',
+    'azerbaidjan',
+    'kuala-lumpur',
+  ].map((slug) => path.resolve(__dirname, `../site/${slug}/index.html`));
+
+  it('exports the primary booking number', () => {
+    expect(WA_NUMBER).toBe('213561616266');
+  });
+
+  it('is the number advertised on every trip page (no JS/HTML drift)', () => {
+    for (const page of tripPages) {
+      const html = fs.readFileSync(page, 'utf8');
+      expect(
+        html.includes(`wa.me/${WA_NUMBER}`),
+        `${path.basename(path.dirname(page))} should link to wa.me/${WA_NUMBER}`,
+      ).toBe(true);
+    }
   });
 });

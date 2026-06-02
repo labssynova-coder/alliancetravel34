@@ -139,6 +139,24 @@ describe('calculator ↔ booking-form integration (jsdom)', () => {
     expect(btn.getAttribute('aria-disabled')).toBe('false');
   });
 
+  it('does not inject markup when a passport field carries an XSS payload', () => {
+    // Type an attribute-breakout payload into the first traveller's name,
+    // then force a re-render (add-passport) so renderPassportEntry runs with
+    // the stored value. escapeHtml must keep it inert.
+    const payload = '"><img src=x onerror="window.__pwned=1">';
+    const nameInput = document.getElementById('pp-name-0');
+    nameInput.value = payload;
+    fire(nameInput, 'input');
+
+    document.getElementById('bf-add-passport').click(); // triggers _renderPassports
+
+    const list = document.getElementById('bf-passports-list');
+    expect(list.querySelectorAll('img').length).toBe(0); // no injected element
+    expect(window.__pwned).toBeUndefined(); // onerror never fired
+    // The value survived intact as data (escaped in HTML, decoded by the DOM).
+    expect(document.getElementById('pp-name-0').value).toBe(payload);
+  });
+
   it('reflects a price change from a new calculator selection in the message', () => {
     publishCalcState(baseState({ adults: 2 }));
     fillContact({ name: 'Ahmed', phone: '0561616266', city: 'Alger' });

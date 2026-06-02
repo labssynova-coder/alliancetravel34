@@ -13,6 +13,27 @@
 const fmt = (n) =>
   n ? new Intl.NumberFormat('fr-DZ').format(n) + ' DA' : null;
 
+// Single source of truth for the agency's primary booking contacts. The
+// page HTML also lists these numbers in the contact section; the test
+// tests/booking-form.test.mjs guards against the JS value drifting from
+// the number advertised on the trip pages.
+const WA_NUMBER = '213561616266';
+const EMAIL = 'contact@alliance-travel.dz';
+const AGENCY = 'Alliance Travel';
+
+// Escape user-controlled values before interpolating them into innerHTML.
+// The booking form has no backend, so the only exposure is self-XSS (a user
+// breaking their own form by typing a quote or `<`), but escaping is cheap
+// and removes the footgun entirely. Safe in both text and attribute contexts.
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 /* ─── Pure logic (unit-tested) ────────────────────────────────────
    These helpers carry the form's real rules with no DOM/IO so they can
    be exercised in isolation (see tests/booking-form.test.mjs). The
@@ -335,13 +356,13 @@ function renderPassportEntry(idx, data = {}) {
       <div class="bform-field">
         <label for="pp-name-${idx}">Nom &amp; Prénom</label>
         <input type="text" id="pp-name-${idx}" class="pp-name" data-idx="${idx}"
-          placeholder="Ahmed Benkhalifa" value="${data.name || ''}"
+          placeholder="Ahmed Benkhalifa" value="${escapeHtml(data.name)}"
           autocomplete="off"/>
       </div>
       <div class="bform-field">
         <label for="pp-num-${idx}">N° de passeport</label>
         <input type="text" id="pp-num-${idx}" class="pp-num" data-idx="${idx}"
-          placeholder="AB 123456" value="${data.number || ''}"
+          placeholder="AB 123456" value="${escapeHtml(data.number)}"
           inputmode="text" pattern="[A-Z0-9 ]{4,12}"
           aria-describedby="pp-num-${idx}-hint"/>
         <p class="bf-field-hint" id="pp-num-${idx}-hint">8 caractères alphanumériques.</p>
@@ -349,14 +370,14 @@ function renderPassportEntry(idx, data = {}) {
       <div class="bform-field">
         <label for="pp-expiry-${idx}">Date d'expiration</label>
         <input type="date" id="pp-expiry-${idx}" class="pp-expiry" data-idx="${idx}"
-          value="${data.expiry || ''}"
+          value="${escapeHtml(data.expiry)}"
           aria-describedby="pp-expiry-${idx}-hint"/>
         <p class="bf-field-hint" id="pp-expiry-${idx}-hint">Doit être valide ≥ 6 mois après le retour.</p>
       </div>
       <div class="bform-field">
         <label for="pp-dob-${idx}">Date de naissance</label>
         <input type="date" id="pp-dob-${idx}" class="pp-dob" data-idx="${idx}"
-          value="${data.dob || ''}"/>
+          value="${escapeHtml(data.dob)}"/>
       </div>
     </div>
   </div>`;
@@ -369,9 +390,9 @@ class BookingForm {
     this.passports  = [{}];   // array of { name, number, expiry, dob }
     this.uploads    = [];     // array of { name, url, type }
     this.debounceTimer = null;
-    this.WA_NUMBER  = '213561616266';
-    this.EMAIL      = 'contact@alliance-travel.dz';
-    this.AGENCY     = 'Alliance Travel';
+    this.WA_NUMBER  = WA_NUMBER;
+    this.EMAIL      = EMAIL;
+    this.AGENCY     = AGENCY;
 
     this.mount.innerHTML = FORM_HTML;
     this.el = {
@@ -517,12 +538,13 @@ class BookingForm {
   _renderPreviews() {
     this.el.previews.innerHTML = this.uploads.map((f, i) => {
       const isImg = f.type.startsWith('image/');
+      const safeName = escapeHtml(f.name);
       return `
       <div class="upload-thumb">
         ${isImg
-          ? `<img src="${f.url}" alt="${f.name}"/>`
+          ? `<img src="${f.url}" alt="${safeName}"/>`
           : `<div class="upload-pdf-icon">${icon('pdf')}</div>`}
-        <span class="upload-thumb__label">${f.name}</span>
+        <span class="upload-thumb__label">${safeName}</span>
         <button class="upload-thumb__remove" data-remove="${i}" title="Supprimer">${icon('x')}</button>
       </div>`;
     }).join('');
@@ -818,6 +840,10 @@ if (typeof module !== 'undefined' && module.exports) {
     FILE_RULES,
     validatePassportExpiry,
     buildBookingMessage,
+    escapeHtml,
+    WA_NUMBER,
+    EMAIL,
+    AGENCY,
   };
 }
 

@@ -1,49 +1,140 @@
 # Alliance Travel
 
-Static travel-agency website for Alliance Travel in Bordj Bou Arreridj, Algeria.
+> Static travel website for **Alliance Travel**, a guided-tour agency based in
+> Bordj Bou Arreridj, Algeria. Built for fast public demos, Cloudflare Pages
+> production hosting, and WhatsApp-first lead capture.
 
-The site is intentionally simple: hand-written HTML, one CSS file, vanilla
-browser JavaScript, no backend, no build step, and no framework. Trip inquiry
-flows open a pre-filled WhatsApp message, with email and clipboard fallbacks.
+**Live Demo:** [labssynova-coder.github.io/alliancetravel34](https://labssynova-coder.github.io/alliancetravel34/)
 
-Live demo:
+---
 
-- GitHub Pages: <https://labssynova-coder.github.io/alliancetravel34/>
-- Production target: Cloudflare Pages, project `alliance-travel`
+## Features
+
+### Visitor Experience
+
+- **Homepage hub** with cinematic hero, agency stats, destinations, branch map,
+  and contact sections
+- **Trip catalog** at `/voyages/`
+- **Five trip landing pages** for Egypt, Sharm from Constantine, Istanbul,
+  Azerbaijan, and Kuala Lumpur
+- **Trip calculators** with DZD pricing, room choices, children, babies, and
+  local USD tax notes
+- **Booking form** that builds a pre-filled WhatsApp message and supports email
+  or clipboard fallback
+- **Runtime language switcher** for French, English, and Arabic with RTL support
+- **Responsive navigation** and mobile drawer
+- **Branded 404 page**
+
+### SEO and Hosting
+
+- JSON-LD structured data across public pages
+- Open Graph and Twitter Card metadata
+- `sitemap.xml` and `robots.txt`
+- Cloudflare/Netlify-compatible `_headers` and `_redirects`
+- Service worker for offline-friendly caching
+- GitHub Pages demo workflow with no secrets required
+- Cloudflare Pages production workflow, gated by tests
+
+### Quality
+
+- Vanilla JavaScript, no frontend framework
+- No build step for the deploy target
+- Unit tests for pricing and booking rules
+- jsdom integration test for calculator-to-booking-form wiring
+- Link and i18n verification scripts
+- Dependency audit script
+
+---
+
+## Theme
+
+| Element | Direction |
+| --- | --- |
+| Primary mood | dark travel editorial |
+| Accent | mint green |
+| Typography | DM Sans, with Arabic font loading on demand |
+| Motion | restrained cinematic transitions |
+| Layout | responsive static pages, no app shell |
+
+The UI/theme lives in:
+
+```text
+site/assets/css/styles.css
+```
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+| --- | --- |
+| Pages | Static HTML |
+| Styling | CSS custom properties |
+| Logic | Vanilla JavaScript |
+| Tests | Vitest + jsdom |
+| Demo hosting | GitHub Pages |
+| Production hosting | Cloudflare Pages |
+
+---
+
+## Screenshot
+
+<p>
+  <img src="docs/demo/01-homepage.png" alt="Alliance Travel homepage" width="900">
+</p>
+
+---
 
 ## Quick Start
 
+### Prerequisites
+
+- Node.js 20.19+
+- npm
+
+### Install and Run
+
 ```bash
+git clone https://github.com/labssynova-coder/alliancetravel34.git
+cd alliancetravel34
 npm install
 npm start
 ```
 
-Open <http://127.0.0.1:5500/>.
+Open:
 
-Use a different port when needed:
+```text
+http://127.0.0.1:5500/
+```
+
+Choose a different port:
 
 ```bash
 npm start -- --port 5501
 ```
 
+---
+
 ## Scripts
 
 ```bash
-npm start          # serve site/ locally with no extra dependency
-npm test           # run Vitest unit + jsdom integration tests
-npm run verify     # format check, tests, i18n coverage, link integrity
+npm start          # serve site/ locally
+npm test           # run unit and integration tests
+npm run verify     # format check, tests, i18n, links
 npm run verify:audit
 npm run format     # format test files only
 ```
 
-`npm run verify` is the deterministic CI gate. `npm run verify:audit` is kept
-separate because it depends on the npm registry being reachable.
+`npm run verify` is deterministic and runs in CI. `npm run verify:audit` is
+separate because it depends on the npm registry.
 
-## Project Layout
+---
+
+## Project Structure
 
 ```text
-.
-├── site/                    # deploy target
+alliancetravel34/
+├── site/                     # deploy target
 │   ├── index.html
 │   ├── voyages/
 │   ├── cairo-sharm/
@@ -51,27 +142,25 @@ separate because it depends on the npm registry being reachable.
 │   ├── istanbul/
 │   ├── azerbaidjan/
 │   ├── kuala-lumpur/
-│   ├── assets/css/styles.css
-│   └── assets/js/
-├── scripts/                 # local server and verification helpers
-├── tests/                   # Vitest coverage for pricing and booking logic
-├── docs/                    # deployment and reference docs
-├── .github/workflows/       # GitHub Pages demo and Cloudflare deploy workflows
-└── wrangler.toml            # Cloudflare Pages config
+│   ├── assets/css/
+│   ├── assets/js/
+│   └── assets/images/
+├── scripts/                  # local server and verification helpers
+├── tests/                    # Vitest coverage
+├── docs/                     # deploy and reference docs
+│   ├── demo/                 # README screenshots
+│   └── reference/
+├── .github/workflows/        # GitHub Pages and Cloudflare workflows
+├── package.json
+├── wrangler.toml
+└── README.md
 ```
 
-## Stack
-
-- HTML5 static pages
-- CSS custom properties and a single `site/assets/css/styles.css`
-- Vanilla browser JavaScript
-- Vitest + jsdom for client-side business logic
-- Cloudflare Pages for production hosting
-- GitHub Pages for a no-secrets public demo
+---
 
 ## Verification
 
-Before pushing:
+Run before pushing:
 
 ```bash
 npm run verify
@@ -80,30 +169,58 @@ npm run verify:audit
 
 Expected result:
 
-- 66 Vitest tests pass
-- all i18n keys resolve for FR, EN, and AR
-- sitemap, redirects, and internal references resolve
-- npm audit reports 0 vulnerabilities
+- 66 tests pass
+- all FR/EN/AR i18n keys resolve
+- sitemap, redirects, and internal links resolve
+- dependency audit reports 0 vulnerabilities
+
+---
 
 ## Deployment
 
-GitHub Pages demo deploys automatically from `main` with
-`.github/workflows/pages.yml`.
+### GitHub Pages Demo
 
-Cloudflare production deploy is configured in `.github/workflows/deploy.yml`
-and `wrangler.toml`. It requires these repository secrets:
+The demo deploys automatically from `main` via:
 
-- `CLOUDFLARE_API_TOKEN`
-- `CLOUDFLARE_ACCOUNT_ID`
+```text
+.github/workflows/pages.yml
+```
 
-See [docs/DEPLOY.md](docs/DEPLOY.md) for the production checklist.
+Demo URL:
+
+```text
+https://labssynova-coder.github.io/alliancetravel34/
+```
+
+### Cloudflare Pages Production
+
+Production deploy is configured through:
+
+```text
+.github/workflows/deploy.yml
+wrangler.toml
+```
+
+Required repository secrets:
+
+```text
+CLOUDFLARE_API_TOKEN
+CLOUDFLARE_ACCOUNT_ID
+```
+
+See [docs/DEPLOY.md](docs/DEPLOY.md) for details.
+
+---
 
 ## Maintenance Notes
 
-- Keep UI/theme changes inside `site/`.
-- Keep testable business rules in `site/assets/js/calculator.js` and
-  `site/assets/js/booking-form.js`.
-- If `site/` changes in a user-visible way, consider bumping `CACHE_NAME` in
-  `site/sw.js`.
-- Historical cleanup notes were removed from the active tree; recover them from
-  git history if needed.
+- Keep public UI files inside `site/`.
+- Keep active docs short and current.
+- Do not reintroduce historical session logs into the active tree.
+- If a visible release changes cached assets, bump `CACHE_NAME` in `site/sw.js`.
+
+---
+
+## License
+
+This project is available under the [MIT License](LICENSE).

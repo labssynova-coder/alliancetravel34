@@ -172,6 +172,18 @@ git push
 # Cloudflare deploys within ~30s
 ```
 
+## 🧪 GitHub Pages demo fallback
+
+The repo also includes `.github/workflows/pages.yml`, which publishes the
+static `site/` folder to GitHub Pages without Cloudflare secrets. Use this for
+quick demos while the production Cloudflare token/domain are not configured:
+
+`https://labssynova-coder.github.io/alliancetravel34/`
+
+Cloudflare remains the recommended production host for `alliance-travel.dz`
+because it supports the checked-in `_headers`, `_redirects`, custom domain, and
+edge caching rules.
+
 ### Cache-busting CSS/JS
 
 The 1-year immutable cache means returning users won't see CSS/JS changes immediately. For high-impact changes, append a query string to the asset URL in HTML:

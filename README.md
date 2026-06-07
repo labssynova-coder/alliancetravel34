@@ -161,6 +161,8 @@ alliance-travel/
 ## Deployment
 
 **Recommended host: Cloudflare Pages free tier** — annual cost €0 + your `.dz` domain renewal (~€15/year).
+The repo also ships a no-secrets GitHub Pages demo workflow for quick previews
+at `https://labssynova-coder.github.io/alliancetravel34/`.
 
 See **[`docs/DEPLOY.md`](docs/DEPLOY.md)** for the full 30-minute walkthrough including:
 

@@ -12,7 +12,7 @@
 1. Push main to GitHub                              (1 min)
 2. Sign in to dash.cloudflare.com                   (2 min, free plan)
 3. Workers & Pages → Create → Pages → Connect Git   (5 min)
-4. Select repo Brvetr4ve1er/alliancetravel34        (1 min)
+4. Select repo labssynova-coder/alliancetravel34    (1 min)
 5. Config: framework=None, build=empty, output=site (1 min)
 6. Save & Deploy → wait ~30s                        (1 min)
 7. Smoke-test the *.pages.dev URL (checklist below) (5 min)
@@ -78,7 +78,7 @@ git push origin main               # publish to GitHub
 
 1. Go to <https://dash.cloudflare.com> → sign up (free plan).
 2. Sidebar → **Workers & Pages** → **Create** → **Pages** tab → **Connect to Git**.
-3. Authorize Cloudflare to access GitHub. Select repo `Brvetr4ve1er/alliancetravel34`.
+3. Authorize Cloudflare to access GitHub. Select repo `labssynova-coder/alliancetravel34`.
 4. Configure the build:
    - **Project name:** `alliance-travel`
    - **Production branch:** `main`

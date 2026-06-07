@@ -9,11 +9,11 @@ Conversion path: pre-filled WhatsApp message via `wa.me/213…` deep-links — w
 ## Quick start
 
 ```bash
-# Option 1 — Python (no Node needed)
-python -m http.server 5500 --directory site
+# Dependency-free local demo server
+npm start
 
-# Option 2 — npx (faster live-reload)
-npx serve site -p 5501 --no-clipboard
+# Optional: choose a different port
+npm start -- --port 5501
 ```
 
 Open <http://localhost:5500/>.
@@ -30,6 +30,8 @@ npm test           # run the unit + integration suite
 npm run test:watch  # watch mode while developing
 npm run verify:i18n  # check every data-i18n key resolves in FR/EN/AR
 npm run verify:links # check sitemap, _redirects, and all internal links resolve
+npm run verify      # run format, tests, i18n, and links
+npm run verify:audit # check dependency advisories
 npm run format       # auto-format the test suite (Prettier; scoped to tests/)
 ```
 

@@ -110,7 +110,7 @@ let refCount = 0;
 for (const abs of pages) {
   const html = fs.readFileSync(abs, 'utf8');
   const pageLabel = path.relative(ROOT, abs);
-  const pageDirRel = path.posix.relative(SITE, path.dirname(abs)) || '.';
+  const pageDirRel = path.relative(SITE, path.dirname(abs)).split(path.sep).join(path.posix.sep) || '.';
 
   // href="" and src=""
   for (const m of html.matchAll(/(?:href|src)\s*=\s*"([^"]*)"/gi)) {

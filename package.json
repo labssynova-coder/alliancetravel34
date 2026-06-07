@@ -4,11 +4,15 @@
   "private": true,
   "description": "Alliance Travel — static multilingual (FR/EN/AR) travel site for Cloudflare Pages.",
   "engines": {
-    "node": ">=20"
+    "node": ">=20.19.0"
   },
   "scripts": {
+    "start": "node scripts/serve.cjs",
+    "serve": "node scripts/serve.cjs",
     "test": "vitest run",
     "test:watch": "vitest",
+    "verify": "npm run format:check && npm test && npm run verify:i18n && npm run verify:links",
+    "verify:audit": "npm audit --audit-level=moderate",
     "verify:i18n": "node scripts/verify-i18n.cjs",
     "verify:links": "node scripts/verify-links.cjs",
     "format": "prettier --write \"tests/**/*.mjs\"",
@@ -17,6 +21,6 @@
   "devDependencies": {
     "jsdom": "^29.1.1",
     "prettier": "^3.8.3",
-    "vitest": "^2.1.8"
+    "vitest": "^4.1.8"
   }
 }

@@ -4,6 +4,7 @@
    workflow can block on it. Run via `npm run verify:i18n`. */
 const fs = require('fs');
 const path = require('path');
+const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 
 // --- extract the T object literal from i18n.js via brace matching ---
@@ -17,7 +18,12 @@ for (; i < src.length; i++) {
 }
 const objStr = src.slice(src.indexOf('{', start), end + 1);
 let T;
-try { T = eval('(' + objStr + ')'); } catch (e) { console.error('eval failed:', e.message); process.exit(1); }
+try {
+  T = vm.runInNewContext(`(${objStr})`, Object.freeze({}), { timeout: 1000 });
+} catch (e) {
+  console.error('translation parse failed:', e.message);
+  process.exit(1);
+}
 console.log('Dict langs:', Object.keys(T).join(', '));
 
 const lookup = (key, dict) => key.split('.').reduce((o, k) => (o && k in o) ? o[k] : null, dict);

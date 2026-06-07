@@ -98,12 +98,21 @@ function classifyFiles(files, { existingCount = 0, existingBytes = 0 } = {}) {
    Returns { ok, error }. */
 function validatePassportExpiry(expiry, { from = new Date(), monthsRequired = 6 } = {}) {
   if (!expiry) return { ok: true, error: null };
-  const exp = new Date(expiry);
-  if (isNaN(exp.getTime())) {
+  const parts = String(expiry).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  const exp = parts
+    ? new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3]))
+    : new Date(expiry);
+  if (isNaN(exp.getTime()) || (parts && (
+    exp.getFullYear() !== Number(parts[1]) ||
+    exp.getMonth() !== Number(parts[2]) - 1 ||
+    exp.getDate() !== Number(parts[3])
+  ))) {
     return { ok: false, error: 'Date d’expiration invalide.' };
   }
   const min = new Date(from);
+  min.setHours(0, 0, 0, 0);
   min.setMonth(min.getMonth() + monthsRequired);
+  exp.setHours(0, 0, 0, 0);
   if (exp < min) {
     return { ok: false, error: `Le passeport doit être valide encore au moins ${monthsRequired} mois.` };
   }

@@ -8,6 +8,26 @@
 
 ---
 
+## About
+
+Alliance Travel is a delivered client website for a guided-tour agency in
+Bordj Bou Arreridj, Algeria. The project was completed as paid client work and
+handed over as a production-ready static site with a live demo, deployment
+workflows, verification scripts, and documentation.
+
+This repository is a fork of the original project by
+[`Brvetr4ve1er`](https://github.com/Brvetr4ve1er):
+
+```text
+https://github.com/Brvetr4ve1er/alliancetravel34
+```
+
+Credit is retained for the original repository owner. This fork contains the
+cleanup, verification, documentation, and deployment work delivered under
+`labssynova-coder`.
+
+---
+
 ## Features
 
 ### Visitor Experience
@@ -223,4 +243,6 @@ See [docs/DEPLOY.md](docs/DEPLOY.md) for details.
 
 ## License
 
-This project is available under the [MIT License](LICENSE).
+This is a delivered client project that has been paid for. The repository keeps
+an MIT license notice for code reuse clarity and preserves credit for the
+original fork owner. See [LICENSE](LICENSE).

@@ -2112,7 +2112,7 @@ select {
    screen]) when it scrolls out of view. This rule freezes every CSS
    animation inside the subtree, recovering the frame budget the
    browser would otherwise spend ticking off-screen keyframes.
-   Pairs with the Performance Contract in MOTION-CLEANUP-MASTER.md §0a. */
+   Keep motion GPU-friendly and respect prefers-reduced-motion. */
 .is-paused,
 .is-paused *,
 .is-paused *::before,
